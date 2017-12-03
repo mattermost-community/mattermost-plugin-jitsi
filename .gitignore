@@ -12,3 +12,16 @@
 
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
+
+# Build
+/coverage.txt
+/plugin.exe
+/mattermost-zoom-plugin*.tar.gz
+/dist
+server/vendor
+node_modules
+.npminstall
+webapp/dist
+
+# Mac
+*.swp

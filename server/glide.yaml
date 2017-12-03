@@ -1,0 +1,10 @@
+package: github.com/mattermost/mattermost-plugin-zoom/server
+import:
+- package: github.com/dgrijalva/jwt-go
+- package: github.com/gorilla/schema
+- package: github.com/stretchr/testify
+  version: ^1.1.4
+  subpackages:
+  - mock
+- package: github.com/mattermost/mattermost-server
+  version: c8a22b2381d84cf3110e15d0c9280465e4e4adcd

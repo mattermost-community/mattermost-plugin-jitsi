@@ -1,0 +1,33 @@
+{
+    "id": "zoom",
+    "name": "Zoom",
+    "description": "Zoom audio and video conferencing plugin for Mattermost.",
+    "backend": {
+        "executable": "server/plugin.exe"
+    },
+    "webapp": {
+        "bundle_path": "/static/zoom_bundle.js"
+    },
+    "settings_schema": {
+        "settings": [
+            {
+                "key": "APIKey",
+                "display_name": "API Key",
+                "type": "text",
+                "help_text": ""
+            },
+            {
+                "key": "APISecret",
+                "display_name": "API Secret",
+                "type": "text",
+                "help_text": ""
+            },
+            {
+                "key": "WebhookSecret",
+                "display_name": "Webhook Secret",
+                "type": "generated",
+                "help_text": ""
+            }
+        ]
+    }
+}
