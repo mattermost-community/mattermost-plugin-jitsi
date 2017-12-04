@@ -1,0 +1,170 @@
+const React = window.react;
+const {Modal} = window['react-bootstrap'];
+
+import PropTypes from 'prop-types';
+import {makeStyleFromTheme, changeOpacity} from 'mattermost-redux/utils/theme_utils';
+
+export default class ShareMeetingModal extends React.PureComponent {
+    static propTypes = {
+        /*
+         * Set to true to show modal
+         */
+        show: PropTypes.bool.isRequired,
+
+        /*
+         * Set to true to show share options
+         */
+        share: PropTypes.bool.isRequired,
+
+        /*
+         * Current channel ID
+         */
+        channelId: PropTypes.string.isRequired,
+
+        /*
+         * Logged in user's theme
+         */
+        theme: PropTypes.object.isRequired,
+
+        /*
+         * Function to hide the modal
+         */
+        hide: PropTypes.func.isRequired,
+
+        actions: PropTypes.shape({
+
+            /*
+             * Action to start a meeting
+             */
+            startMeeting: PropTypes.func.isRequired
+        }).isRequired
+    }
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            topic: '',
+            meetingId: ''
+        };
+    }
+
+    onTopicChange = (e) => {
+        this.setState({topic: e.target.value});
+    }
+
+    onMeetingIdChange = (e) => {
+        this.setState({meetingId: e.target.value});
+    }
+
+    startMeeting = async () => {
+        const meetingId = parseInt(this.state.meetingId.trim().replace(/-/g, ''), 10);
+        await this.props.actions.startMeeting(this.props.channelId, true, this.state.topic, meetingId);
+        this.props.hide();
+    }
+
+    onHide = () => {
+        this.setState({
+            topic: '',
+            meetingId: ''
+        });
+
+        this.props.hide();
+    }
+
+    render() {
+        const style = getStyle(this.props.theme);
+
+        let title = 'Start Zoom Meeting';
+        let button = 'Start Meeting';
+        let meetingIdInput;
+        if (this.props.share) {
+            title = 'Share Zoom Meeting';
+            button = 'Share Meeting';
+            meetingIdInput = (
+                <div>
+                    <br/>
+                    <br/>
+                    <label className='control-label col-sm-3'>
+                        {'Meeting ID'}
+                    </label>
+                    <div className='col-sm-9'>
+                        <input
+                            onChange={this.onMeetingIdChange}
+                            type='text'
+                            className='form-control'
+                            placeholder='E.g.: “314-257-8967”'
+                            value={this.state.meetingId}
+                            maxLength={100}
+                        />
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <Modal
+                show={this.props.show}
+                onHide={this.onHide}
+            >
+                <Modal.Header closeButton={true}>
+                    <h4 style={style.title}>{title}</h4>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        <label className='control-label col-sm-3'>
+                            {'Topic '}<i style={{fontWeight: 'normal'}}>{'(optional)'}</i>
+                        </label>
+                        <div className='col-sm-9'>
+                            <input
+                                onChange={this.onTopicChange}
+                                type='text'
+                                className='form-control'
+                                placeholder='E.g.: “One on one”, “Marketing”, “会议室”'
+                                value={this.state.topic}
+                                maxLength={100}
+                            />
+                        </div>
+                    </div>
+                    {meetingIdInput}
+                </Modal.Body>
+                <Modal.Footer>
+                    <button
+                        id='linkModalCloseButton'
+                        type='button'
+                        className='btn btn-default'
+                        onClick={this.props.hide}
+                    >
+                        {'Cancel'}
+                    </button>
+                    <button
+                        id='linkModalCloseButton'
+                        type='button'
+                        className='btn btn-primary'
+                        onClick={this.startMeeting}
+                    >
+                        {button}
+                    </button>
+                </Modal.Footer>
+            </Modal>
+        );
+    }
+}
+
+const getStyle = makeStyleFromTheme((theme) => {
+    return {
+        button: {
+            border: '1px solid',
+            borderRadius: '50%',
+            borderColor: changeOpacity(theme.centerChannelColor, 0.12),
+            cursor: 'pointer',
+            height: '37px',
+            lineHeight: '36px',
+            margin: '17px 10px 0 0',
+            minWidth: '30px',
+            textAlign: 'center',
+            width: '37px',
+            fill: changeOpacity(theme.centerChannelColor, 0.4)
+        }
+    };
+});

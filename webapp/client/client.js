@@ -1,21 +1,21 @@
 import request from 'superagent';
 
-/* Add web utilities for interacting with servers here */
-
 export default class Client {
     constructor() {
-        /* Define any class variables here */
-        this.url = 'http://example.com';
+        this.url = '/plugins/zoom';
     }
 
-    exampleRequest = async () => {
-        return this.doGet(`${this.url}/example`);
+    startMeeting = async (channelId, personal = true, topic = '', meetingId = 0) => {
+        return this.doPost(`${this.url}/api/v1/meetings`, {channel_id: channelId, personal, topic, meeting_id: meetingId});
     }
 
-    doGet = async (url, headers = {}) => {
+    doPost = async (url, body, headers = {}) => {
+        headers['X-Requested-With'] = 'XMLHttpRequest';
+
         try {
             const response = await request.
-                get(url).
+                post(url).
+                send(body).
                 set(headers).
                 type('application/json').
                 accept('application/json');

@@ -1,42 +1,45 @@
 const React = window.react;
 const {Overlay, OverlayTrigger, Popover, Tooltip} = window['react-bootstrap'];
 
+import ShareMeetingModal from '../share_meeting_modal';
+
 import PropTypes from 'prop-types';
 import {makeStyleFromTheme, changeOpacity} from 'mattermost-redux/utils/theme_utils';
 
 export default class ChannelHeaderButton extends React.PureComponent {
     static propTypes = {
+        /*
+         * The current channel ID
+         */
+        channelId: PropTypes.string.isRequired,
 
         /*
          * Logged in user's theme
          */
         theme: PropTypes.object.isRequired,
 
-        /* Add custom props here */
-
-        /* Define action props here or remove if no actions */
         actions: PropTypes.shape({
+
+            /*
+             * Action to start a meeting
+             */
+            startMeeting: PropTypes.func.isRequired
         }).isRequired
-
-    }
-
-    static defaultProps = {
-        /* If necessary, add defaults for custom props here */
     }
 
     constructor(props) {
         super(props);
 
         this.state = {
-            /* Initialize any state here */
+            showPopover: false,
             hover: false,
-            rowHover: false
+            rowStartHover: false,
+            rowStartWithTopicHover: false,
+            rowShareHover: false,
+            showModal: false,
+            shareModal: false
         };
     }
-
-    /* Add React component lifecycle functions (componentDidMount, etc.) and custom functions
-        here as needed. Make sure to use arrow function syntax for your custom functions to
-        auto-bind this */
 
     showHover = () => {
         this.setState({hover: true});
@@ -46,16 +49,58 @@ export default class ChannelHeaderButton extends React.PureComponent {
         this.setState({hover: false});
     }
 
-    rowShowHover = () => {
-        this.setState({rowHover: true});
+    rowStartShowHover = () => {
+        this.setState({rowStartHover: true});
     }
 
-    rowHideHover = () => {
-        this.setState({rowHover: false});
+    rowStartHideHover = () => {
+        this.setState({rowStartHover: false});
     }
 
-    /* Construct and return the JSX to render here. Make sure that rendering is solely based
-        on props and state. */
+    rowStartWithTopicShowHover = () => {
+        this.setState({rowStartWithTopicHover: true});
+    }
+
+    rowStartWithTopicHideHover = () => {
+        this.setState({rowStartWithTopicHover: false});
+    }
+
+    rowShareShowHover = () => {
+        this.setState({rowShareHover: true});
+    }
+
+    rowShareHideHover = () => {
+        this.setState({rowShareHover: false});
+    }
+
+    resetHover = () => {
+        this.hideHover();
+        this.rowStartHideHover();
+        this.rowStartWithTopicHideHover();
+        this.rowShareHideHover();
+    }
+
+    showModal = () => {
+        this.setState({showPopover: false, showModal: true, shareModal: false});
+        this.resetHover();
+    }
+
+    showModalAsShare = () => {
+        this.setState({showPopover: false, showModal: true, shareModal: true});
+        this.resetHover();
+    }
+
+    hideModal = () => {
+        this.setState({showModal: false});
+        this.resetHover();
+    }
+
+    startMeeting = async () => {
+        await this.props.actions.startMeeting(this.props.channelId, true, this.state.topic);
+        this.setState({showPopover: false});
+        this.resetHover();
+    }
+
     render() {
         const style = getStyle(this.props.theme);
 
@@ -64,80 +109,121 @@ export default class ChannelHeaderButton extends React.PureComponent {
         const iconStyle = isHovering ? style.iconButtonHover : style.iconButton;
 
         return (
-            <div
-                id='zoomChannelHeaderPopover'
-                style={containerStyle}
-                onMouseEnter={this.showHover}
-                onMouseLeave={this.hideHover}
-            >
-                <OverlayTrigger
-                    trigger={['hover', 'focus']}
-                    delayShow={400}
-                    placement='bottom'
-                    overlay={(
-                        <Tooltip id='zoomChannelHeaderTooltip'>
-                            {'Zoom'}
-                        </Tooltip>
-                    )}
+            <div>
+                <div
+                    id='zoomChannelHeaderPopover'
+                    style={containerStyle}
+                    onMouseEnter={this.showHover}
+                    onMouseLeave={this.hideHover}
                 >
-                    <div
-                        id='zoomChannelHeaderButton'
-                        onClick={(e) => {
-                            this.setState({popoverTarget: e.target, showPopover: !this.state.showPopover});
-                        }}
+                    <OverlayTrigger
+                        trigger={['hover', 'focus']}
+                        delayShow={400}
+                        placement='bottom'
+                        overlay={(
+                            <Tooltip id='zoomChannelHeaderTooltip'>
+                                {'Zoom'}
+                            </Tooltip>
+                        )}
                     >
-                        <span
-                            className='fa fa-video-camera'
-                            style={iconStyle}
-                            aria-hidden='true'
-                        />
-                    </div>
-                </OverlayTrigger>
-                <Overlay
-                    rootClose={true}
-                    onHide={this.closePopover}
-                    show={this.state.showPopover}
-                    target={() => this.state.popoverTarget}
-                    placement='bottom'
-                >
-                    <Popover
-                        id='zoomPopover'
-                        style={style.popover}
-                    >
-                        <div style={style.popoverHeader}>
-                            {'Zoom'}
+                        <div
+                            id='zoomChannelHeaderButton'
+                            onClick={(e) => {
+                                this.setState({popoverTarget: e.target, showPopover: !this.state.showPopover});
+                            }}
+                        >
+                            <span
+                                className='fa fa-video-camera'
+                                style={iconStyle}
+                                aria-hidden='true'
+                            />
                         </div>
-                        <div style={style.popoverBody}>
-                            <div
-                                id='zoomPopoverStartMeeting'
-                                onMouseEnter={this.rowShowHover}
-                                onMouseLeave={this.rowHideHover}
-                                style={this.state.rowHover ? style.popoverRowHover : {}}
-                            >
-                                <span
-                                    style={style.popoverIcon}
-                                    className='fa fa-video-camera pull-left'
-                                    aria-hidden='true'
-                                />
-                                <div style={style.popoverRow}>
-                                    <div style={style.popoverText}>
-                                        {'Start a meeting'}
+                    </OverlayTrigger>
+                    <Overlay
+                        rootClose={true}
+                        show={this.state.showPopover}
+                        target={() => this.state.popoverTarget}
+                        onHide={() => this.setState({showPopover: false})}
+                        placement='bottom'
+                    >
+                        <Popover
+                            id='zoomPopover'
+                            style={style.popover}
+                        >
+                            <div style={style.popoverBody}>
+                                <div
+                                    id='zoomPopoverStartMeeting'
+                                    onMouseEnter={this.rowStartShowHover}
+                                    onMouseLeave={this.rowStartHideHover}
+                                    onClick={this.startMeeting}
+                                    style={this.state.rowStartHover ? style.popoverRowHover : {}}
+                                >
+                                    <span
+                                        style={style.popoverIcon}
+                                        className='fa fa-video-camera pull-left'
+                                        aria-hidden='true'
+                                    />
+                                    <div style={style.popoverRow}>
+                                        <div style={style.popoverText}>
+                                            {'Start Zoom Meeting Now'}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    id='zoomPopoverStartMeetingWithTopic'
+                                    onMouseEnter={this.rowStartWithTopicShowHover}
+                                    onMouseLeave={this.rowStartWithTopicHideHover}
+                                    onClick={this.showModal}
+                                    style={this.state.rowStartWithTopicHover ? style.popoverRowHover : {}}
+                                >
+                                    <span
+                                        style={style.popoverIcon}
+                                        className='fa fa-video-camera pull-left'
+                                        aria-hidden='true'
+                                    />
+                                    <div style={style.popoverRow}>
+                                        <div style={style.popoverText}>
+                                            {'Start Zoom Meeting with Topic'}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    id='zoomPopoverShareMeeting'
+                                    onMouseEnter={this.rowShareShowHover}
+                                    onMouseLeave={this.rowShareHideHover}
+                                    onClick={this.showModalAsShare}
+                                    style={this.state.rowShareHover ? style.popoverRowHover : {}}
+                                >
+                                    <span
+                                        style={style.popoverIcon}
+                                        className='fa fa-share-alt pull-left'
+                                        aria-hidden='true'
+                                    />
+                                    <div style={style.popoverRow}>
+                                        <div style={style.popoverText}>
+                                            {'Share Zoom Meeting'}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </Popover>
-                </Overlay>
+                        </Popover>
+                    </Overlay>
+                </div>
+                <ShareMeetingModal
+                    show={this.state.showModal}
+                    channelId={this.props.channelId}
+                    theme={this.props.theme}
+                    hide={this.hideModal}
+                    share={this.state.shareModal}
+                />
             </div>
         );
     }
 }
 
-/* Define CSS styles here */
 const getStyle = makeStyleFromTheme((theme) => {
     return {
         iconContainer: {
-            /* Use the theme object to match component style to the user's theme */
             border: '1px solid',
             borderRadius: '50%',
             borderColor: changeOpacity(theme.centerChannelColor, 0.12),
@@ -162,20 +248,18 @@ const getStyle = makeStyleFromTheme((theme) => {
         },
         popover: {
             marginLeft: '-100px',
-            maxWidth: 'intitial',
-            width: '260px',
+            maxWidth: '280px',
+            height: '155px',
+            width: '280px',
             background: theme.centerChannelBg
         },
-        popoverHeader: {
-            padding: '14px 20px',
-            fontWeight: '600'
-        },
         popoverBody: {
-            borderTop: '1px solid transparent',
-            borderColor: changeOpacity(theme.centerChannelColor, 0.1),
-            maxHeight: '275px',
+            maxHeight: '305px',
             overflow: 'auto',
-            position: 'relative'
+            position: 'relative',
+            width: '280px',
+            left: '-14px',
+            top: '-9px'
         },
         popoverRow: {
             border: 'none',
@@ -183,7 +267,7 @@ const getStyle = makeStyleFromTheme((theme) => {
             height: '50px',
             margin: '1px 0',
             overflow: 'hidden',
-            padding: '6px 19px 0 20px'
+            padding: '6px 19px 0 10px'
         },
         popoverRowHover: {
             borderLeft: '3px solid transparent',
@@ -191,13 +275,14 @@ const getStyle = makeStyleFromTheme((theme) => {
             background: changeOpacity(theme.linkColor, 0.08)
         },
         popoverText: {
-            fontSize: '15.5px',
+            fontSize: '14px',
             fontWeight: 'normal',
             position: 'relative',
-            top: '8px'
+            top: '10px'
         },
         popoverIcon: {
             margin: '0',
+            paddingLeft: '16px',
             position: 'relative',
             top: '18px',
             fontSize: '18px',

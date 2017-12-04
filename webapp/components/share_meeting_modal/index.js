@@ -3,13 +3,10 @@ const {bindActionCreators} = window.redux;
 
 import {startMeeting} from '../../actions';
 
-import ChannelHeaderButton from './channel_header_button.jsx';
+import ShareMeetingModal from './share_meeting_modal.jsx';
 
 function mapStateToProps(state, ownProps) {
-    return {
-        channelId: state.entities.channels.currentChannelId,
-        ...ownProps
-    };
+    return ownProps;
 }
 
 function mapDispatchToProps(dispatch) {
@@ -20,4 +17,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChannelHeaderButton);
+export default connect(mapStateToProps, mapDispatchToProps)(ShareMeetingModal);

@@ -106,6 +106,8 @@ func (p *Plugin) handleStandardWebhook(w http.ResponseWriter, r *http.Request, w
 	if b, err := p.api.KeyValueStore().Get(fmt.Sprintf("%v%v", POST_MEETING_KEY, webhook.ID)); err != nil {
 		http.Error(w, err.Error(), err.StatusCode)
 		return
+	} else if b == nil {
+		return
 	} else {
 		postId = string(b)
 	}
@@ -130,6 +132,8 @@ func (p *Plugin) handleStandardWebhook(w http.ResponseWriter, r *http.Request, w
 type StartMeetingRequest struct {
 	ChannelId string `json:"channel_id"`
 	Personal  bool   `json:"personal"`
+	Topic     string `json:"topic"`
+	MeetingId int    `json:"meeting_id"`
 }
 
 func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
@@ -158,10 +162,10 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	meetingId := 0
+	meetingId := req.MeetingId
 	personal := true
 
-	if req.Personal {
+	if meetingId == 0 && req.Personal {
 		if ru, err := p.zoomClient.GetUser(user.Email); err != nil {
 			http.Error(w, err.Error(), err.StatusCode)
 			return
@@ -174,7 +178,8 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		personal = false
 
 		meeting := &zd.Meeting{
-			Type: zd.MEETING_TYPE_INSTANT,
+			Type:  zd.MEETING_TYPE_INSTANT,
+			Topic: req.Topic,
 		}
 
 		if rm, err := p.zoomClient.CreateMeeting(meeting, user.Email); err != nil {
@@ -188,14 +193,16 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 	post := &model.Post{
 		UserId:    user.Id,
 		ChannelId: req.ChannelId,
-		Message:   fmt.Sprintf("@%v started a meeting at https://zoom.us/j/%v.", user.Username, meetingId),
+		Message:   fmt.Sprintf("Meeting started at https://zoom.us/j/%v.", meetingId),
+		Type:      "custom_zoom",
 		Props: map[string]interface{}{
 			"meeting_id":        meetingId,
 			"meeting_status":    zd.WEBHOOK_STATUS_STARTED,
 			"meeting_personal":  personal,
+			"meeting_topic":     req.Topic,
 			"from_webhook":      "true",
 			"override_username": "Zoom",
-			"override_icon_url": "http://www.mattermost.org/wp-content/uploads/2016/04/icon.png",
+			"override_icon_url": "https://s3.amazonaws.com/mattermost-plugin-media/Zoom+App.png",
 		},
 	}
 

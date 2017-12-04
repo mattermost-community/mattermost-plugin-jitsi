@@ -1,0 +1,4 @@
+export default {
+    OPEN_SHARE_MODAL: 'OPEN_SHARE_MODAL',
+    CLOSE_SHARE_MODAL: 'CLOSE_SHARE_MODAL'
+};
