@@ -2,7 +2,9 @@ const React = window.react;
 const {Modal} = window['react-bootstrap'];
 
 import PropTypes from 'prop-types';
-import {makeStyleFromTheme, changeOpacity} from 'mattermost-redux/utils/theme_utils';
+import {makeStyleFromTheme} from 'mattermost-redux/utils/theme_utils';
+
+const ZOOM_MEETING_ID_LENGTH = 10;
 
 export default class ShareMeetingModal extends React.PureComponent {
     static propTypes = {
@@ -40,6 +42,15 @@ export default class ShareMeetingModal extends React.PureComponent {
         }).isRequired
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.show && !this.props.show) {
+            this.setState({
+                topic: '',
+                meetingId: ''
+            });
+        }
+    }
+
     constructor(props) {
         super(props);
 
@@ -58,8 +69,13 @@ export default class ShareMeetingModal extends React.PureComponent {
     }
 
     startMeeting = async () => {
-        const meetingId = parseInt(this.state.meetingId.trim().replace(/-/g, ''), 10);
-        await this.props.actions.startMeeting(this.props.channelId, true, this.state.topic, meetingId);
+        const meetingId = this.state.meetingId.trim().replace(/-/g, '');
+        if (this.props.share && meetingId.length !== ZOOM_MEETING_ID_LENGTH) {
+            this.setState({meetingIdError: 'Meeting ID must be a 10-digit number'});
+            return;
+        }
+
+        await this.props.actions.startMeeting(this.props.channelId, true, this.state.topic, parseInt(meetingId, 10));
         this.props.hide();
     }
 
@@ -81,11 +97,25 @@ export default class ShareMeetingModal extends React.PureComponent {
         if (this.props.share) {
             title = 'Share Zoom Meeting';
             button = 'Share Meeting';
+
+            let error;
+            if (this.state.meetingIdError) {
+                error = (
+                    <label
+                        className='control-label'
+                        style={style.error}
+                    >
+                        {this.state.meetingIdError}
+                    </label>
+                );
+            }
+
             meetingIdInput = (
-                <div>
-                    <br/>
-                    <br/>
-                    <label className='control-label col-sm-3'>
+                <div style={style.meetingId}>
+                    <label
+                        className='control-label col-sm-3'
+                        style={style.label}
+                    >
                         {'Meeting ID'}
                     </label>
                     <div className='col-sm-9'>
@@ -97,6 +127,7 @@ export default class ShareMeetingModal extends React.PureComponent {
                             value={this.state.meetingId}
                             maxLength={100}
                         />
+                        {error}
                     </div>
                 </div>
             );
@@ -107,45 +138,49 @@ export default class ShareMeetingModal extends React.PureComponent {
                 show={this.props.show}
                 onHide={this.onHide}
             >
-                <Modal.Header closeButton={true}>
-                    <h4 style={style.title}>{title}</h4>
-                </Modal.Header>
-                <Modal.Body>
-                    <div>
-                        <label className='control-label col-sm-3'>
-                            {'Topic '}<i style={{fontWeight: 'normal'}}>{'(optional)'}</i>
-                        </label>
-                        <div className='col-sm-9'>
-                            <input
-                                onChange={this.onTopicChange}
-                                type='text'
-                                className='form-control'
-                                placeholder='E.g.: “One on one”, “Marketing”, “会议室”'
-                                value={this.state.topic}
-                                maxLength={100}
-                            />
+                <form onSubmit={(e) => e.preventDefault()}>
+                    <Modal.Header closeButton={true}>
+                        <h4 style={style.title}>{title}</h4>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div>
+                            <label
+                                className='control-label col-sm-3'
+                                style={style.label}
+                            >
+                                {'Topic '}<i style={{fontWeight: 'normal'}}>{'(optional)'}</i>
+                            </label>
+                            <div className='col-sm-9'>
+                                <input
+                                    onChange={this.onTopicChange}
+                                    autoFocus={true}
+                                    type='text'
+                                    className='form-control'
+                                    placeholder='E.g.: “One on one”, “Marketing”, “会议室”'
+                                    value={this.state.topic}
+                                    maxLength={100}
+                                />
+                            </div>
                         </div>
-                    </div>
-                    {meetingIdInput}
-                </Modal.Body>
-                <Modal.Footer>
-                    <button
-                        id='linkModalCloseButton'
-                        type='button'
-                        className='btn btn-default'
-                        onClick={this.props.hide}
-                    >
-                        {'Cancel'}
-                    </button>
-                    <button
-                        id='linkModalCloseButton'
-                        type='button'
-                        className='btn btn-primary'
-                        onClick={this.startMeeting}
-                    >
-                        {button}
-                    </button>
-                </Modal.Footer>
+                        {meetingIdInput}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button
+                            type='button'
+                            className='btn btn-default'
+                            onClick={this.props.hide}
+                        >
+                            {'Cancel'}
+                        </button>
+                        <button
+                            type='submit'
+                            className='btn btn-primary'
+                            onClick={this.startMeeting}
+                        >
+                            {button}
+                        </button>
+                    </Modal.Footer>
+                </form>
             </Modal>
         );
     }
@@ -153,18 +188,18 @@ export default class ShareMeetingModal extends React.PureComponent {
 
 const getStyle = makeStyleFromTheme((theme) => {
     return {
-        button: {
-            border: '1px solid',
-            borderRadius: '50%',
-            borderColor: changeOpacity(theme.centerChannelColor, 0.12),
-            cursor: 'pointer',
-            height: '37px',
-            lineHeight: '36px',
-            margin: '17px 10px 0 0',
-            minWidth: '30px',
-            textAlign: 'center',
-            width: '37px',
-            fill: changeOpacity(theme.centerChannelColor, 0.4)
+        title: {
+            margin: '5px 0 0 0',
+            fontSize: '17px'
+        },
+        label: {
+            top: '6px'
+        },
+        error: {
+            color: '#811519'
+        },
+        meetingId: {
+            marginTop: '55px'
         }
     };
 });

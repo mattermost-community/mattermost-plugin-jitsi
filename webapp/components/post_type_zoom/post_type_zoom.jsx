@@ -1,4 +1,7 @@
 const React = window.react;
+
+import {Svgs} from '../../constants';
+
 import PropTypes from 'prop-types';
 import {makeStyleFromTheme} from 'mattermost-redux/utils/theme_utils';
 
@@ -62,8 +65,8 @@ export default class PostTypeZoom extends React.PureComponent {
                     href={'https://zoom.us/j/' + props.meeting_id}
                 >
                     <i
-                        className='fa fa-video-camera'
-                        style={{paddingRight: '8px'}}
+                        style={style.buttonIcon}
+                        dangerouslySetInnerHTML={{__html: Svgs.VIDEO_CAMERA_3}}
                     />
                     {'JOIN MEETING'}
                 </a>
@@ -173,7 +176,12 @@ const getStyle = makeStyleFromTheme((theme) => {
             letterSpacing: '1px',
             lineHeight: '19px',
             marginTop: '12px',
-            borderRadius: '4px'
+            borderRadius: '4px',
+            color: theme.buttonColor
+        },
+        buttonIcon: {
+            paddingRight: '8px',
+            fill: theme.buttonColor
         }
     };
 });

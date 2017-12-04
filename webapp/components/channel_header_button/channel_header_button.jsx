@@ -3,6 +3,8 @@ const {Overlay, OverlayTrigger, Popover, Tooltip} = window['react-bootstrap'];
 
 import ShareMeetingModal from '../share_meeting_modal';
 
+import {Svgs} from '../../constants';
+
 import PropTypes from 'prop-types';
 import {makeStyleFromTheme, changeOpacity} from 'mattermost-redux/utils/theme_utils';
 
@@ -102,6 +104,10 @@ export default class ChannelHeaderButton extends React.PureComponent {
     }
 
     render() {
+        if (this.props.channelId === '') {
+            return <div/>;
+        }
+
         const style = getStyle(this.props.theme);
 
         const isHovering = this.state.hover || this.state.showPopover;
@@ -133,9 +139,9 @@ export default class ChannelHeaderButton extends React.PureComponent {
                             }}
                         >
                             <span
-                                className='fa fa-video-camera'
                                 style={iconStyle}
                                 aria-hidden='true'
+                                dangerouslySetInnerHTML={{__html: Svgs.VIDEO_CAMERA}}
                             />
                         </div>
                     </OverlayTrigger>
@@ -160,7 +166,8 @@ export default class ChannelHeaderButton extends React.PureComponent {
                                 >
                                     <span
                                         style={style.popoverIcon}
-                                        className='fa fa-video-camera pull-left'
+                                        className='pull-left'
+                                        dangerouslySetInnerHTML={{__html: Svgs.VIDEO_CAMERA_2}}
                                         aria-hidden='true'
                                     />
                                     <div style={style.popoverRow}>
@@ -178,8 +185,9 @@ export default class ChannelHeaderButton extends React.PureComponent {
                                 >
                                     <span
                                         style={style.popoverIcon}
-                                        className='fa fa-video-camera pull-left'
+                                        className='pull-left'
                                         aria-hidden='true'
+                                        dangerouslySetInnerHTML={{__html: Svgs.VIDEO_CAMERA_2}}
                                     />
                                     <div style={style.popoverRow}>
                                         <div style={style.popoverText}>
@@ -195,8 +203,9 @@ export default class ChannelHeaderButton extends React.PureComponent {
                                     style={this.state.rowShareHover ? style.popoverRowHover : {}}
                                 >
                                     <span
-                                        style={style.popoverIcon}
-                                        className='fa fa-share-alt pull-left'
+                                        style={{...style.popoverIcon, top: '16px'}}
+                                        className='pull-left'
+                                        dangerouslySetInnerHTML={{__html: Svgs.SHARE}}
                                         aria-hidden='true'
                                     />
                                     <div style={style.popoverRow}>
@@ -278,15 +287,16 @@ const getStyle = makeStyleFromTheme((theme) => {
             fontSize: '14px',
             fontWeight: 'normal',
             position: 'relative',
-            top: '10px'
+            top: '10px',
+            left: '4px'
         },
         popoverIcon: {
             margin: '0',
             paddingLeft: '16px',
             position: 'relative',
-            top: '18px',
+            top: '14px',
             fontSize: '18px',
-            color: theme.buttonBg
+            fill: theme.buttonBg
         }
     };
 });
