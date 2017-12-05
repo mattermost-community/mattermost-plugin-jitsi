@@ -1,5 +1,5 @@
-hash: cdd1179b89549ae61813a04a26a12d5c4a9a0980877d0a09b83a290c987de210
-updated: 2017-12-03T17:11:46.57580558-05:00
+hash: 0d3f68876af5921462188a64633d99708b49361da2d8b7a8f0bac544ce21cc3a
+updated: 2017-12-05T09:15:39.902799716-05:00
 imports:
 - name: github.com/alecthomas/log4go
   version: 3fbce08846379ec7f4f6bc7fce6dd01ce28fae4c
@@ -15,7 +15,7 @@ imports:
 - name: github.com/gorilla/websocket
   version: ea4d1f681babbce9545c9c5f3d5194a789c89f5b
 - name: github.com/mattermost/mattermost-server
-  version: c8a22b2381d84cf3110e15d0c9280465e4e4adcd
+  version: 7a1f81cd52c4b58a058ae11e361a80ee3b24d141
   subpackages:
   - model
   - plugin

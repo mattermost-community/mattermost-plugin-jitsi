@@ -7,4 +7,3 @@ import:
   subpackages:
   - mock
 - package: github.com/mattermost/mattermost-server
-  version: c8a22b2381d84cf3110e15d0c9280465e4e4adcd
