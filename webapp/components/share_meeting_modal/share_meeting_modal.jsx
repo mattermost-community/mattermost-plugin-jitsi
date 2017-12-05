@@ -4,7 +4,7 @@ const {Modal} = window['react-bootstrap'];
 import PropTypes from 'prop-types';
 import {makeStyleFromTheme} from 'mattermost-redux/utils/theme_utils';
 
-const ZOOM_MEETING_ID_LENGTH = 10;
+const ZOOM_MEETING_ID_LENGTH = [9, 10];
 
 export default class ShareMeetingModal extends React.PureComponent {
     static propTypes = {
@@ -72,8 +72,8 @@ export default class ShareMeetingModal extends React.PureComponent {
 
     startMeeting = async () => {
         const meetingId = this.state.meetingId.trim().replace(/-/g, '');
-        if (this.props.share && meetingId.length !== ZOOM_MEETING_ID_LENGTH) {
-            this.setState({meetingIdError: 'Meeting ID must be a 10-digit number'});
+        if (this.props.share && !ZOOM_MEETING_ID_LENGTH.includes(meetingId.length)) {
+            this.setState({meetingIdError: 'Meeting ID must be a 9 or 10-digit number'});
             return;
         }
 
