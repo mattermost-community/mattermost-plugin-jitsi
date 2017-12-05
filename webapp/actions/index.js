@@ -8,7 +8,7 @@ export function startMeeting(channelId, personal = false, topic = '', meetingId 
             await Client.startMeeting(channelId, personal, topic, meetingId);
         } catch (error) {
             const post = {
-                id: 'zoomPlugin' + channelId,
+                id: 'zoomPlugin' + Date.now(),
                 create_at: Date.now(),
                 update_at: 0,
                 edit_at: 0,

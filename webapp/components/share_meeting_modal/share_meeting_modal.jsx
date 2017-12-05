@@ -46,7 +46,8 @@ export default class ShareMeetingModal extends React.PureComponent {
         if (nextProps.show && !this.props.show) {
             this.setState({
                 topic: '',
-                meetingId: ''
+                meetingId: '',
+                meetingIdError: null
             });
         }
     }
@@ -56,7 +57,8 @@ export default class ShareMeetingModal extends React.PureComponent {
 
         this.state = {
             topic: '',
-            meetingId: ''
+            meetingId: '',
+            meetingIdError: null
         };
     }
 
@@ -75,6 +77,8 @@ export default class ShareMeetingModal extends React.PureComponent {
             return;
         }
 
+        this.setState({meetingIdError: null});
+
         await this.props.actions.startMeeting(this.props.channelId, true, this.state.topic, parseInt(meetingId, 10));
         this.props.hide();
     }
@@ -82,7 +86,8 @@ export default class ShareMeetingModal extends React.PureComponent {
     onHide = () => {
         this.setState({
             topic: '',
-            meetingId: ''
+            meetingId: '',
+            meetingIdError: null
         });
 
         this.props.hide();
@@ -196,7 +201,12 @@ const getStyle = makeStyleFromTheme((theme) => {
             top: '6px'
         },
         error: {
-            color: '#811519'
+            color: '#811519',
+            marginTop: '10px',
+            fontFamily: 'Open Sans',
+            fontWeight: 'normal',
+            fontSize: '14px',
+            lineHeight: '19px'
         },
         meetingId: {
             marginTop: '55px'
