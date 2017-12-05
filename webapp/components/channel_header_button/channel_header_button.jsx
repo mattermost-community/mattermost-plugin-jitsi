@@ -162,7 +162,7 @@ export default class ChannelHeaderButton extends React.PureComponent {
                                     onMouseEnter={this.rowStartShowHover}
                                     onMouseLeave={this.rowStartHideHover}
                                     onClick={this.startMeeting}
-                                    style={this.state.rowStartHover ? style.popoverRowHover : {}}
+                                    style={this.state.rowStartHover ? style.popoverRowHover : style.popoverRowNoHover}
                                 >
                                     <span
                                         style={style.popoverIcon}
@@ -181,7 +181,7 @@ export default class ChannelHeaderButton extends React.PureComponent {
                                     onMouseEnter={this.rowStartWithTopicShowHover}
                                     onMouseLeave={this.rowStartWithTopicHideHover}
                                     onClick={this.showModal}
-                                    style={this.state.rowStartWithTopicHover ? style.popoverRowHover : {}}
+                                    style={this.state.rowStartWithTopicHover ? style.popoverRowHover : style.popoverRowNoHover}
                                 >
                                     <span
                                         style={style.popoverIcon}
@@ -200,7 +200,7 @@ export default class ChannelHeaderButton extends React.PureComponent {
                                     onMouseEnter={this.rowShareShowHover}
                                     onMouseLeave={this.rowShareHideHover}
                                     onClick={this.showModalAsShare}
-                                    style={this.state.rowShareHover ? style.popoverRowHover : {}}
+                                    style={this.state.rowShareHover ? style.popoverRowHover : style.popoverRowNoHover}
                                 >
                                     <span
                                         style={{...style.popoverIcon, top: '16px'}}
@@ -257,16 +257,16 @@ const getStyle = makeStyleFromTheme((theme) => {
         },
         popover: {
             marginLeft: '-100px',
-            maxWidth: '280px',
+            maxWidth: '285px',
             height: '155px',
-            width: '280px',
+            width: '285px',
             background: theme.centerChannelBg
         },
         popoverBody: {
             maxHeight: '305px',
             overflow: 'auto',
             position: 'relative',
-            width: '280px',
+            width: '285px',
             left: '-14px',
             top: '-9px'
         },
@@ -278,14 +278,20 @@ const getStyle = makeStyleFromTheme((theme) => {
             overflow: 'hidden',
             padding: '6px 19px 0 10px'
         },
+        popoverRowNoHover: {
+            borderLeft: '3px solid',
+            borderColor: theme.centerChannelBg,
+            fontWeight: 'normal'
+        },
         popoverRowHover: {
             borderLeft: '3px solid transparent',
             borderColor: theme.linkColor,
-            background: changeOpacity(theme.linkColor, 0.08)
+            background: changeOpacity(theme.linkColor, 0.08),
+            fontWeight: 'bold'
         },
         popoverText: {
+            fontWeight: 'inherit',
             fontSize: '14px',
-            fontWeight: 'normal',
             position: 'relative',
             top: '10px',
             left: '4px'
