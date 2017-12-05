@@ -2,11 +2,12 @@
 // See License.txt for license information.
 
 import ChannelHeaderButton from './components/channel_header_button';
+import MobileChannelHeaderButton from './components/mobile_channel_header_button';
 import PostTypeZoom from './components/post_type_zoom';
 
 class PluginClass {
     initialize(registerComponents, store) {
-        registerComponents({ChannelHeaderButton}, {custom_zoom: PostTypeZoom});
+        registerComponents({ChannelHeaderButton, MobileChannelHeaderButton}, {custom_zoom: PostTypeZoom});
     }
 }
 
