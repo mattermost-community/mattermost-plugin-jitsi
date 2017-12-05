@@ -1,6 +1,7 @@
 const {connect} = window['react-redux'];
 const {bindActionCreators} = window.redux;
 
+import {getBool} from 'mattermost-redux/selectors/entities/preferences';
 import {displayUsernameForUser} from '../../utils/user_utils';
 
 import PostTypeZoom from './post_type_zoom.jsx';
@@ -11,7 +12,8 @@ function mapStateToProps(state, ownProps) {
 
     return {
         ...ownProps,
-        creatorName: displayUsernameForUser(user, state.entities.general.config)
+        creatorName: displayUsernameForUser(user, state.entities.general.config),
+        useMilitaryTime: getBool(state, 'display_settings', 'use_military_time', false)
     };
 }
 

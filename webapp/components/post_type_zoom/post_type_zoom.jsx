@@ -1,6 +1,7 @@
 const React = window.react;
 
 import {Svgs} from '../../constants';
+import {formatDate} from '../../utils/date_utils';
 
 import PropTypes from 'prop-types';
 import {makeStyleFromTheme} from 'mattermost-redux/utils/theme_utils';
@@ -9,12 +10,12 @@ export default class PostTypeZoom extends React.PureComponent {
     static propTypes = {
 
         /*
-         * The post to render the message for
+         * The post to render the message for.
          */
         post: PropTypes.object.isRequired,
 
         /**
-         * Set to render post body compactly
+         * Set to render post body compactly.
          */
         compactDisplay: PropTypes.bool,
 
@@ -23,13 +24,18 @@ export default class PostTypeZoom extends React.PureComponent {
          */
         isRHS: PropTypes.bool,
 
+        /**
+         * Set to display times using 24 hours.
+         */
+        useMilitaryTime: PropTypes.bool,
+
         /*
-         * Logged in user's theme
+         * Logged in user's theme.
          */
         theme: PropTypes.object.isRequired,
 
         /*
-         * Creator's name
+         * Creator's name.
          */
         creatorName: PropTypes.string.isRequired
     };
@@ -105,6 +111,21 @@ export default class PostTypeZoom extends React.PureComponent {
             } else {
                 subtitle = 'Meeting ID : ' + props.meeting_id;
             }
+
+            const startDate = new Date(post.create_at);
+            const start = formatDate(startDate);
+            const length = Math.ceil((new Date(post.update_at) - startDate) / 1000 / 60);
+
+            content = (
+                <div>
+                    <h2 style={style.summary}>
+                        {'Meeting Summary'}
+                    </h2>
+                    <span style={style.summaryItem}>{'Date: ' + start}</span>
+                    <br/>
+                    <span style={style.summaryItem}>{'Meeting Length: ' + length + ' minute(s)'}</span>
+                </div>
+            );
         }
 
         let title = 'Zoom Meeting';
@@ -182,6 +203,19 @@ const getStyle = makeStyleFromTheme((theme) => {
         buttonIcon: {
             paddingRight: '8px',
             fill: theme.buttonColor
+        },
+        summary: {
+            fontFamily: 'Open Sans',
+            fontSize: '14px',
+            fontWeight: '600',
+            lineHeight: '26px',
+            margin: '0',
+            padding: '14px 0 0 0'
+        },
+        summaryItem: {
+            fontFamily: 'Open Sans',
+            fontSize: '14px',
+            lineHeight: '26px'
         }
     };
 });
