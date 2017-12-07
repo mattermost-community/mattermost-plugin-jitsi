@@ -130,7 +130,7 @@ export default class PostTypeZoom extends React.PureComponent {
 
         let title = 'Zoom Meeting';
         if (props.meeting_topic) {
-            title = props.meeting_topic + ' Meeting';
+            title = props.meeting_topic;
         }
 
         return (
