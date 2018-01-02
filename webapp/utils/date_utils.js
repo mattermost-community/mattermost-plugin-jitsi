@@ -9,7 +9,7 @@ export function formatDate(date, useMilitaryTime = false) {
     const day = date.getDate();
     const monthIndex = date.getMonth();
     let hours = date.getHours();
-    const minutes = date.getMinutes();
+    let minutes = date.getMinutes();
 
     let ampm = '';
     if (!useMilitaryTime) {
@@ -22,6 +22,10 @@ export function formatDate(date, useMilitaryTime = false) {
         if (!hours) {
             hours = 12;
         }
+    }
+
+    if (minutes < 10) {
+        minutes = '0' + minutes;
     }
 
     return monthNames[monthIndex] + ' ' + day + ' at ' + hours + ':' + minutes + ampm;
