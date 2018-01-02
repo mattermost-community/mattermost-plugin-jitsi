@@ -103,7 +103,8 @@ func (p *Plugin) handleStandardWebhook(w http.ResponseWriter, r *http.Request, w
 	}
 
 	postId := ""
-	if b, err := p.api.KeyValueStore().Get(fmt.Sprintf("%v%v", POST_MEETING_KEY, webhook.ID)); err != nil {
+	key := fmt.Sprintf("%v%v", POST_MEETING_KEY, webhook.ID)
+	if b, err := p.api.KeyValueStore().Get(key); err != nil {
 		http.Error(w, err.Error(), err.StatusCode)
 		return
 	} else if b == nil {
@@ -125,6 +126,8 @@ func (p *Plugin) handleStandardWebhook(w http.ResponseWriter, r *http.Request, w
 		http.Error(w, err.Error(), err.StatusCode)
 		return
 	}
+
+	p.api.KeyValueStore().Delete(key)
 
 	w.Write([]byte(post.ToJson()))
 }

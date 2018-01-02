@@ -130,6 +130,8 @@ func TestPlugin(t *testing.T) {
 			api.KeyValueStore().(*plugintest.KeyValueStore).On("Get", fmt.Sprintf("%v%v", POST_MEETING_KEY, 234)).Return([]byte("thepostid"), (*model.AppError)(nil))
 			api.KeyValueStore().(*plugintest.KeyValueStore).On("Get", fmt.Sprintf("%v%v", POST_MEETING_KEY, 123)).Return([]byte("thepostid"), (*model.AppError)(nil))
 
+			api.KeyValueStore().(*plugintest.KeyValueStore).On("Delete", fmt.Sprintf("%v%v", POST_MEETING_KEY, 234)).Return((*model.AppError)(nil))
+
 			p := Plugin{ZoomURL: ts.URL}
 			p.OnActivate(api)
 
