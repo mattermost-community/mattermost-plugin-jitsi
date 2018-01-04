@@ -5,6 +5,7 @@ import (
 )
 
 type Configuration struct {
+	ZoomAPIURL    string
 	APIKey        string
 	APISecret     string
 	WebhookSecret string

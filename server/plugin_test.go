@@ -42,6 +42,7 @@ func TestPlugin(t *testing.T) {
 	defer ts.Close()
 
 	validConfiguration := Configuration{
+		ZoomAPIURL:    ts.URL,
 		APIKey:        "theapikey",
 		APISecret:     "theapisecret",
 		WebhookSecret: "thewebhooksecret",
@@ -132,7 +133,7 @@ func TestPlugin(t *testing.T) {
 
 			api.KeyValueStore().(*plugintest.KeyValueStore).On("Delete", fmt.Sprintf("%v%v", POST_MEETING_KEY, 234)).Return((*model.AppError)(nil))
 
-			p := Plugin{ZoomURL: ts.URL}
+			p := Plugin{}
 			p.OnActivate(api)
 
 			w := httptest.NewRecorder()

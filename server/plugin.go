@@ -19,7 +19,6 @@ const (
 )
 
 type Plugin struct {
-	ZoomURL       string
 	api           plugin.API
 	configuration atomic.Value
 	zoomClient    *zd.Client
@@ -36,7 +35,7 @@ func (p *Plugin) OnActivate(api plugin.API) error {
 		return err
 	}
 
-	p.zoomClient = zd.NewClient(p.ZoomURL, config.APIKey, config.APISecret)
+	p.zoomClient = zd.NewClient(config.ZoomAPIURL, config.APIKey, config.APISecret)
 
 	return nil
 }
