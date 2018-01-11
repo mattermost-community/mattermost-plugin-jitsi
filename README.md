@@ -4,7 +4,7 @@ This plugin will add UI for users to start new Zoom meetings in a Mattermost cha
 
 ## Installation
 
-Go to the GitHub releases tab and download the latest release for your server architecture. You can upload this file in the Mattermost system console to install the plugin.
+Go to the [releases page of this Github repository](https://github.com/mattermost/mattermost-plugin-zoom/releases) and download the latest release for your server architecture. You can upload this file in the Mattermost system console to install the plugin.
 
 ## Developing
 
