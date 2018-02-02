@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"sync/atomic"
 
 	"github.com/gorilla/schema"
@@ -192,13 +193,21 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	zoomUrl := strings.TrimSpace(p.config().ZoomURL)
+	if len(zoomUrl) == 0 {
+		zoomUrl = "https://zoom.us"
+	}
+
+	meetingUrl := fmt.Sprintf("%s/j/%v", zoomUrl, meetingId)
+
 	post := &model.Post{
 		UserId:    user.Id,
 		ChannelId: req.ChannelId,
-		Message:   fmt.Sprintf("Meeting started at https://zoom.us/j/%v.", meetingId),
+		Message:   fmt.Sprintf("Meeting started at %s.", meetingUrl),
 		Type:      "custom_zoom",
 		Props: map[string]interface{}{
 			"meeting_id":        meetingId,
+			"meeting_link":      meetingUrl,
 			"meeting_status":    zd.WEBHOOK_STATUS_STARTED,
 			"meeting_personal":  personal,
 			"meeting_topic":     req.Topic,

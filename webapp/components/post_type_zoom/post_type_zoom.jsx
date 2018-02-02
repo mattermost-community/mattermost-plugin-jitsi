@@ -68,7 +68,7 @@ export default class PostTypeZoom extends React.PureComponent {
                     className='btn btn-lg btn-primary'
                     style={style.button}
                     target='_blank'
-                    href={'https://zoom.us/j/' + props.meeting_id}
+                    href={props.meeting_link}
                 >
                     <i
                         style={style.buttonIcon}
@@ -84,7 +84,7 @@ export default class PostTypeZoom extends React.PureComponent {
                         {'Personal Meeting ID (PMI) : '}
                         <a
                             target='_blank'
-                            href={'https://zoom.us/j/' + props.meeting_id}
+                            href={props.meeting_link}
                         >
                             {props.meeting_id}
                         </a>
@@ -96,7 +96,7 @@ export default class PostTypeZoom extends React.PureComponent {
                         {'Meeting ID : '}
                         <a
                             target='_blank'
-                            href={'https://zoom.us/j/' + props.meeting_id}
+                            href={props.meeting_link}
                         >
                             {props.meeting_id}
                         </a>

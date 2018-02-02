@@ -12,6 +12,13 @@
     "settings_schema": {
         "settings": [
             {
+                "key": "ZoomURL",
+                "display_name": "Zoom URL",
+                "type": "text",
+                "help_text": "The URL for an on-premise Zoom server. For example, https://yourzoom.com. Leave blank when not using an on-premise Zoom deployment.",
+                "placeholder": "https://zoom.us"
+            },
+            {
                 "key": "ZoomAPIURL",
                 "display_name": "Zoom API URL",
                 "type": "text",
