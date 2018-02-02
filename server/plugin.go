@@ -166,7 +166,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 	}
 
 	meetingId := req.MeetingId
-	personal := true
+	personal := req.Personal
 
 	if meetingId == 0 && req.Personal {
 		if ru, err := p.zoomClient.GetUser(user.Email); err != nil {

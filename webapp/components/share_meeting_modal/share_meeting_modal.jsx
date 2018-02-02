@@ -79,7 +79,7 @@ export default class ShareMeetingModal extends React.PureComponent {
 
         this.setState({meetingIdError: null});
 
-        await this.props.actions.startMeeting(this.props.channelId, true, this.state.topic, parseInt(meetingId, 10));
+        await this.props.actions.startMeeting(this.props.channelId, !this.props.share, this.state.topic, parseInt(meetingId, 10));
         this.props.hide();
     }
 
