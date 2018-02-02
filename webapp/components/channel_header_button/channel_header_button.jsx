@@ -266,7 +266,7 @@ const getStyle = makeStyleFromTheme((theme) => {
             maxHeight: '305px',
             overflow: 'auto',
             position: 'relative',
-            width: '285px',
+            width: '283px',
             left: '-14px',
             top: '-9px'
         },
