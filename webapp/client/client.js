@@ -2,7 +2,7 @@ import request from 'superagent';
 
 export default class Client {
     constructor() {
-        this.url = '/plugins/zoom';
+        this.url = '/plugins/jitsi';
     }
 
     startMeeting = async (channelId, personal = true, topic = '', meetingId = 0) => {

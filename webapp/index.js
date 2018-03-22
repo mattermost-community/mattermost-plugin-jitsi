@@ -11,4 +11,4 @@ class PluginClass {
     }
 }
 
-global.window.plugins['zoom'] = new PluginClass();
+global.window.plugins['jitsi'] = new PluginClass();

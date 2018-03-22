@@ -1,7 +1,7 @@
 module.exports = {
     entry: './index.js',
     output: {
-        filename: 'dist/zoom_bundle.js'
+        filename: 'dist/jitsi_bundle.js'
     },
     module: {
         loaders: [

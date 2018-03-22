@@ -1,7 +1,7 @@
 {
-  "name": "zoom",
+  "name": "jitsi",
   "version": "1.0.0",
-  "description": "Zoom audio and video conferencing plugin for Mattermost",
+  "description": "Jitsi audio and video conferencing plugin for Mattermost",
   "dependencies": {
     "mattermost-redux": "1.0.1",
     "prop-types": "15.5.10",

@@ -1,18 +1,14 @@
 package main
 
 import (
-	"crypto/subtle"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
 	"sync/atomic"
 
-	"github.com/gorilla/schema"
 	"github.com/mattermost/mattermost-server/model"
 	"github.com/mattermost/mattermost-server/plugin"
-
-	zd "github.com/mattermost/mattermost-plugin-zoom/server/zoom"
 )
 
 const (
@@ -22,7 +18,6 @@ const (
 type Plugin struct {
 	api           plugin.API
 	configuration atomic.Value
-	zoomClient    *zd.Client
 }
 
 func (p *Plugin) OnActivate(api plugin.API) error {
@@ -35,8 +30,6 @@ func (p *Plugin) OnActivate(api plugin.API) error {
 	if err := config.IsValid(); err != nil {
 		return err
 	}
-
-	p.zoomClient = zd.NewClient(config.ZoomAPIURL, config.APIKey, config.APISecret)
 
 	return nil
 }
@@ -60,76 +53,11 @@ func (p *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch path := r.URL.Path; path {
-	case "/webhook":
-		p.handleWebhook(w, r)
 	case "/api/v1/meetings":
 		p.handleStartMeeting(w, r)
 	default:
 		http.NotFound(w, r)
 	}
-}
-
-func (p *Plugin) handleWebhook(w http.ResponseWriter, r *http.Request) {
-	config := p.config()
-
-	if subtle.ConstantTimeCompare([]byte(r.URL.Query().Get("secret")), []byte(config.WebhookSecret)) != 1 {
-		http.Error(w, "Not authorized", http.StatusUnauthorized)
-		return
-	}
-
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Bad request body", http.StatusBadRequest)
-		return
-	}
-
-	var webhook zd.Webhook
-
-	decoder := schema.NewDecoder()
-
-	// Try to decode to standard webhook
-	if err := decoder.Decode(&webhook, r.PostForm); err == nil {
-		p.handleStandardWebhook(w, r, &webhook)
-		return
-	} else {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-	}
-
-	// TODO: handle recording webhook
-}
-
-func (p *Plugin) handleStandardWebhook(w http.ResponseWriter, r *http.Request, webhook *zd.Webhook) {
-	if webhook.Status != zd.WEBHOOK_STATUS_ENDED {
-		return
-	}
-
-	postId := ""
-	key := fmt.Sprintf("%v%v", POST_MEETING_KEY, webhook.ID)
-	if b, err := p.api.KeyValueStore().Get(key); err != nil {
-		http.Error(w, err.Error(), err.StatusCode)
-		return
-	} else if b == nil {
-		return
-	} else {
-		postId = string(b)
-	}
-
-	post, err := p.api.GetPost(postId)
-	if err != nil {
-		http.Error(w, err.Error(), err.StatusCode)
-		return
-	}
-
-	post.Message = "Meeting has ended."
-	post.Props["meeting_status"] = zd.WEBHOOK_STATUS_ENDED
-
-	if _, err := p.api.UpdatePost(post); err != nil {
-		http.Error(w, err.Error(), err.StatusCode)
-		return
-	}
-
-	p.api.KeyValueStore().Delete(key)
-
-	w.Write([]byte(post.ToJson()))
 }
 
 type StartMeetingRequest struct {
@@ -165,40 +93,9 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	meetingId := req.MeetingId
-	personal := req.Personal
-
-	if meetingId == 0 && req.Personal {
-		if ru, err := p.zoomClient.GetUser(user.Email); err != nil {
-			http.Error(w, err.Error(), err.StatusCode)
-			return
-		} else {
-			meetingId = ru.Pmi
-		}
-	}
-
-	if meetingId == 0 {
-		personal = false
-
-		meeting := &zd.Meeting{
-			Type:  zd.MEETING_TYPE_INSTANT,
-			Topic: req.Topic,
-		}
-
-		if rm, err := p.zoomClient.CreateMeeting(meeting, user.Email); err != nil {
-			http.Error(w, err.Error(), err.StatusCode)
-			return
-		} else {
-			meetingId = rm.ID
-		}
-	}
-
-	zoomUrl := strings.TrimSpace(p.config().ZoomURL)
-	if len(zoomUrl) == 0 {
-		zoomUrl = "https://zoom.us"
-	}
-
-	meetingUrl := fmt.Sprintf("%s/j/%v", zoomUrl, meetingId)
+	meetingId := userId + req.ChannelId
+	jitsiUrl := strings.TrimSpace(p.config().JitsiURL)
+	meetingUrl := jitsiUrl + "/" + meetingId
 
 	post := &model.Post{
 		UserId:    user.Id,
@@ -208,11 +105,11 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		Props: map[string]interface{}{
 			"meeting_id":        meetingId,
 			"meeting_link":      meetingUrl,
-			"meeting_status":    zd.WEBHOOK_STATUS_STARTED,
-			"meeting_personal":  personal,
+			"meeting_status":    "STARTED",
+			"meeting_personal":  false,
 			"meeting_topic":     req.Topic,
 			"from_webhook":      "true",
-			"override_username": "Zoom",
+			"override_username": "Jitsi",
 			"override_icon_url": "https://s3.amazonaws.com/mattermost-plugin-media/Zoom+App.png",
 		},
 	}

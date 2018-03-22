@@ -45,32 +45,32 @@ dist: webapp/.npminstall vendor plugin.json
 
 	# Build and copy files from webapp
 	cd webapp && npm run build
-	mkdir -p dist/zoom/webapp
-	cp webapp/dist/* dist/zoom/webapp/
+	mkdir -p dist/jitsi/webapp
+	cp webapp/dist/* dist/jitsi/webapp/
 
 	# Build files from server
 	cd server && go get github.com/mitchellh/gox
 	$(shell go env GOPATH)/bin/gox -osarch='darwin/amd64 linux/amd64 windows/amd64' -output 'dist/intermediate/plugin_{{.OS}}_{{.Arch}}' ./server
 
 	# Copy plugin files
-	cp plugin.json dist/zoom/
+	cp plugin.json dist/jitsi/
 
 	# Copy server executables & compress plugin
-	mkdir -p dist/zoom/server
-	mv dist/intermediate/plugin_darwin_amd64 dist/zoom/server/plugin.exe
-	cd dist && tar -zcvf mattermost-zoom-plugin-darwin-amd64.tar.gz zoom/*
-	mv dist/intermediate/plugin_linux_amd64 dist/zoom/server/plugin.exe
-	cd dist && tar -zcvf mattermost-zoom-plugin-linux-amd64.tar.gz zoom/*
-	mv dist/intermediate/plugin_windows_amd64.exe dist/zoom/server/plugin.exe
-	cd dist && tar -zcvf mattermost-zoom-plugin-windows-amd64.tar.gz zoom/*
+	mkdir -p dist/jitsi/server
+	mv dist/intermediate/plugin_darwin_amd64 dist/jitsi/server/plugin.exe
+	cd dist && tar -zcvf mattermost-jitsi-plugin-darwin-amd64.tar.gz jitsi/*
+	mv dist/intermediate/plugin_linux_amd64 dist/jitsi/server/plugin.exe
+	cd dist && tar -zcvf mattermost-jitsi-plugin-linux-amd64.tar.gz jitsi/*
+	mv dist/intermediate/plugin_windows_amd64.exe dist/jitsi/server/plugin.exe
+	cd dist && tar -zcvf mattermost-jitsi-plugin-windows-amd64.tar.gz jitsi/*
 
 	# Clean up temp files
-	rm -rf dist/zoom
+	rm -rf dist/jitsi
 	rm -rf dist/intermediate
 
-	@echo MacOS X plugin built at: dist/mattermost-zoom-plugin-darwin-amd64.tar.gz
-	@echo Linux plugin built at: dist/mattermost-zoom-plugin-linux-amd64.tar.gz
-	@echo Windows plugin built at: dist/mattermost-zoom-plugin-windows-amd64.tar.gz
+	@echo MacOS X plugin built at: dist/mattermost-jitsi-plugin-darwin-amd64.tar.gz
+	@echo Linux plugin built at: dist/mattermost-jitsi-plugin-linux-amd64.tar.gz
+	@echo Windows plugin built at: dist/mattermost-jitsi-plugin-windows-amd64.tar.gz
 
 run: .npminstall
 	@echo Not yet implemented

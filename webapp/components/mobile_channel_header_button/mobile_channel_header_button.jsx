@@ -91,7 +91,7 @@ export default class MobileChannelHeaderButton extends React.PureComponent {
                                     href='#'
                                     onClick={this.startMeeting}
                                 >
-                                    {'Start Zoom Meeting Now'}
+                                    {'Start Jitsi Meeting Now'}
                                 </a>
                             </li>
                             <li role='presentation'>
@@ -100,7 +100,7 @@ export default class MobileChannelHeaderButton extends React.PureComponent {
                                     href='#'
                                     onClick={this.showModal}
                                 >
-                                    {'Start Zoom Meeting with Topic'}
+                                    {'Start Jitsi Meeting with Topic'}
                                 </a>
                             </li>
                             <li role='presentation'>
@@ -109,7 +109,7 @@ export default class MobileChannelHeaderButton extends React.PureComponent {
                                     href='#'
                                     onClick={this.showModalAsShare}
                                 >
-                                    {'Share Zoom Meeting'}
+                                    {'Share Jitsi Meeting'}
                                 </a>
                             </li>
                             <div

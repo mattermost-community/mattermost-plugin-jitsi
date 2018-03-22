@@ -128,7 +128,7 @@ export default class ChannelHeaderButton extends React.PureComponent {
                         placement='bottom'
                         overlay={(
                             <Tooltip id='zoomChannelHeaderTooltip'>
-                                {'Zoom'}
+                                {'Jitsi Meeting'}
                             </Tooltip>
                         )}
                     >
@@ -172,7 +172,7 @@ export default class ChannelHeaderButton extends React.PureComponent {
                                     />
                                     <div style={style.popoverRow}>
                                         <div style={style.popoverText}>
-                                            {'Start Zoom Meeting Now'}
+                                            {'Start Jitsi Meeting Now'}
                                         </div>
                                     </div>
                                 </div>
@@ -191,7 +191,7 @@ export default class ChannelHeaderButton extends React.PureComponent {
                                     />
                                     <div style={style.popoverRow}>
                                         <div style={style.popoverText}>
-                                            {'Start Zoom Meeting with Topic'}
+                                            {'Start Jitsi Meeting with Topic'}
                                         </div>
                                     </div>
                                 </div>
@@ -210,7 +210,7 @@ export default class ChannelHeaderButton extends React.PureComponent {
                                     />
                                     <div style={style.popoverRow}>
                                         <div style={style.popoverText}>
-                                            {'Share Zoom Meeting'}
+                                            {'Share Jitsi Meeting'}
                                         </div>
                                     </div>
                                 </div>

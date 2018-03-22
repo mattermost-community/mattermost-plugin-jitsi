@@ -96,11 +96,11 @@ export default class ShareMeetingModal extends React.PureComponent {
     render() {
         const style = getStyle(this.props.theme);
 
-        let title = 'Start Zoom Meeting';
+        let title = 'Start Jitsi Meeting';
         let button = 'Start Meeting';
         let meetingIdInput;
         if (this.props.share) {
-            title = 'Share Zoom Meeting';
+            title = 'Share Jitsi Meeting';
             button = 'Share Meeting';
 
             let error;
