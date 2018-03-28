@@ -2,7 +2,7 @@
     "id": "zoom",
     "name": "Zoom",
     "description": "Zoom audio and video conferencing plugin for Mattermost.",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "backend": {
         "executable": "server/plugin.exe"
     },
