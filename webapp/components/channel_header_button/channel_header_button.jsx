@@ -34,21 +34,12 @@ export default class ChannelHeaderButton extends React.PureComponent {
 
         this.state = {
             showPopover: false,
-            hover: false,
             rowStartHover: false,
             rowStartWithTopicHover: false,
             rowShareHover: false,
             showModal: false,
             shareModal: false
         };
-    }
-
-    showHover = () => {
-        this.setState({hover: true});
-    }
-
-    hideHover = () => {
-        this.setState({hover: false});
     }
 
     rowStartShowHover = () => {
@@ -110,17 +101,11 @@ export default class ChannelHeaderButton extends React.PureComponent {
 
         const style = getStyle(this.props.theme);
 
-        const isHovering = this.state.hover || this.state.showPopover;
-        const containerStyle = isHovering ? {...style.iconContainer, ...style.iconContainerHover} : style.iconContainer;
-        const iconStyle = isHovering ? style.iconButtonHover : style.iconButton;
-
         return (
             <div>
                 <div
                     id='zoomChannelHeaderPopover'
-                    style={containerStyle}
-                    onMouseEnter={this.showHover}
-                    onMouseLeave={this.hideHover}
+                    className={this.state.showPopover ? 'channel-header__icon active' : 'channel-header__icon'}
                 >
                     <OverlayTrigger
                         trigger={['hover', 'focus']}
@@ -139,7 +124,7 @@ export default class ChannelHeaderButton extends React.PureComponent {
                             }}
                         >
                             <span
-                                style={iconStyle}
+                                style={style.iconStyle}
                                 aria-hidden='true'
                                 dangerouslySetInnerHTML={{__html: Svgs.VIDEO_CAMERA}}
                             />
@@ -232,28 +217,9 @@ export default class ChannelHeaderButton extends React.PureComponent {
 
 const getStyle = makeStyleFromTheme((theme) => {
     return {
-        iconContainer: {
-            border: '1px solid',
-            borderRadius: '50%',
-            borderColor: changeOpacity(theme.centerChannelColor, 0.12),
-            cursor: 'pointer',
-            height: '37px',
-            lineHeight: '36px',
-            margin: '17px 10px 0 0',
-            minWidth: '30px',
-            textAlign: 'center',
-            width: '37px',
-            fill: changeOpacity(theme.centerChannelColor, 0.4)
-        },
-        iconContainerHover: {
-            fill: theme.linkColor,
-            borderColor: theme.linkColor
-        },
-        iconButton: {
-            color: '#B1B1B3'
-        },
-        iconButtonHover: {
-            color: theme.linkColor
+        iconStyle: {
+            position: 'relative',
+            top: '-1px'
         },
         popover: {
             marginLeft: '-100px',
