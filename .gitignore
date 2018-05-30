@@ -16,7 +16,7 @@
 # Build
 /coverage.txt
 /plugin.exe
-/mattermost-zoom-plugin*.tar.gz
+/mattermost-jitsi-plugin*.tar.gz
 /dist
 server/vendor
 node_modules
@@ -26,3 +26,4 @@ webapp/dist
 # Mac
 *.swp
 .DS_Store
+package-lock.json

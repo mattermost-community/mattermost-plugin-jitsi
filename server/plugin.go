@@ -3,7 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"regexp"
 	"strings"
 	"sync/atomic"
 
@@ -67,6 +69,14 @@ type StartMeetingRequest struct {
 	MeetingId int    `json:"meeting_id"`
 }
 
+func encodeJitsiMeetingID(meeting string) string {
+	reg, err := regexp.Compile("[^a-zA-Z0-9]+")
+	if err != nil {
+		log.Fatal(err)
+	}
+	return reg.ReplaceAllString(meeting, "")
+}
+
 func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 	userId := r.Header.Get("Mattermost-User-Id")
 
@@ -93,18 +103,22 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	meetingId := userId + req.ChannelId
-	jitsiUrl := strings.TrimSpace(p.config().JitsiURL)
-	meetingUrl := jitsiUrl + "/" + meetingId
+	var meetingID string
+	meetingID = encodeJitsiMeetingID(req.Topic)
+	if len(req.Topic) < 1 {
+		meetingID = generateRoomWithoutSeparator()
+	}
+	jitsiURL := strings.TrimSpace(p.config().JitsiURL)
+	meetingURL := jitsiURL + "/" + meetingID
 
 	post := &model.Post{
 		UserId:    user.Id,
 		ChannelId: req.ChannelId,
-		Message:   fmt.Sprintf("Meeting started at %s.", meetingUrl),
+		Message:   fmt.Sprintf("Meeting started at %s.", meetingURL),
 		Type:      "custom_zoom",
 		Props: map[string]interface{}{
-			"meeting_id":        meetingId,
-			"meeting_link":      meetingUrl,
+			"meeting_id":        meetingID,
+			"meeting_link":      meetingURL,
 			"meeting_status":    "STARTED",
 			"meeting_personal":  false,
 			"meeting_topic":     req.Topic,
@@ -118,12 +132,12 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), err.StatusCode)
 		return
 	} else {
-		err = p.api.KeyValueStore().Set(fmt.Sprintf("%v%v", POST_MEETING_KEY, meetingId), []byte(post.Id))
+		err = p.api.KeyValueStore().Set(fmt.Sprintf("%v%v", POST_MEETING_KEY, meetingID), []byte(post.Id))
 		if err != nil {
 			http.Error(w, err.Error(), err.StatusCode)
 			return
 		}
 	}
 
-	w.Write([]byte(fmt.Sprintf("%v", meetingId)))
+	w.Write([]byte(fmt.Sprintf("%v", meetingID)))
 }
