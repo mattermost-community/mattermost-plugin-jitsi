@@ -5,6 +5,9 @@
   "dependencies": {
     "mattermost-redux": "1.0.1",
     "prop-types": "15.5.10",
+    "react": "^16.4.1",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0",
     "superagent": "3.5.2"
   },
   "devDependencies": {

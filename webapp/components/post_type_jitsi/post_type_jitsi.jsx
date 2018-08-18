@@ -1,4 +1,4 @@
-const React = window.react;
+import React from 'react';
 
 import {Svgs} from '../../constants';
 import {formatDate} from '../../utils/date_utils';
@@ -6,7 +6,7 @@ import {formatDate} from '../../utils/date_utils';
 import PropTypes from 'prop-types';
 import {makeStyleFromTheme} from 'mattermost-redux/utils/theme_utils';
 
-export default class PostTypeZoom extends React.PureComponent {
+export default class PostTypeJitsi extends React.PureComponent {
     static propTypes = {
 
         /*

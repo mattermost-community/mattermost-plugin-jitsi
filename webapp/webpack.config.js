@@ -30,5 +30,10 @@ module.exports = {
                 ]
             }
         ]
+    },
+    externals: {
+        react: 'React',
+        redux: 'Redux',
+        'react-redux': 'ReactRedux',
     }
 };

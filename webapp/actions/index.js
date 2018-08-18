@@ -8,7 +8,7 @@ export function startMeeting(channelId, personal = false, topic = '', meetingId 
             await Client.startMeeting(channelId, personal, topic, meetingId);
         } catch (error) {
             const post = {
-                id: 'zoomPlugin' + Date.now(),
+                id: 'jitsiPlugin' + Date.now(),
                 create_at: Date.now(),
                 update_at: 0,
                 edit_at: 0,
@@ -19,7 +19,7 @@ export function startMeeting(channelId, personal = false, topic = '', meetingId 
                 root_id: '',
                 parent_id: '',
                 original_id: '',
-                message: 'We could not verify your Mattermost account in Zoom. Please ensure that your Mattermost email address matches your Zoom email address.',
+                message: 'We could not start a meeting at this time.',
                 type: 'system_ephemeral',
                 props: {},
                 hashtags: '',

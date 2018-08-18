@@ -25,6 +25,7 @@ Inside the `/webapp` directory, you will find the JS and React files that make u
 ## TODO
 
 There is still a lot of work to do to separate this from the Zoom plugin, such as:
-1. Convert names from zoom to jitsi
+1. ~~Convert names from zoom to jitsi~~
 2. Integrate with the Jitsi server for meeting status
 3. Clean up a lot of unnecessary code
+4. Add meeting topics back

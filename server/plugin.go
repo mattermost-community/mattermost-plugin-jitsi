@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
-	"sync/atomic"
 
 	"github.com/mattermost/mattermost-server/model"
 	"github.com/mattermost/mattermost-server/plugin"
@@ -18,42 +17,27 @@ const (
 )
 
 type Plugin struct {
-	api           plugin.API
-	configuration atomic.Value
+	plugin.MattermostPlugin
+
+	JitsiURL string
 }
 
-func (p *Plugin) OnActivate(api plugin.API) error {
-	p.api = api
-	if err := p.OnConfigurationChange(); err != nil {
-		return err
-	}
-
-	config := p.config()
-	if err := config.IsValid(); err != nil {
+func (p *Plugin) OnActivate() error {
+	if err := p.IsConfigurationValid(); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (p *Plugin) config() *Configuration {
-	return p.configuration.Load().(*Configuration)
-}
-
-func (p *Plugin) OnConfigurationChange() error {
-	var configuration Configuration
-	err := p.api.LoadPluginConfiguration(&configuration)
-	p.configuration.Store(&configuration)
-	return err
-}
-
-func (p *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	config := p.config()
-	if err := config.IsValid(); err != nil {
-		http.Error(w, "This plugin is not configured.", http.StatusNotImplemented)
-		return
+func (p *Plugin) IsConfigurationValid() error {
+	if len(p.JitsiURL) == 0 {
+		return fmt.Errorf("Jitsi URL is not configured.")
 	}
+	return nil
+}
 
+func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Request) {
 	switch path := r.URL.Path; path {
 	case "/api/v1/meetings":
 		p.handleStartMeeting(w, r)
@@ -93,12 +77,12 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 
 	var user *model.User
 	var err *model.AppError
-	user, err = p.api.GetUser(userId)
+	user, err = p.API.GetUser(userId)
 	if err != nil {
 		http.Error(w, err.Error(), err.StatusCode)
 	}
 
-	if _, err := p.api.GetChannelMember(req.ChannelId, user.Id); err != nil {
+	if _, err := p.API.GetChannelMember(req.ChannelId, user.Id); err != nil {
 		http.Error(w, "Forbidden", http.StatusForbidden)
 		return
 	}
@@ -108,14 +92,14 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 	if len(req.Topic) < 1 {
 		meetingID = generateRoomWithoutSeparator()
 	}
-	jitsiURL := strings.TrimSpace(p.config().JitsiURL)
+	jitsiURL := strings.TrimSpace(p.JitsiURL)
 	meetingURL := jitsiURL + "/" + meetingID
 
 	post := &model.Post{
 		UserId:    user.Id,
 		ChannelId: req.ChannelId,
 		Message:   fmt.Sprintf("Meeting started at %s.", meetingURL),
-		Type:      "custom_zoom",
+		Type:      "custom_jitsi",
 		Props: map[string]interface{}{
 			"meeting_id":        meetingID,
 			"meeting_link":      meetingURL,
@@ -128,11 +112,11 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	if post, err := p.api.CreatePost(post); err != nil {
+	if post, err := p.API.CreatePost(post); err != nil {
 		http.Error(w, err.Error(), err.StatusCode)
 		return
 	} else {
-		err = p.api.KeyValueStore().Set(fmt.Sprintf("%v%v", POST_MEETING_KEY, meetingID), []byte(post.Id))
+		err = p.API.KVSet(fmt.Sprintf("%v%v", POST_MEETING_KEY, meetingID), []byte(post.Id))
 		if err != nil {
 			http.Error(w, err.Error(), err.StatusCode)
 			return

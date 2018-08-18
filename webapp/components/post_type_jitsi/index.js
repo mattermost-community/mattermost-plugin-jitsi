@@ -1,10 +1,10 @@
-const {connect} = window['react-redux'];
-const {bindActionCreators} = window.redux;
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 
 import {getBool} from 'mattermost-redux/selectors/entities/preferences';
 import {displayUsernameForUser} from '../../utils/user_utils';
 
-import PostTypeZoom from './post_type_zoom.jsx';
+import PostTypeJitsi from './post_type_jitsi.jsx';
 
 function mapStateToProps(state, ownProps) {
     const post = ownProps.post || {};
@@ -24,4 +24,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostTypeZoom);
+export default connect(mapStateToProps, mapDispatchToProps)(PostTypeJitsi);

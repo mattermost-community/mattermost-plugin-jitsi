@@ -5,7 +5,7 @@ export default class Client {
         this.url = '/plugins/jitsi';
     }
 
-    startMeeting = async (channelId, personal = true, topic = '', meetingId = 0) => {
+    startMeeting = async (channelId, personal = false, topic = '', meetingId = 0) => {
         return this.doPost(`${this.url}/api/v1/meetings`, {channel_id: channelId, personal, topic, meeting_id: meetingId});
     }
 
