@@ -22,17 +22,25 @@ type Plugin struct {
 	JitsiURL string
 }
 
-func (p *Plugin) OnActivate() error {
-	if err := p.IsConfigurationValid(); err != nil {
-		return err
-	}
+// func (p *Plugin) OnActivate() error {
+// 	if err := p.IsConfigurationValid(); err != nil {
+// 		return err
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
+
+// func (p *Plugin) OnConfigurationChange() error {
+// 	if err := p.IsConfigurationValid(); err != nil {
+// 		return err
+// 	}
+
+// 	return nil
+// }
 
 func (p *Plugin) IsConfigurationValid() error {
 	if len(p.JitsiURL) == 0 {
-		return fmt.Errorf("Jitsi URL is not configured.")
+		return fmt.Errorf("Jitsi URL is not configured")
 	}
 	return nil
 }
@@ -62,6 +70,11 @@ func encodeJitsiMeetingID(meeting string) string {
 }
 
 func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
+	if err := p.IsConfigurationValid(); err != nil {
+		http.Error(w, err.Error(), http.StatusTeapot)
+		return
+	}
+
 	userId := r.Header.Get("Mattermost-User-Id")
 
 	if userId == "" {
