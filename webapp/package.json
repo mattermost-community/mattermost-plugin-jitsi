@@ -1,6 +1,6 @@
 {
   "name": "jitsi",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Jitsi audio and video conferencing plugin for Mattermost",
   "dependencies": {
     "mattermost-redux": "1.0.1",
