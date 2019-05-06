@@ -10,9 +10,7 @@ Go to the [releases page of this Github repository](https://github.com/seansacko
 
 This plugin contains both a server and web app portion.
 
-Use `make dist` to build distributions of the plugin that you can upload to a Mattermost server for testing.
-
-Use `make check-style` to check the style for the whole plugin.
+Use `make` to check the quality of your code, as well as build distributions of the plugin that you can upload to a Mattermost server for testing.
 
 ### Server
 

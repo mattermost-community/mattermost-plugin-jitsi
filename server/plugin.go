@@ -98,6 +98,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		meetingID = generateRoomWithoutSeparator()
 	}
 	jitsiURL := strings.TrimSpace(p.getConfiguration().JitsiURL)
+	jitsiURL = strings.TrimRight(jitsiURL, "/")
 	meetingURL := jitsiURL + "/" + meetingID
 
 	post := &model.Post{
