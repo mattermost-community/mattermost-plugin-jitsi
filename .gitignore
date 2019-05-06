@@ -27,3 +27,6 @@ webapp/dist
 *.swp
 .DS_Store
 package-lock.json
+
+# VS Code
+.vscode
