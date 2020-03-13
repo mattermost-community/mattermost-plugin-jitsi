@@ -1,6 +1,7 @@
 package main
 
 import (
+	guuid "github.com/google/uuid"
 	"math/rand"
 	"time"
 )
@@ -108,4 +109,9 @@ func randomElement(s []string) string {
 
 func generateRoomWithoutSeparator() string {
 	return (randomElement(ADJECTIVE) + randomElement(PLURALNOUN) + randomElement(VERB) + randomElement(ADVERB))
+}
+
+func generateRoomUUID() string {
+	id := guuid.New()
+	return (id.String())
 }

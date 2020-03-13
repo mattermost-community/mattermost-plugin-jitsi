@@ -109,7 +109,13 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 	var meetingID string
 	meetingID = encodeJitsiMeetingID(req.Topic)
 	if len(req.Topic) < 1 {
-		meetingID = generateRoomWithoutSeparator()
+		roomScheme := strings.TrimSpace(p.getConfiguration().JitsiRoomNaming)
+		if roomScheme == "randname" {
+			meetingID = generateRoomWithoutSeparator()
+		}
+		if roomScheme == "uuid" {
+			meetingID = generateRoomUUID()
+		}
 	}
 	jitsiURL := strings.TrimSpace(p.getConfiguration().JitsiURL)
 	jitsiURL = strings.TrimRight(jitsiURL, "/")
