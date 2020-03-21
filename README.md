@@ -6,6 +6,11 @@ This plugin will add UI for users to start new Jitsi meetings in a Mattermost ch
 
 Go to the [releases page of this Github repository](https://github.com/seansackowitz/mattermost-plugin-jitsi/releases) and download the latest release for your server architecture. You can upload this file in the Mattermost system console to install the plugin.
 
+### Manual build
+
+You can use docker to compile the binaries yourself. Just run the provided `./docker-make` shell script which will build a docker image with necesarry build dependencies and runs `make all` afterwards.  
+You can also use make targets like `dist` (`./docker-make dist`) from the [Makefile](./Makefile).
+
 ## Developing
 
 This plugin contains both a server and web app portion.
