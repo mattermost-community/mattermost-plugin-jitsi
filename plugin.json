@@ -22,6 +22,31 @@
                 "type": "text",
                 "help_text": "The URL for an on-premise Jitsi server. For example, https://jitsi.example.com.",
                 "placeholder": "https://jitsi.example.com"
+            },
+            {
+                "key": "JitsiJWT",
+                "display_name": "Enable Jitsi JWT",
+                "type": "bool",
+                "help_text": "Enable this, if You have a Jitsi with JWT"
+            },
+            {
+                "key": "JitsiAppID",
+                "display_name": "Jitsi Server app ID",
+                "type": "text",
+                "help_text": "The App ID on Your Jitsi JWT server"
+            },
+            {
+                "key": "JitsiAppSecret",
+                "display_name": "Jitsi Server app secret",
+                "type": "text",
+                "help_text": "The App secret on Your Jitsi JWT server"
+            },
+            {
+                "key": "JitsiLinkValidTime",
+                "display_name": "Link valid time, in minutes",
+                "type": "number",
+                "help_text": "How many minutes is the generated link active, if set smaller then 1, valid time is automaticaly set to 30 minutes.",
+                "default": 30
             }
         ]
     }
