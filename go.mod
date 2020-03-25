@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/blang/semver v3.5.1+incompatible
+	github.com/cristalhq/jwt v1.1.1
 	github.com/dyatlov/go-opengraph v0.0.0-20180429202543-816b6608b3c8 // indirect
 	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/google/uuid v1.1.1 // indirect

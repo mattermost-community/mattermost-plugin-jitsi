@@ -1,7 +1,6 @@
 import React from 'react';
 
 import {Svgs} from '../../constants';
-import {formatDate} from '../../utils/date_utils';
 
 import PropTypes from 'prop-types';
 import {makeStyleFromTheme} from 'mattermost-redux/utils/theme_utils';
@@ -58,12 +57,11 @@ export default class PostTypeJitsi extends React.PureComponent {
         const post = this.props.post;
         const props = post.props || {};
 
-        let preText;
-        let content;
         let subtitle;
-        if (props.meeting_status === 'STARTED') {
-            preText = `${this.props.creatorName} has started a meeting`;
-            content = (
+
+        const preText = `${this.props.creatorName} has started a meeting`;
+        const content = (
+            <div>
                 <a
                     className='btn btn-lg btn-primary'
                     style={style.button}
@@ -77,57 +75,37 @@ export default class PostTypeJitsi extends React.PureComponent {
                     />
                     {'JOIN MEETING'}
                 </a>
+                {props.jwt_meeting &&
+                    <span>{' Meeting link valid util: '} <b>{props.jwt_meeting_valid_until}</b></span>
+                }
+            </div>
+        );
+
+        if (props.meeting_personal) {
+            subtitle = (
+                <span>
+                    {'Personal Meeting ID (PMI) : '}
+                    <a
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        href={props.meeting_link}
+                    >
+                        {props.meeting_id}
+                    </a>
+                </span>
             );
-
-            if (props.meeting_personal) {
-                subtitle = (
-                    <span>
-                        {'Personal Meeting ID (PMI) : '}
-                        <a
-                            target='_blank'
-                            rel='noopener noreferrer'
-                            href={props.meeting_link}
-                        >
-                            {props.meeting_id}
-                        </a>
-                    </span>
-                );
-            } else {
-                subtitle = (
-                    <span>
-                        {'Meeting ID : '}
-                        <a
-                            target='_blank'
-                            rel='noopener noreferrer'
-                            href={props.meeting_link}
-                        >
-                            {props.meeting_id}
-                        </a>
-                    </span>
-                );
-            }
-        } else if (props.meeting_status === 'ENDED') {
-            preText = `${this.props.creatorName} has ended the meeting`;
-
-            if (props.meeting_personal) {
-                subtitle = 'Personal Meeting ID (PMI) : ' + props.meeting_id;
-            } else {
-                subtitle = 'Meeting ID : ' + props.meeting_id;
-            }
-
-            const startDate = new Date(post.create_at);
-            const start = formatDate(startDate);
-            const length = Math.ceil((new Date(post.update_at) - startDate) / 1000 / 60);
-
-            content = (
-                <div>
-                    <h2 style={style.summary}>
-                        {'Meeting Summary'}
-                    </h2>
-                    <span style={style.summaryItem}>{'Date: ' + start}</span>
-                    <br/>
-                    <span style={style.summaryItem}>{'Meeting Length: ' + length + ' minute(s)'}</span>
-                </div>
+        } else {
+            subtitle = (
+                <span>
+                    {'Meeting ID : '}
+                    <a
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        href={props.meeting_link}
+                    >
+                        {props.meeting_id}
+                    </a>
+                </span>
             );
         }
 
