@@ -43,3 +43,17 @@ export function startMeeting(channelId, personal = false, topic = '', meetingId 
         return {data: true};
     };
 }
+
+export function requestJWT(channelId, meetingId, meetingOwnerId = '', displayName = '') {
+    return async () => {
+        let tokenResponse;
+        try {
+            tokenResponse = await Client.requestJWT(channelId, meetingId, meetingOwnerId, displayName);
+        } catch (error) {
+            return {data: null, token_error: error, auth: null};
+        }
+
+        return {data: true, token_error: null, auth: tokenResponse};
+    };
+}
+
