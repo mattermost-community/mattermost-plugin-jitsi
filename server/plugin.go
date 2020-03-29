@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	POST_MEETING_KEY = "post_meeting_"
+	JITSI_COMMAND = "meet"
 )
 
 type Plugin struct {
@@ -37,6 +37,14 @@ func (p *Plugin) OnActivate() error {
 	config := p.getConfiguration()
 	if err := config.IsValid(); err != nil {
 		return err
+	}
+
+	if cerr := p.API.RegisterCommand(&model.Command{
+		Trigger:          JITSI_COMMAND,
+		AutoComplete:     true,
+		AutoCompleteDesc: "Start a Jitsi meeting for the current channel. Optionally, append desired meeting topic after the command",
+	}); cerr != nil {
+		return cerr
 	}
 
 	return nil
@@ -141,6 +149,76 @@ func (p *Plugin) generateJWTToken(meetingID string, displayName string) (string,
 	return strconv.FormatInt(meetingLinkValidUntil.Unix(), 10), string(token.Raw()), nil
 }
 
+func (p *Plugin) startMeeting(userId string, channelId string, meetingTopic string) error {
+	var meetingID string
+	meetingID = encodeJitsiMeetingID(meetingTopic)
+	if len(meetingID) < 1 {
+		meetingID = generateRoomWithoutSeparator()
+	}
+	jitsiURL := strings.TrimSpace(p.getConfiguration().JitsiURL)
+	jitsiURL = strings.TrimRight(jitsiURL, "/")
+	meetingURL := jitsiURL + "/" + meetingID
+
+	message := fmt.Sprintf("Meeting started at %s.", meetingURL)
+
+	JWTMeeting := p.getConfiguration().JitsiJWT
+	if JWTMeeting {
+		_, anonymousMeetingToken, err := p.generateJWTToken(meetingID, "")
+		if err != nil {
+			return err
+		}
+		anonymousMeetingURL := meetingURL + "?jwt=" + anonymousMeetingToken
+		message = fmt.Sprintf("Meeting started at %s. *This link includes a non-personalized access Token you see for compatibility reasons.* **Valid for %d minutes.**", anonymousMeetingURL, p.getConfiguration().JitsiLinkValidTime)
+	}
+
+	post := &model.Post{
+		UserId:    userId,
+		ChannelId: channelId,
+		Message:   message,
+		Type:      "custom_jitsi",
+		Props: map[string]interface{}{
+			"meeting_id":       meetingID,
+			"meeting_link":     meetingURL,
+			"jwt_meeting":      JWTMeeting,
+			"meeting_personal": false,
+			"meeting_topic":    meetingTopic,
+		},
+	}
+
+	if _, err := p.API.CreatePost(post); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+	input := strings.TrimSpace(strings.TrimPrefix(args.Command, "/"+JITSI_COMMAND))
+
+	if err := p.startMeeting(args.UserId, args.ChannelId, input); err != nil {
+		/*
+			msg := &model.Post{
+				UserId:    args.UserId,
+				ChannelId: args.ChannelId,
+				Message:   "We could not start a meeting at this time.",
+				//Type:      "custom_jitsi",
+				//Props: map[string]interface{}{},
+			}
+			p.API.SendEphemeralPost(args.UserId, msg)
+		*/
+		return &model.CommandResponse{
+				ResponseType: model.COMMAND_RESPONSE_TYPE_EPHEMERAL,
+				ChannelId:    args.ChannelId,
+				Text:         "We could not start a meeting at this time.",
+			}, &model.AppError{
+				Message:       "We could not start a meeting at this time.",
+				DetailedError: fmt.Sprintf("startMeeting() threw error: %s", err),
+			}
+	}
+
+	return &model.CommandResponse{}, nil
+}
+
 func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 	if err := p.getConfiguration().IsValid(); err != nil {
 		http.Error(w, err.Error(), http.StatusTeapot)
@@ -174,56 +252,18 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var meetingID string
-	meetingID = encodeJitsiMeetingID(req.Topic)
-	if len(req.Topic) < 1 {
-		meetingID = generateRoomWithoutSeparator()
+	if merr := p.startMeeting(user.Id, req.ChannelId, req.Topic); merr != nil {
+		http.Error(w, "Internal error", http.StatusInternalServerError)
 	}
-	jitsiURL := strings.TrimSpace(p.getConfiguration().JitsiURL)
-	jitsiURL = strings.TrimRight(jitsiURL, "/")
-	meetingURL := jitsiURL + "/" + meetingID
 
-	message := fmt.Sprintf("Meeting started at %s.", meetingURL)
-
-	JWTMeeting := p.getConfiguration().JitsiJWT
-	if JWTMeeting {
-		_, anonymousMeetingToken, err := p.generateJWTToken(meetingID, "")
-		if err != nil {
-			http.Error(w, "Internal error", http.StatusInternalServerError)
+	/*
+		if err = p.API.KVSet(fmt.Sprintf("%v%v", POST_MEETING_KEY, meetingID), []byte(post.Id)); err != nil {
+			http.Error(w, err.Error(), err.StatusCode)
 			return
 		}
-		anonymousMeetingURL := meetingURL + "?jwt=" + anonymousMeetingToken
-		message = fmt.Sprintf("Meeting started at %s. *This link includes a non-personalized access Token you see for compatibility reasons.* **Valid for %d minutes.**", anonymousMeetingURL, p.getConfiguration().JitsiLinkValidTime)
-	}
+	*/
 
-	post := &model.Post{
-		UserId:    user.Id,
-		ChannelId: req.ChannelId,
-		Message:   message,
-		Type:      "custom_jitsi",
-		Props: map[string]interface{}{
-			"meeting_id":        meetingID,
-			"meeting_link":      meetingURL,
-			"jwt_meeting":       JWTMeeting,
-			"meeting_personal":  false,
-			"meeting_topic":     req.Topic,
-			"from_webhook":      "true",
-			"override_username": "Jitsi",
-			"override_icon_url": "https://s3.amazonaws.com/mattermost-plugin-media/Zoom+App.png",
-		},
-	}
-
-	if _, err = p.API.CreatePost(post); err != nil {
-		http.Error(w, err.Error(), err.StatusCode)
-		return
-	}
-
-	if err = p.API.KVSet(fmt.Sprintf("%v%v", POST_MEETING_KEY, meetingID), []byte(post.Id)); err != nil {
-		http.Error(w, err.Error(), err.StatusCode)
-		return
-	}
-
-	w.Write([]byte(fmt.Sprintf("%v", meetingID)))
+	w.Write([]byte("OK"))
 }
 
 func (p *Plugin) handleJWTRequest(w http.ResponseWriter, r *http.Request) {
