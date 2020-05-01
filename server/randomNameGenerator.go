@@ -3,6 +3,8 @@ package main
 import (
 	"math/rand"
 	"time"
+	"strings"
+	guuid "github.com/google/uuid"
 )
 
 var PLURALNOUN = []string{"Aliens", "Animals", "Antelopes", "Ants", "Apes", "Apples", "Baboons",
@@ -106,6 +108,73 @@ func randomElement(s []string) string {
 	return s[rand.Intn(len(s)-1)]
 }
 
-func generateRoomWithoutSeparator() string {
-	return (randomElement(ADJECTIVE) + randomElement(PLURALNOUN) + randomElement(VERB) + randomElement(ADVERB))
+var LETTERS = []rune("abcdefghijklmnopqrstuvwxyz")
+var NUMBERS = []rune("0123456789")
+
+func randomString(runes []rune, n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = runes[rand.Intn(len(letter))]
+	}
+	return string(b)
+}
+
+func generateEnglishName(delimiter string) string {
+	var components = []string {
+		randomElement(ADJECTIVE),
+		randomElement(PLURALNOUN),
+		randomElement(VERB),
+		randomElement(ADVERB)
+	}
+	return strings.Join(components, delimiter)
+}
+
+func generateEnglishTitleName() string {
+	return generateEnglishName("")
+}
+
+func generateEnglishKebabName() string {
+	return strings.ToLower(generateEnglishName("-"))
+}
+
+func generateUUIDName() string {
+	id := guuid.New()
+	return (id.String())
+}
+
+func generateDigitsName() string {
+	return randomString(NUMBERS)
+}
+
+func generateLettersName() string {
+	return randomString(LETTERS)
+}
+
+func generateChannelName(channelName string, delimiter string) string {
+  reg, err := regexp.Compile("[^a-zA-Z0-9]+")
+	if err != nil {
+		log.Fatal(err)
+	}
+	return reg.ReplaceAllString(channelName, delimiter)
+}
+
+func generateNameFromSelectedScheme(namingScheme string, channelName string) string {
+	switch namingScheme {
+	case "english-titlecase":
+		return generateEnglishTitleName()
+	case "english-kebabcase":
+		return generateEnglishKebabName()
+	case "uuid":
+		return generateUUIDName()
+	case "digits":
+		return generateDigitsName()
+	case "letters":
+		return generateLettersName()
+	case "channel":
+		return generateChannelName(channelName, "")
+	case "channel-dashes":
+		return generateChannelName(channelName, "-")
+	default:
+		return generateEnglishTitleName()
+	}
 }

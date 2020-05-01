@@ -153,7 +153,14 @@ func (p *Plugin) startMeeting(userId string, channelId string, meetingTopic stri
 	var meetingID string
 	meetingID = encodeJitsiMeetingID(meetingTopic)
 	if len(meetingID) < 1 {
-		meetingID = generateRoomWithoutSeparator()
+		namingScheme := p.getConfiguration().JitsiNamingScheme
+		channelName, channelErr := p.API.GetChannel(channelId)
+
+		if channelErr != nil {
+			channelName = ""
+		}
+
+		meetingID = generateNameFromSelectedScheme(namingScheme, channelName)
 	}
 	jitsiURL := strings.TrimSpace(p.getConfiguration().JitsiURL)
 	jitsiURL = strings.TrimRight(jitsiURL, "/")

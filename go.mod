@@ -7,7 +7,7 @@ require (
 	github.com/cristalhq/jwt v1.1.1
 	github.com/dyatlov/go-opengraph v0.0.0-20180429202543-816b6608b3c8 // indirect
 	github.com/golang/protobuf v1.3.1 // indirect
-	github.com/google/uuid v1.1.1 // indirect
+	github.com/google/uuid v1.1.1
 	github.com/gorilla/websocket v1.4.0 // indirect
 	github.com/hashicorp/go-plugin v1.0.0 // indirect
 	github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d // indirect

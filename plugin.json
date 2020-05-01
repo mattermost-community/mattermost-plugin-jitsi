@@ -75,12 +75,12 @@
                         "value": "letters"
                     },
                     {
-                        "display_name": "Channel name only, title-case (name conflict risk!)",
-                        "value": "channel-titlecase"
+                        "display_name": "Channel name only, no separators (name conflict risk!)",
+                        "value": "channel"
                     },
                     {
-                        "display_name": "Channel name only, kebab-case (name conflict risk!)",
-                        "value": "channel-kebabcase"
+                        "display_name": "Channel name only, separated by dashes (name conflict risk!)",
+                        "value": "channel-dashes"
                     }
                 ]
             }
