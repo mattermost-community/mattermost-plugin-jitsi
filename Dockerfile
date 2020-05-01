@@ -2,6 +2,7 @@ FROM golang:1.13
 
 RUN apt update && \
     apt -y install build-essential npm && \
+    npm install -g npm@latest && \
     rm -rf /var/lib/apt/lists/*
 
 RUN addgroup --gid 1000 node \

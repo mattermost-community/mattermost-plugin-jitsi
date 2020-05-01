@@ -5,6 +5,11 @@ import {Svgs} from '../../constants';
 import PropTypes from 'prop-types';
 import {makeStyleFromTheme} from 'mattermost-redux/utils/theme_utils';
 
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
+import Loader from 'react-loader-spinner';
+
+import {requestJWT} from '../../actions';
+
 export default class PostTypeJitsi extends React.PureComponent {
     static propTypes = {
 
@@ -36,7 +41,12 @@ export default class PostTypeJitsi extends React.PureComponent {
         /*
          * Creator's name.
          */
-        creatorName: PropTypes.string.isRequired
+        creatorName: PropTypes.string.isRequired,
+
+        /*
+         * Logged in user's display name
+         */
+        displayName: PropTypes.string.isRequired
     };
 
     static defaultProps = {
@@ -49,7 +59,24 @@ export default class PostTypeJitsi extends React.PureComponent {
         super(props);
 
         this.state = {
+            data: null,
+            token_error: null,
+            auth: null
         };
+    }
+
+    requestJwtToken() {
+        const post = this.props.post;
+        const props = post.props || {};
+        requestJWT(post.channel_id, props.meeting_id, post.user_id, this.props.displayName)().then(
+            (r) => {
+                this.setState(r);
+            }
+        );
+    }
+
+    componentDidMount() {
+        this.requestJwtToken();
     }
 
     render() {
@@ -58,25 +85,56 @@ export default class PostTypeJitsi extends React.PureComponent {
         const props = post.props || {};
 
         let subtitle;
-
         const preText = `${this.props.creatorName} has started a meeting`;
+        var meetingLink = props.meeting_link;
+
+        let buttonIcon;
+        let buttonText;
+        buttonIcon = (
+            <i
+                style={style.buttonIcon}
+                dangerouslySetInnerHTML={{__html: Svgs.VIDEO_CAMERA_3}}
+            />
+        );
+        buttonText = 'JOIN MEETING';
+
+        if (props.jwt_meeting) {
+            if (this.state.data) {
+                meetingLink += '?jwt=' + this.state.auth.jwt_token;
+            } else {
+                meetingLink = '';
+
+                if (this.state.token_error) {
+                    buttonIcon = ({});
+                    buttonText = 'TOKEN ERROR';
+                } else {
+                    buttonIcon = (
+                        <Loader
+                            type='Oval'
+                            color={this.props.theme.buttonColor}
+                            height='16px'
+                            width='16px'
+                            timeout={0}
+                        />
+                    );
+                    buttonText = 'AWAITING TOKEN';
+                }
+            }
+        }
+
         const content = (
             <div>
                 <a
                     className='btn btn-lg btn-primary'
-                    style={style.button}
+                    style={this.state.token_error ? style.button + ' background-color: red;' : style.button}
                     target='_blank'
                     rel='noopener noreferrer'
-                    href={props.meeting_link}
+                    href={meetingLink}
                 >
-                    <i
-                        style={style.buttonIcon}
-                        dangerouslySetInnerHTML={{__html: Svgs.VIDEO_CAMERA_3}}
-                    />
-                    {'JOIN MEETING'}
+                    {buttonIcon}{buttonText}
                 </a>
-                {props.jwt_meeting &&
-                    <span>{' Meeting link valid util: '} <b>{props.jwt_meeting_valid_until}</b></span>
+                {props.jwt_meeting && this.state.data &&
+                    <span>{' Meeting link valid util: '} <b>{(new Date(parseInt(this.state.auth.jwt_meeting_valid_until, 10) * 1000)).toLocaleString()}</b></span>
                 }
             </div>
         );

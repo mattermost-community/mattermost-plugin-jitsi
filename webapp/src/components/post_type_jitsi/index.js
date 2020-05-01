@@ -9,10 +9,12 @@ import PostTypeJitsi from './post_type_jitsi.jsx';
 function mapStateToProps(state, ownProps) {
     const post = ownProps.post || {};
     const user = state.entities.users.profiles[post.user_id] || {};
+    const us = state.entities.users.profiles[state.entities.users.currentUserId] || {};
 
     return {
         ...ownProps,
         creatorName: displayUsernameForUser(user, state.entities.general.config),
+        displayName: displayUsernameForUser(us, state.entities.general.config),
         useMilitaryTime: getBool(state, 'display_settings', 'use_military_time', false)
     };
 }
