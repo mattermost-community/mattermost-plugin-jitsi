@@ -1,10 +1,12 @@
 package main
 
 import (
-	"math/rand"
-	"time"
-	"strings"
 	guuid "github.com/google/uuid"
+	"log"
+	"math/rand"
+	"regexp"
+	"strings"
+	"time"
 )
 
 var PLURALNOUN = []string{"Aliens", "Animals", "Antelopes", "Ants", "Apes", "Apples", "Baboons",
@@ -114,17 +116,17 @@ var NUMBERS = []rune("0123456789")
 func randomString(runes []rune, n int) string {
 	b := make([]rune, n)
 	for i := range b {
-		b[i] = runes[rand.Intn(len(letter))]
+		b[i] = runes[rand.Intn(len(runes))]
 	}
 	return string(b)
 }
 
 func generateEnglishName(delimiter string) string {
-	var components = []string {
+	var components = []string{
 		randomElement(ADJECTIVE),
 		randomElement(PLURALNOUN),
 		randomElement(VERB),
-		randomElement(ADVERB)
+		randomElement(ADVERB),
 	}
 	return strings.Join(components, delimiter)
 }
@@ -143,15 +145,15 @@ func generateUUIDName() string {
 }
 
 func generateDigitsName() string {
-	return randomString(NUMBERS)
+	return randomString(NUMBERS, 10)
 }
 
 func generateLettersName() string {
-	return randomString(LETTERS)
+	return randomString(LETTERS, 10)
 }
 
 func generateChannelName(channelName string, delimiter string) string {
-  reg, err := regexp.Compile("[^a-zA-Z0-9]+")
+	reg, err := regexp.Compile("[^a-zA-Z0-9]+")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -154,10 +154,14 @@ func (p *Plugin) startMeeting(userId string, channelId string, meetingTopic stri
 	meetingID = encodeJitsiMeetingID(meetingTopic)
 	if len(meetingID) < 1 {
 		namingScheme := p.getConfiguration().JitsiNamingScheme
-		channelName, channelErr := p.API.GetChannel(channelId)
+
+		var channelName string
+		channel, channelErr := p.API.GetChannel(channelId)
 
 		if channelErr != nil {
-			channelName = ""
+			channelName = "unknown-channel"
+		} else {
+			channelName = channel.Name
 		}
 
 		meetingID = generateNameFromSelectedScheme(namingScheme, channelName)
