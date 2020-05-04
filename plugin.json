@@ -2,7 +2,7 @@
     "id": "jitsi",
     "name": "Jitsi",
     "description": "Jitsi audio and video conferencing plugin for Mattermost. Follow https://github.com/seansackowitz/mattermost-plugin-jitsi for notifications on updates.",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "server": {
         "executables": {
             "linux-amd64": "server/dist/plugin-linux-amd64",
