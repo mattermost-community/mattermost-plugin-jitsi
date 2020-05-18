@@ -1,6 +1,12 @@
-# mattermost-plugin-jitsi
-This plugin is forked off the [mattermost-plugin-zoom](https://github.com/mattermost/mattermost-plugin-zoom) repo that is maintained by Mattermost.
-This plugin will add UI for users to start new Jitsi meetings in a Mattermost channel. Posts are created when a meeting starts.
+# Mattermost Jitsi Plugin (Beta)
+
+Start and join voice calls, video calls and use screen sharing with your team members with a Jitsi plugin for Mattermost.
+
+Clicking a video icon in a Mattermost channel posts a message that invites team members to join a Jitsi meetings call.
+
+Originally developed by [Sean Sackowitz](https://github.com/seansackowitz).
+
+![image](https://user-images.githubusercontent.com/13119842/82223364-8e962900-98f0-11ea-9fdf-46327f111050.png)
 
 ## Installation
 
