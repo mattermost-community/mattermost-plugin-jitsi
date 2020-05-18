@@ -11,9 +11,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cristalhq/jwt"
-	"github.com/mattermost/mattermost-server/model"
-	"github.com/mattermost/mattermost-server/plugin"
+	"github.com/cristalhq/jwt/v2"
+	"github.com/mattermost/mattermost-server/v5/model"
+	"github.com/mattermost/mattermost-server/v5/plugin"
 )
 
 const (
@@ -119,13 +119,13 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 	JWTMeeting := p.getConfiguration().JitsiJWT
 
 	if JWTMeeting {
-		signer, err2 := jwt.NewHS256([]byte(p.getConfiguration().JitsiAppSecret))
+		signer, err2 := jwt.NewSignerHS(jwt.HS256, []byte(p.getConfiguration().JitsiAppSecret))
 		if err2 != nil {
 			log.Printf("Error generating new HS256 signer: %v", err2)
 			http.Error(w, "Internal error", http.StatusInternalServerError)
 			return
 		}
-		builder := jwt.NewTokenBuilder(signer)
+		builder := jwt.NewBuilder(signer)
 
 		// Error check is done in configuration.IsValid()
 		jURL, _ := url.Parse(p.getConfiguration().JitsiURL)
@@ -135,7 +135,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		claims := Claims{}
 		claims.Issuer = p.getConfiguration().JitsiAppID
 		claims.Audience = []string{p.getConfiguration().JitsiAppID}
-		claims.ExpiresAt = jwt.Timestamp(meetingLinkValidUntil.Unix())
+		claims.ExpiresAt = jwt.NewNumericDate(meetingLinkValidUntil)
 		claims.Subject = jURL.Hostname()
 		claims.Room = meetingID
 
