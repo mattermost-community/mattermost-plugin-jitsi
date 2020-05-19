@@ -2,7 +2,10 @@ package main
 
 import (
 	"math/rand"
+	"strings"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 var PLURALNOUN = []string{"Aliens", "Animals", "Antelopes", "Ants", "Apes", "Apples", "Baboons",
@@ -101,11 +104,85 @@ var ADJECTIVE = []string{"Abominable", "Accurate", "Adorable", "All", "Alleged",
 	"Warm", "Weak", "Weird", "WellCooked", "Wild", "Wise", "Witty", "Wonderful",
 	"Worried", "Yellow", "Young", "Zealous"}
 
+var LETTERS = []rune("abcdefghijklmnopqrstuvwxyz")
+var NUMBERS = []rune("0123456789")
+
 func randomElement(s []string) string {
 	rand.Seed(time.Now().UnixNano())
 	return s[rand.Intn(len(s)-1)]
 }
 
-func generateRoomWithoutSeparator() string {
-	return (randomElement(ADJECTIVE) + randomElement(PLURALNOUN) + randomElement(VERB) + randomElement(ADVERB))
+func randomString(runes []rune, n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = runes[rand.Intn(len(runes))]
+	}
+	return string(b)
+}
+
+func generateEnglishName(delimiter string) string {
+	var components = []string{
+		randomElement(ADJECTIVE),
+		randomElement(PLURALNOUN),
+		randomElement(VERB),
+		randomElement(ADVERB),
+	}
+	return strings.Join(components, delimiter)
+}
+
+func generateEnglishTitleName() string {
+	return generateEnglishName("")
+}
+
+func generateEnglishKebabName() string {
+	return strings.ToLower(generateEnglishName("-"))
+}
+
+func generateUUIDName() string {
+	id := uuid.New()
+	return (id.String())
+}
+
+func generateDigitsName() string {
+	return randomString(NUMBERS, 10)
+}
+
+func generateLettersName() string {
+	return randomString(LETTERS, 10)
+}
+
+func generateTeamChannelName(teamName string, channelName string, salt bool) string {
+	name := teamName
+	if name != "" {
+		name += "-"
+	}
+
+	name += channelName
+
+	if salt {
+		id := uuid.New()
+		name += "-" + id.String()
+	}
+	return name
+}
+
+func generateNameFromSelectedScheme(namingScheme string, teamName string, channelName string) string {
+	switch namingScheme {
+	case "english-titlecase":
+		return generateEnglishTitleName()
+	case "english-kebabcase":
+		return generateEnglishKebabName()
+	case "uuid":
+		return generateUUIDName()
+	case "digits":
+		return generateDigitsName()
+	case "letters":
+		return generateLettersName()
+	case "teamchannel":
+		return generateTeamChannelName(teamName, channelName, false)
+	case "teamchannel-salt":
+		return generateTeamChannelName(teamName, channelName, true)
+	default:
+		return generateEnglishTitleName()
+	}
 }

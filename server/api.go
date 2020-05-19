@@ -37,7 +37,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, appErr := p.API.GetUser(userID)
+	user, appErr := p.API.GetUser(userID)
 	if appErr != nil {
 		http.Error(w, "Forbidden", http.StatusForbidden)
 		return
@@ -54,7 +54,13 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	meetingID, err := p.startMeeting(userID, req.ChannelId, req.Topic, req.Personal)
+	channel, appErr := p.API.GetChannel(req.ChannelId)
+	if appErr != nil {
+		http.Error(w, "Forbidden", http.StatusForbidden)
+		return
+	}
+
+	meetingID, err := p.startMeeting(user, channel, req.Topic, req.Personal)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
