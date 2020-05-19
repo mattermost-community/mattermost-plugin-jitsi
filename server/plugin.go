@@ -54,11 +54,37 @@ type Claims struct {
 	Room string `json:"room,omitempty"`
 }
 
-func (p *Plugin) startMeeting(userID string, channelID string, meetingTopic string, personal bool) (string, error) {
+func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingTopic string, personal bool) (string, error) {
 	var meetingID string
 	meetingID = encodeJitsiMeetingID(meetingTopic)
+
 	if len(meetingTopic) < 1 {
-		meetingID = generateRoomWithoutSeparator()
+		namingScheme := p.getConfiguration().JitsiNamingScheme
+
+		var channelName string
+		var teamName string
+
+		if namingScheme == "teamchannel" || namingScheme == "teamchannel-salt" {
+			meetingTopic = channel.DisplayName + " Meeting"
+			channelName = channel.Name
+			teamName = ""
+			if channel.Type == model.CHANNEL_DIRECT {
+				channelName = channel.Name
+				meetingTopic = user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME) + "'s Meeting"
+			} else if channel.Type == model.CHANNEL_GROUP {
+				channelName = channel.Name
+				meetingTopic = channel.DisplayName + " Meeting"
+			} else {
+				team, teamErr := p.API.GetTeam(channel.TeamId)
+				if teamErr != nil {
+					teamName = "unknown-team"
+				} else {
+					teamName = team.Name
+				}
+			}
+		}
+
+		meetingID = generateNameFromSelectedScheme(namingScheme, teamName, channelName)
 	}
 	jitsiURL := strings.TrimSpace(p.getConfiguration().JitsiURL)
 	jitsiURL = strings.TrimRight(jitsiURL, "/")
@@ -97,8 +123,8 @@ func (p *Plugin) startMeeting(userID string, channelID string, meetingTopic stri
 	}
 
 	post := &model.Post{
-		UserId:    userID,
-		ChannelId: channelID,
+		UserId:    user.Id,
+		ChannelId: channel.Id,
 		Message:   fmt.Sprintf("Meeting started at %s.", meetingURL),
 		Type:      "custom_jitsi",
 		Props: map[string]interface{}{

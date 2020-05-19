@@ -51,6 +51,43 @@
                 "type": "number",
                 "help_text": "How many minutes is the generated link active, if set smaller then 1, valid time is automaticaly set to 30 minutes.",
                 "default": 30
+            },
+            {
+                "key": "JitsiNamingScheme",
+                "display_name": "Meeting naming scheme",
+                "type": "radio",
+                "help_text": "How should the plugin choose a meeting name? Some names may cause conflicts if you use them on a public server, like meet.jit.si.",
+                "default": "english-titlecase",
+                "options": [
+                    {
+                        "display_name": "English words, title-case (e.g. PlayfulDragonsObserveCuriously)",
+                        "value": "english-titlecase"
+                    },
+                    {
+                        "display_name": "English words, kebab-case (e.g. playful-dragons-observe-curiously)",
+                        "value": "english-kebabcase"
+                    },
+                    {
+                        "display_name": "UUID",
+                        "value": "uuid"
+                    },
+                    {
+                        "display_name": "10 digit code (name conflict risk!)",
+                        "value": "digits"
+                    },
+                    {
+                        "display_name": "10 letter code (name conflict risk!)",
+                        "value": "letters"
+                    },
+                    {
+                        "display_name": "Team name and channel name",
+                        "value": "teamchannel"
+                    },
+                    {
+                        "display_name": "Team name and channel name plus a random hash (More secure)",
+                        "value": "teamchannel-salt"
+                    }
+                ]
             }
         ]
     }
