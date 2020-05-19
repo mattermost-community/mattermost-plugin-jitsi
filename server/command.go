@@ -8,7 +8,7 @@ import (
 	"github.com/mattermost/mattermost-server/v5/plugin"
 )
 
-const jitsiCommand = "meet"
+const jitsiCommand = "jitsi"
 
 func commandError(channelId string, detailedError string) (*model.CommandResponse, *model.AppError) {
 	return &model.CommandResponse{
