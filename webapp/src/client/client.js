@@ -2,7 +2,11 @@ import request from 'superagent';
 
 export default class Client {
     constructor() {
-        this.url = '/plugins/jitsi';
+        if (window.basename) {
+            this.url = window.basename + '/plugins/jitsi';
+        } else {
+            this.url = '/plugins/jitsi';
+        }
     }
 
     startMeeting = async (channelId, personal = false, topic = '', meetingId = 0) => {
