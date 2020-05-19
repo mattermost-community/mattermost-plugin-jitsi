@@ -101,7 +101,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), err.StatusCode)
 	}
 
-	if _, err := p.API.GetChannelMember(req.ChannelId, user.Id); err != nil {
+	if _, err = p.API.GetChannelMember(req.ChannelId, user.Id); err != nil {
 		http.Error(w, "Forbidden", http.StatusForbidden)
 		return
 	}
@@ -167,7 +167,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	if _, err := p.API.CreatePost(post); err != nil {
+	if _, err = p.API.CreatePost(post); err != nil {
 		http.Error(w, err.Error(), err.StatusCode)
 		return
 	}
