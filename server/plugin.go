@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"net/url"
 	"regexp"
 	"strings"
@@ -14,6 +13,7 @@ import (
 	"github.com/cristalhq/jwt/v2"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
+	"github.com/pkg/errors"
 )
 
 const (
@@ -37,23 +37,15 @@ func (p *Plugin) OnActivate() error {
 		return err
 	}
 
-	return nil
-}
-
-func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Request) {
-	switch path := r.URL.Path; path {
-	case "/api/v1/meetings":
-		p.handleStartMeeting(w, r)
-	default:
-		http.NotFound(w, r)
+	if err := p.API.RegisterCommand(&model.Command{
+		Trigger:          jitsiCommand,
+		AutoComplete:     true,
+		AutoCompleteDesc: "Start a Jitsi meeting for the current channel. Optionally, append desired meeting topic after the command",
+	}); err != nil {
+		return err
 	}
-}
 
-type StartMeetingRequest struct {
-	ChannelId string `json:"channel_id"`
-	Personal  bool   `json:"personal"`
-	Topic     string `json:"topic"`
-	MeetingId int    `json:"meeting_id"`
+	return nil
 }
 
 // Claims extents cristalhq/jwt standard claims to add jitsi-web-token specific fields
@@ -62,53 +54,10 @@ type Claims struct {
 	Room string `json:"room,omitempty"`
 }
 
-// MarshalBinary default marshaling to JSON.
-func (c Claims) MarshalBinary() (data []byte, err error) {
-	return json.Marshal(c)
-}
-
-func encodeJitsiMeetingID(meeting string) string {
-	reg, err := regexp.Compile("[^a-zA-Z0-9]+")
-	if err != nil {
-		log.Fatal(err)
-	}
-	return reg.ReplaceAllString(meeting, "")
-}
-
-func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
-	if err := p.getConfiguration().IsValid(); err != nil {
-		http.Error(w, err.Error(), http.StatusTeapot)
-		return
-	}
-
-	userId := r.Header.Get("Mattermost-User-Id")
-
-	if userId == "" {
-		http.Error(w, "Not authorized", http.StatusUnauthorized)
-		return
-	}
-
-	var req StartMeetingRequest
-
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-	}
-
-	var user *model.User
-	var err *model.AppError
-	user, err = p.API.GetUser(userId)
-	if err != nil {
-		http.Error(w, err.Error(), err.StatusCode)
-	}
-
-	if _, err = p.API.GetChannelMember(req.ChannelId, user.Id); err != nil {
-		http.Error(w, "Forbidden", http.StatusForbidden)
-		return
-	}
-
+func (p *Plugin) startMeeting(userID string, channelID string, meetingTopic string, personal bool) (string, error) {
 	var meetingID string
-	meetingID = encodeJitsiMeetingID(req.Topic)
-	if len(req.Topic) < 1 {
+	meetingID = encodeJitsiMeetingID(meetingTopic)
+	if len(meetingTopic) < 1 {
 		meetingID = generateRoomWithoutSeparator()
 	}
 	jitsiURL := strings.TrimSpace(p.getConfiguration().JitsiURL)
@@ -122,8 +71,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		signer, err2 := jwt.NewSignerHS(jwt.HS256, []byte(p.getConfiguration().JitsiAppSecret))
 		if err2 != nil {
 			log.Printf("Error generating new HS256 signer: %v", err2)
-			http.Error(w, "Internal error", http.StatusInternalServerError)
-			return
+			return "", errors.New("Internal error")
 		}
 		builder := jwt.NewBuilder(signer)
 
@@ -142,16 +90,15 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		token, err2 := builder.Build(claims)
 		if err2 != nil {
 			log.Printf("Error building JWT: %v", err2)
-			http.Error(w, "Internal error", http.StatusInternalServerError)
-			return
+			return "", err2
 		}
 
 		meetingURL = meetingURL + "?jwt=" + string(token.Raw())
 	}
 
 	post := &model.Post{
-		UserId:    user.Id,
-		ChannelId: req.ChannelId,
+		UserId:    userID,
+		ChannelId: channelID,
 		Message:   fmt.Sprintf("Meeting started at %s.", meetingURL),
 		Type:      "custom_jitsi",
 		Props: map[string]interface{}{
@@ -160,23 +107,34 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 			"jwt_meeting":             JWTMeeting,
 			"jwt_meeting_valid_until": meetingLinkValidUntil.Format("2006-01-02 15:04:05 Z07:00"),
 			"meeting_personal":        false,
-			"meeting_topic":           req.Topic,
+			"meeting_topic":           meetingTopic,
 			"from_webhook":            "true",
 			"override_username":       "Jitsi",
 			"override_icon_url":       "https://s3.amazonaws.com/mattermost-plugin-media/Zoom+App.png",
 		},
 	}
 
-	if _, err = p.API.CreatePost(post); err != nil {
-		http.Error(w, err.Error(), err.StatusCode)
-		return
+	if _, err := p.API.CreatePost(post); err != nil {
+		return "", err
 	}
 
-	err = p.API.KVSet(fmt.Sprintf("%v%v", POST_MEETING_KEY, meetingID), []byte(post.Id))
+	err := p.API.KVSet(fmt.Sprintf("%v%v", POST_MEETING_KEY, meetingID), []byte(post.Id))
 	if err != nil {
-		http.Error(w, err.Error(), err.StatusCode)
-		return
+		return "", err
 	}
 
-	w.Write([]byte(fmt.Sprintf("%v", meetingID)))
+	return meetingID, nil
+}
+
+// MarshalBinary default marshaling to JSON.
+func (c Claims) MarshalBinary() (data []byte, err error) {
+	return json.Marshal(c)
+}
+
+func encodeJitsiMeetingID(meeting string) string {
+	reg, err := regexp.Compile("[^a-zA-Z0-9]+")
+	if err != nil {
+		log.Fatal(err)
+	}
+	return reg.ReplaceAllString(meeting, "")
 }
