@@ -13,21 +13,6 @@ export default class PostTypeJitsi extends React.PureComponent {
          */
         post: PropTypes.object.isRequired,
 
-        /**
-         * Set to render post body compactly.
-         */
-        compactDisplay: PropTypes.bool,
-
-        /**
-         * Flags if the post_message_view is for the RHS (Reply).
-         */
-        isRHS: PropTypes.bool,
-
-        /**
-         * Set to display times using 24 hours.
-         */
-        useMilitaryTime: PropTypes.bool,
-
         /*
          * Logged in user's theme.
          */
@@ -36,20 +21,35 @@ export default class PostTypeJitsi extends React.PureComponent {
         /*
          * Creator's name.
          */
-        creatorName: PropTypes.string.isRequired
+        creatorName: PropTypes.string.isRequired,
+
+        /*
+         * Actions
+         */
+        actions: PropTypes.shape({
+            enrichMeetingJwt: PropTypes.func.isRequired
+        }).isRequired
     };
 
     static defaultProps = {
-        mentionKeys: [],
-        compactDisplay: false,
-        isRHS: false
+        mentionKeys: []
     };
 
     constructor(props) {
         super(props);
 
         this.state = {
+            meetingJwt: null
         };
+    }
+
+    componentDidMount() {
+        const {post} = this.props;
+        if (post.props.jwt_meeting) {
+            this.props.actions.enrichMeetingJwt(post.props.meeting_jwt).then((response) => {
+                this.setState({meetingJwt: response.data.jwt});
+            });
+        }
     }
 
     render() {
@@ -59,6 +59,13 @@ export default class PostTypeJitsi extends React.PureComponent {
 
         let subtitle;
 
+        let meetingLink = props.meeting_link;
+        if (this.state.meetingJwt) {
+            meetingLink += '?jwt=' + this.state.meetingJwt;
+        } else if (props.jwt_meeting) {
+            meetingLink += '?jwt=' + props.meeting_jwt;
+        }
+
         const preText = `${this.props.creatorName} has started a meeting`;
         const content = (
             <div>
@@ -67,7 +74,7 @@ export default class PostTypeJitsi extends React.PureComponent {
                     style={style.button}
                     target='_blank'
                     rel='noopener noreferrer'
-                    href={props.meeting_link}
+                    href={meetingLink}
                 >
                     <i
                         style={style.buttonIcon}
@@ -88,7 +95,7 @@ export default class PostTypeJitsi extends React.PureComponent {
                     <a
                         target='_blank'
                         rel='noopener noreferrer'
-                        href={props.meeting_link}
+                        href={meetingLink}
                     >
                         {props.meeting_id}
                     </a>
@@ -101,7 +108,7 @@ export default class PostTypeJitsi extends React.PureComponent {
                     <a
                         target='_blank'
                         rel='noopener noreferrer'
-                        href={props.meeting_link}
+                        href={meetingLink}
                     >
                         {props.meeting_id}
                     </a>
