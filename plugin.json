@@ -22,7 +22,7 @@
         "settings": [
             {
                 "key": "JitsiURL",
-                "display_name": "Jitsi URL",
+                "display_name": "Jitsi Server URL",
                 "type": "text",
                 "help_text": "The URL for an on-premise Jitsi server. For example, https://jitsi.example.com.",
                 "placeholder": "https://jitsi.example.com"
@@ -57,7 +57,7 @@
                 "display_name": "Meeting Naming Scheme",
                 "type": "radio",
                 "help_text": "How should the plugin choose a meeting name? Some names may cause conflicts if you use them on a public server, like meet.jit.si.",
-                "default": "uuid",
+                "default": "english-titlecase",
                 "options": [
                     {
                         "display_name": "English words, title-case (e.g. PlayfulDragonsObserveCuriously)",
