@@ -66,5 +66,5 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte(fmt.Sprintf("%v", meetingID)))
+	_, _ = w.Write([]byte(fmt.Sprintf("%v", meetingID)))
 }

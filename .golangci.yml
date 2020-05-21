@@ -1,0 +1,60 @@
+run:
+  timeout: 5m
+  modules-download-mode: readonly
+
+linters-settings:
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+  gofmt:
+    simplify: true
+  goimports:
+    local-prefixes: github.com/mattermost/mattermost-starter-template
+  golint:
+    min-confidence: 0
+  govet:
+    check-shadowing: true
+    enable-all: true
+  misspell:
+    locale: US
+
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - deadcode
+    - errcheck
+    - goconst
+    - gocritic
+    - gofmt
+    - goimports
+    - golint
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - interfacer
+    - misspell
+    - nakedret
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unused
+    - varcheck
+    - whitespace
+
+issues:
+  exclude-rules:
+    - path: server/manifest.go
+      linters:
+        - unused
+        - varcheck
+    - path: server/configuration.go
+      linters:
+        - unused
+    - path: _test\.go
+      linters:
+        - goconst
+        - scopelint # https://github.com/kyoh86/scopelint/issues/4

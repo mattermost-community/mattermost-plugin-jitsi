@@ -2,6 +2,11 @@ GO ?= $(shell command -v go 2> /dev/null)
 NPM ?= $(shell command -v npm 2> /dev/null)
 CURL ?= $(shell command -v curl 2> /dev/null)
 MANIFEST_FILE ?= plugin.json
+GOPATH ?= $(shell go env GOPATH)
+GO_TEST_FLAGS ?= -race
+GO_BUILD_FLAGS ?=
+MM_UTILITIES_DIR ?= ../mattermost-utilities
+
 export GO111MODULE=on
 
 # You can include assets this directory into the bundle. This can be e.g. used to include profile pictures.
@@ -12,6 +17,11 @@ include build/setup.mk
 
 BUNDLE_NAME ?= $(PLUGIN_ID)-$(PLUGIN_VERSION).tar.gz
 
+# Include custom makefile, if present
+ifneq ($(wildcard build/custom.mk),)
+	include build/custom.mk
+endif
+
 ## Checks the code style, tests, builds and bundles the plugin.
 all: check-style test dist
 
@@ -20,59 +30,38 @@ all: check-style test dist
 apply:
 	./build/bin/manifest apply
 
-## Runs govet and gofmt against all packages.
+## Runs golangci-lint and eslint.
 .PHONY: check-style
-check-style: webapp/.npminstall gofmt govet
+check-style: webapp/.npminstall golangci-lint
 	@echo Checking for style guide compliance
 
 ifneq ($(HAS_WEBAPP),)
 	cd webapp && npm run lint
 endif
 
-## Runs gofmt against all packages.
-.PHONY: gofmt
-gofmt:
-ifneq ($(HAS_SERVER),)
-	@echo Running gofmt
-	@for package in $$(go list ./server/...); do \
-		echo "Checking "$$package; \
-		files=$$(go list -f '{{range .GoFiles}}{{$$.Dir}}/{{.}} {{end}}' $$package); \
-		if [ "$$files" ]; then \
-			gofmt_output=$$(gofmt -d -s $$files 2>&1); \
-			if [ "$$gofmt_output" ]; then \
-				echo "$$gofmt_output"; \
-				echo "Gofmt failure"; \
-				exit 1; \
-			fi; \
-		fi; \
-	done
-	@echo Gofmt success
-endif
+## Run golangci-lint on codebase.
+.PHONY: golangci-lint
+golangci-lint:
+	@if ! [ -x "$$(command -v golangci-lint)" ]; then \
+		echo "golangci-lint is not installed. Please see https://github.com/golangci/golangci-lint#install for installation instructions."; \
+		exit 1; \
+	fi; \
 
-## Runs govet against all packages.
-.PHONY: govet
-govet:
-ifneq ($(HAS_SERVER),)
-	@echo Running govet
-	@# Workaroung because you can't install binaries without adding them to go.mod 
-	env GO111MODULE=off $(GO) get golang.org/x/tools/go/analysis/passes/shadow/cmd/shadow
-	$(GO) vet ./server/...
-	$(GO) vet -vettool=$(GOPATH)/bin/shadow ./server/...
-	@echo Govet success
-endif
+	@echo Running golangci-lint
+	golangci-lint run ./...
 
 ## Builds the server, if it exists, including support for multiple architectures.
 .PHONY: server
 server:
 ifneq ($(HAS_SERVER),)
 	mkdir -p server/dist;
-	cd server && env GOOS=linux GOARCH=amd64 $(GO) build -o dist/plugin-linux-amd64;
-	cd server && env GOOS=darwin GOARCH=amd64 $(GO) build -o dist/plugin-darwin-amd64;
-	cd server && env GOOS=windows GOARCH=amd64 $(GO) build -o dist/plugin-windows-amd64.exe;
+	cd server && env GOOS=linux GOARCH=amd64 $(GO) build $(GO_BUILD_FLAGS) -o dist/plugin-linux-amd64;
+	cd server && env GOOS=darwin GOARCH=amd64 $(GO) build $(GO_BUILD_FLAGS) -o dist/plugin-darwin-amd64;
+	cd server && env GOOS=windows GOARCH=amd64 $(GO) build $(GO_BUILD_FLAGS) -o dist/plugin-windows-amd64.exe;
 endif
 
 ## Ensures NPM dependencies are installed without having to run this all the time.
-webapp/.npminstall:
+webapp/.npminstall: webapp/package.json
 ifneq ($(HAS_WEBAPP),)
 	cd webapp && $(NPM) install
 	touch $@
@@ -83,6 +72,14 @@ endif
 webapp: webapp/.npminstall
 ifneq ($(HAS_WEBAPP),)
 	cd webapp && $(NPM) run build;
+endif
+
+## Builds the webapp in debug mode, if it exists.
+.PHONY: webapp-debug
+webapp-debug: webapp/.npminstall
+ifneq ($(HAS_WEBAPP),)
+	cd webapp && \
+	$(NPM) run debug;
 endif
 
 ## Generates a tar bundle of the plugin for install.
@@ -114,40 +111,45 @@ endif
 dist:	apply server webapp bundle
 
 ## Installs the plugin to a (development) server.
+## It uses the API if appropriate environment variables are defined,
+## and otherwise falls back to trying to copy the plugin to a sibling mattermost-server directory.
 .PHONY: deploy
 deploy: dist
-## It uses the API if appropriate environment variables are defined,
-## or copying the files directly to a sibling mattermost-server directory.
-ifneq ($(and $(MM_SERVICESETTINGS_SITEURL),$(MM_ADMIN_USERNAME),$(MM_ADMIN_PASSWORD),$(CURL)),)
-	@echo "Installing plugin via API"
-	$(eval TOKEN := $(shell curl -i --post301 --location $(MM_SERVICESETTINGS_SITEURL) -X POST $(MM_SERVICESETTINGS_SITEURL)/api/v4/users/login -d '{"login_id": "$(MM_ADMIN_USERNAME)", "password": "$(MM_ADMIN_PASSWORD)"}' | grep Token | cut -f2 -d' ' 2> /dev/null))
-	@curl -s --post301 --location $(MM_SERVICESETTINGS_SITEURL) -H "Authorization: Bearer $(TOKEN)" -X POST $(MM_SERVICESETTINGS_SITEURL)/api/v4/plugins -F "plugin=@dist/$(BUNDLE_NAME)" -F "force=true" > /dev/null && \
-		curl -s --post301 --location $(MM_SERVICESETTINGS_SITEURL) -H "Authorization: Bearer $(TOKEN)" -X POST $(MM_SERVICESETTINGS_SITEURL)/api/v4/plugins/$(PLUGIN_ID)/enable > /dev/null && \
-		echo "OK." || echo "Sorry, something went wrong."
-else ifneq ($(wildcard ../mattermost-server/.*),)
-	@echo "Installing plugin via filesystem. Server restart and manual plugin enabling required"
-	mkdir -p ../mattermost-server/plugins
-	tar -C ../mattermost-server/plugins -zxvf dist/$(BUNDLE_NAME)
-else
-	@echo "No supported deployment method available. Install plugin manually."
-endif
+	./build/bin/deploy $(PLUGIN_ID) dist/$(BUNDLE_NAME)
+
+.PHONY: debug-deploy
+debug-deploy: debug-dist deploy
+
+.PHONY: debug-dist
+debug-dist: apply server webapp-debug bundle
 
 ## Runs any lints and unit tests defined for the server and webapp, if they exist.
 .PHONY: test
 test: webapp/.npminstall
 ifneq ($(HAS_SERVER),)
-	$(GO) test -race -v ./server/...
+	$(GO) test -v $(GO_TEST_FLAGS) ./server/...
 endif
 ifneq ($(HAS_WEBAPP),)
-	cd webapp && $(NPM) run fix;
+	cd webapp && $(NPM) run fix && $(NPM) run test;
 endif
 
 ## Creates a coverage report for the server code.
 .PHONY: coverage
-coverage: server/.depensure webapp/.npminstall
+coverage: webapp/.npminstall
 ifneq ($(HAS_SERVER),)
-	$(GO) test -race -coverprofile=server/coverage.txt ./server/...
+	$(GO) test $(GO_TEST_FLAGS) -coverprofile=server/coverage.txt ./server/...
 	$(GO) tool cover -html=server/coverage.txt
+endif
+
+## Extract strings for translation from the source code.
+.PHONY: i18n-extract
+i18n-extract:
+ifneq ($(HAS_WEBAPP),)
+ifeq ($(HAS_MM_UTILITIES),)
+	@echo "You must clone github.com/mattermost/mattermost-utilities repo in .. to use this command"
+else
+	cd $(MM_UTILITIES_DIR) && npm install && npm run babel && node mmjstool/build/index.js i18n extract-webapp --webapp-dir $(PWD)/webapp
+endif
 endif
 
 ## Clean removes all build artifacts.
@@ -155,15 +157,17 @@ endif
 clean:
 	rm -fr dist/
 ifneq ($(HAS_SERVER),)
+	rm -fr server/coverage.txt
 	rm -fr server/dist
 endif
 ifneq ($(HAS_WEBAPP),)
 	rm -fr webapp/.npminstall
+	rm -fr webapp/junit.xml
 	rm -fr webapp/dist
 	rm -fr webapp/node_modules
 endif
 	rm -fr build/bin/
 
-# Help documentatin à la https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
+# Help documentation à la https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:
-	@cat Makefile | grep -v '\.PHONY' |  grep -v '\help:' | grep -B1 -E '^[a-zA-Z_.-]+:.*' | sed -e "s/:.*//" | sed -e "s/^## //" |  grep -v '\-\-' | sed '1!G;h;$$!d' | awk 'NR%2{printf "\033[36m%-30s\033[0m",$$0;next;}1' | sort
+	@cat Makefile | grep -v '\.PHONY' |  grep -v '\help:' | grep -B1 -E '^[a-zA-Z0-9_.-]+:.*' | sed -e "s/:.*//" | sed -e "s/^## //" |  grep -v '\-\-' | sed '1!G;h;$$!d' | awk 'NR%2{printf "\033[36m%-30s\033[0m",$$0;next;}1' | sort
