@@ -169,6 +169,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingT
 
 	var meetingLinkValidUntil = time.Time{}
 	JWTMeeting := p.getConfiguration().JitsiJWT
+	var jwtToken string
 
 	if JWTMeeting {
 		// Error check is done in configuration.IsValid()
@@ -183,7 +184,8 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingT
 		claims.Subject = jURL.Hostname()
 		claims.Room = meetingID
 
-		jwtToken, err2 := signClaims(p.getConfiguration().JitsiAppSecret, &claims)
+		var err2 error
+		jwtToken, err2 = signClaims(p.getConfiguration().JitsiAppSecret, &claims)
 		if err2 != nil {
 			return "", err2
 		}
@@ -200,6 +202,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingT
 			"meeting_id":              meetingID,
 			"meeting_link":            meetingLink,
 			"jwt_meeting":             JWTMeeting,
+			"meeting_jwt":             jwtToken,
 			"jwt_meeting_valid_until": meetingLinkValidUntil.Format("2006-01-02 15:04:05 Z07:00"),
 			"meeting_personal":        false,
 			"meeting_topic":           meetingTopic,

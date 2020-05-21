@@ -18,6 +18,8 @@ type StartMeetingRequest struct {
 
 func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Request) {
 	switch path := r.URL.Path; path {
+	case "/api/v1/meetings/enrich":
+		p.handleEnrichMeetingJwt(w, r)
 	case "/api/v1/meetings":
 		p.handleStartMeeting(w, r)
 	default:
