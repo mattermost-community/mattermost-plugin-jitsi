@@ -1,6 +1,9 @@
 package main
 
 import (
+	"crypto/sha1"
+	"fmt"
+	"io"
 	"math/rand"
 	"strings"
 	"time"
@@ -134,10 +137,6 @@ func generateEnglishTitleName() string {
 	return generateEnglishName("")
 }
 
-func generateEnglishKebabName() string {
-	return strings.ToLower(generateEnglishName("-"))
-}
-
 func generateUUIDName() string {
 	id := uuid.New()
 	return (id.String())
@@ -147,42 +146,20 @@ func generateDigitsName() string {
 	return randomString(NUMBERS, 10)
 }
 
-func generateLettersName() string {
-	return randomString(LETTERS, 10)
-}
-
-func generateTeamChannelName(teamName string, channelName string, salt bool) string {
+func generateTeamChannelName(teamName string, channelName string) string {
 	name := teamName
 	if name != "" {
 		name += "-"
 	}
-
 	name += channelName
+	name += "-" + randomString(LETTERS, 10)
 
-	if salt {
-		id := uuid.New()
-		name += "-" + id.String()
-	}
 	return name
 }
 
-func generateNameFromSelectedScheme(namingScheme string, teamName string, channelName string) string {
-	switch namingScheme {
-	case "english-titlecase":
-		return generateEnglishTitleName()
-	case "english-kebabcase":
-		return generateEnglishKebabName()
-	case "uuid":
-		return generateUUIDName()
-	case "digits":
-		return generateDigitsName()
-	case "letters":
-		return generateLettersName()
-	case "teamchannel":
-		return generateTeamChannelName(teamName, channelName, false)
-	case "teamchannel-salt":
-		return generateTeamChannelName(teamName, channelName, true)
-	default:
-		return generateEnglishTitleName()
-	}
+func generatePersonalMeetingName(username string, userId string) string {
+	h := sha1.New()
+	io.WriteString(h, userId)
+	hash := fmt.Sprintf("%x", h.Sum(nil))
+	return username + "-" + hash
 }

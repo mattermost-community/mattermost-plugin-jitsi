@@ -64,10 +64,6 @@
                         "value": "english-titlecase"
                     },
                     {
-                        "display_name": "English words, kebab-case (e.g. playful-dragons-observe-curiously)",
-                        "value": "english-kebabcase"
-                    },
-                    {
                         "display_name": "UUID",
                         "value": "uuid"
                     },
@@ -76,16 +72,8 @@
                         "value": "digits"
                     },
                     {
-                        "display_name": "10 letter code (name conflict risk!)",
-                        "value": "letters"
-                    },
-                    {
-                        "display_name": "Team name and channel name",
-                        "value": "teamchannel"
-                    },
-                    {
-                        "display_name": "Team name and channel name plus a random hash (more secure)",
-                        "value": "teamchannel-salt"
+                        "display_name": "Context based meeting id, Team name, channel name and random text for public and private channels, and personal meeting for direct and group messages",
+                        "value": "mattermost"
                     }
                 ]
             }
