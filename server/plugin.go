@@ -115,6 +115,8 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 		return "", err
 	}
 
+	user.Sanitize(config.GetSanitizeOptions())
+
 	newContext := Context{
 		User: User{
 			Avatar: fmt.Sprintf("%s/api/v4/users/%s/image?_=%d", *config.ServiceSettings.SiteURL, user.Id, user.LastPictureUpdate),
