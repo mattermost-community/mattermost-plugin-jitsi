@@ -107,7 +107,6 @@ func signClaims(secret string, claims *Claims) (string, error) {
 }
 
 func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, error) {
-	config := p.API.GetConfig()
 	secret := p.getConfiguration().JitsiAppSecret
 
 	claims, err := verifyJwt(secret, jwtToken)
@@ -115,8 +114,14 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 		return "", err
 	}
 
-	user.Sanitize(config.GetSanitizeOptions())
-
+	config := p.API.GetConfig()
+	if config.PrivacySettings.ShowFullName == nil || *config.PrivacySettings.ShowFullName == false {
+		user.FirstName = ""
+		user.LastName = ""
+	}
+	if config.PrivacySettings.ShowEmailAddress == nil || *config.PrivacySettings.ShowEmailAddress == false {
+		user.Email = ""
+	}
 	newContext := Context{
 		User: User{
 			Avatar: fmt.Sprintf("%s/api/v4/users/%s/image?_=%d", *config.ServiceSettings.SiteURL, user.Id, user.LastPictureUpdate),
