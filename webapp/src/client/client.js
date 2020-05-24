@@ -13,6 +13,10 @@ export default class Client {
         return this.doPost(`${this.url}/api/v1/meetings`, {channel_id: channelId, personal, topic, meeting_id: meetingId});
     }
 
+    enrichMeetingJwt = async (meetingJwt) => {
+        return this.doPost(`${this.url}/api/v1/meetings/enrich`, {jwt: meetingJwt});
+    }
+
     doPost = async (url, body, headers = {}) => {
         headers['X-Requested-With'] = 'XMLHttpRequest';
 

@@ -3,6 +3,7 @@ import {bindActionCreators} from 'redux';
 
 import {getBool} from 'mattermost-redux/selectors/entities/preferences';
 import {displayUsernameForUser} from '../../utils/user_utils';
+import {enrichMeetingJwt} from '../../actions';
 
 import PostTypeJitsi from './post_type_jitsi.jsx';
 
@@ -20,6 +21,7 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({
+            enrichMeetingJwt
         }, dispatch)
     };
 }
