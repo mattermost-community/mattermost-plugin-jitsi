@@ -54,9 +54,9 @@
             },
             {
                 "key": "JitsiNamingScheme",
-                "display_name": "Meeting Naming Scheme",
+                "display_name": "Jitsi Meeting Names",
                 "type": "radio",
-                "help_text": "How should the plugin choose a meeting name? Some names may cause conflicts if you use them on a public server, like meet.jit.si.",
+                "help_text": "Select how meeting names are generated.",
                 "default": "english-titlecase",
                 "options": [
                     {

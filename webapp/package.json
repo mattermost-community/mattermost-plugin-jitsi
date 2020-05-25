@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "mattermost-redux": "5.22.0",
+    "moment": "^2.26.0",
     "react": "16.4.1",
     "react-intl": "2.8.0",
     "react-redux": "5.0.7",
