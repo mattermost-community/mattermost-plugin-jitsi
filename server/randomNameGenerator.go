@@ -108,7 +108,6 @@ var ADJECTIVE = []string{"Abominable", "Accurate", "Adorable", "All", "Alleged",
 	"Worried", "Yellow", "Young", "Zealous"}
 
 var LETTERS = []rune("abcdefghijklmnopqrstuvwxyz")
-var NUMBERS = []rune("0123456789")
 
 func randomElement(s []string) string {
 	rand.Seed(time.Now().UnixNano())
@@ -140,10 +139,6 @@ func generateEnglishTitleName() string {
 func generateUUIDName() string {
 	id := uuid.New()
 	return (id.String())
-}
-
-func generateDigitsName() string {
-	return randomString(NUMBERS, 10)
 }
 
 func generateTeamChannelName(teamName string, channelName string) string {

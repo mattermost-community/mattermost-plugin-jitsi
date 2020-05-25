@@ -66,8 +66,6 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingT
 			meetingID = generateEnglishTitleName()
 		case "uuid":
 			meetingID = generateUUIDName()
-		case "digits":
-			meetingID = generateDigitsName()
 		case "mattermost":
 			if channel.Type == model.CHANNEL_DIRECT || channel.Type == model.CHANNEL_GROUP {
 				meetingID = generatePersonalMeetingName(user.Username, user.Id)
