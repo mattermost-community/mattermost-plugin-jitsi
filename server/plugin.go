@@ -138,36 +138,33 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 }
 
 func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingTopic string, personal bool) (string, error) {
-	var meetingID string
-	meetingID = encodeJitsiMeetingID(meetingTopic)
+	meetingID := encodeJitsiMeetingID(meetingTopic)
+	meetingPersonal := false
 
 	if len(meetingTopic) < 1 {
 		namingScheme := p.getConfiguration().JitsiNamingScheme
 
-		var channelName string
-		var teamName string
-
-		if namingScheme == "teamchannel" || namingScheme == "teamchannel-salt" {
-			meetingTopic = channel.DisplayName + " Meeting"
-			channelName = channel.Name
-			teamName = ""
-			if channel.Type == model.CHANNEL_DIRECT {
-				channelName = channel.Name
-				meetingTopic = user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME) + "'s Meeting"
-			} else if channel.Type == model.CHANNEL_GROUP {
-				channelName = channel.Name
-				meetingTopic = channel.DisplayName + " Meeting"
+		switch namingScheme {
+		case "english-titlecase":
+			meetingID = generateEnglishTitleName()
+		case "uuid":
+			meetingID = generateUUIDName()
+		case "mattermost":
+			if channel.Type == model.CHANNEL_DIRECT || channel.Type == model.CHANNEL_GROUP {
+				meetingID = generatePersonalMeetingName(user.Username, user.Id)
+				meetingTopic = fmt.Sprintf("%s's Personal Meeting", user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME))
+				meetingPersonal = true
 			} else {
 				team, teamErr := p.API.GetTeam(channel.TeamId)
 				if teamErr != nil {
-					teamName = "unknown-team"
-				} else {
-					teamName = team.Name
+					return "", teamErr
 				}
+				meetingTopic = fmt.Sprintf("%s Channel Meeting", channel.DisplayName)
+				meetingID = generateTeamChannelName(team.Name, channel.Name)
 			}
+		default:
+			meetingID = generateEnglishTitleName()
 		}
-
-		meetingID = generateNameFromSelectedScheme(namingScheme, teamName, channelName)
 	}
 	jitsiURL := strings.TrimSpace(p.getConfiguration().JitsiURL)
 	jitsiURL = strings.TrimRight(jitsiURL, "/")
@@ -211,7 +208,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingT
 			"jwt_meeting":             JWTMeeting,
 			"meeting_jwt":             jwtToken,
 			"jwt_meeting_valid_until": meetingLinkValidUntil.Format("2006-01-02 15:04:05 Z07:00"),
-			"meeting_personal":        false,
+			"meeting_personal":        meetingPersonal,
 			"meeting_topic":           meetingTopic,
 			"from_webhook":            "true",
 			"override_username":       "Jitsi",
