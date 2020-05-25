@@ -60,6 +60,10 @@
                 "default": "english-titlecase",
                 "options": [
                     {
+                        "display_name": "Ask for meeting type when you start a meeting",
+                        "value": "ask"
+                    },
+                    {
                         "display_name": "Random English words in title case (e.g. PlayfulDragonsObserveCuriously)",
                         "value": "english-titlecase"
                     },
