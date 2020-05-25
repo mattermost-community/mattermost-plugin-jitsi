@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 
 import {Svgs} from '../../constants';
 
@@ -67,6 +68,12 @@ export default class PostTypeJitsi extends React.PureComponent {
         }
 
         const preText = `${this.props.creatorName} has started a meeting`;
+        let untilDate = moment.unix(props.jwt_meeting_valid_until);
+        if (untilDate.isValid()) {
+            untilDate = untilDate.format('dddd, MMMM Do YYYY, h:mm:ss a');
+        } else {
+            untilDate = props.jwt_meeting_valid_until;
+        }
         const content = (
             <div>
                 <a
@@ -83,7 +90,7 @@ export default class PostTypeJitsi extends React.PureComponent {
                     {'JOIN MEETING'}
                 </a>
                 {props.jwt_meeting &&
-                    <span>{' Meeting link valid util: '} <b>{props.jwt_meeting_valid_until}</b></span>
+                    <p style={style.validUntil}>{' Meeting link valid until: '} <b>{untilDate}</b></p>
                 }
             </div>
         );
@@ -204,6 +211,9 @@ const getStyle = makeStyleFromTheme((theme) => {
             fontFamily: 'Open Sans',
             fontSize: '14px',
             lineHeight: '26px'
+        },
+        validUntil: {
+            marginTop: '8px'
         }
     };
 });

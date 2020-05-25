@@ -207,7 +207,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingT
 			"meeting_link":            meetingLink,
 			"jwt_meeting":             JWTMeeting,
 			"meeting_jwt":             jwtToken,
-			"jwt_meeting_valid_until": meetingLinkValidUntil.Format("2006-01-02 15:04:05 Z07:00"),
+			"jwt_meeting_valid_until": meetingLinkValidUntil.Unix(),
 			"meeting_personal":        meetingPersonal,
 			"meeting_topic":           meetingTopic,
 			"from_webhook":            "true",
