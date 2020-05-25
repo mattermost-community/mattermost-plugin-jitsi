@@ -48,59 +48,134 @@ func (p *Plugin) OnActivate() error {
 	return nil
 }
 
+type User struct {
+	Avatar string `json:"avatar"`
+	Name   string `json:"name"`
+	Email  string `json:"email"`
+	Id     string `json:"id"`
+}
+
+type Context struct {
+	User  User   `json:"user"`
+	Group string `json:"group"`
+}
+
+type EnrichMeetingJwtRequest struct {
+	Jwt string `json:"jwt"`
+}
+
 // Claims extents cristalhq/jwt standard claims to add jitsi-web-token specific fields
 type Claims struct {
 	jwt.StandardClaims
-	Room string `json:"room,omitempty"`
+	Context Context `json:"context"`
+	Room    string  `json:"room,omitempty"`
+}
+
+func verifyJwt(secret string, jwtToken string) (*Claims, error) {
+	verifier, err := jwt.NewVerifierHS(jwt.HS256, []byte(secret))
+	if err != nil {
+		log.Printf("Error generating new HS256 signer: %v", err)
+		return nil, err
+	}
+
+	newToken, err := jwt.ParseAndVerifyString(jwtToken, verifier)
+	if err != nil {
+		log.Printf("Error parsing or verifiying jwt: %v", err)
+		return nil, err
+	}
+
+	var claims Claims
+	if err = json.Unmarshal(newToken.RawClaims(), &claims); err != nil {
+		log.Printf("Error unmarshalling claims from jwt: %v", err)
+		return nil, err
+	}
+	return &claims, nil
+}
+
+func signClaims(secret string, claims *Claims) (string, error) {
+	signer, err2 := jwt.NewSignerHS(jwt.HS256, []byte(secret))
+	if err2 != nil {
+		log.Printf("Error generating new HS256 signer: %v", err2)
+		return "", errors.New("Internal error")
+	}
+	builder := jwt.NewBuilder(signer)
+	token, err := builder.Build(claims)
+	if err != nil {
+		return "", err
+	}
+	return string(token.Raw()), nil
+}
+
+func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, error) {
+	secret := p.getConfiguration().JitsiAppSecret
+
+	claims, err := verifyJwt(secret, jwtToken)
+	if err != nil {
+		return "", err
+	}
+
+	config := p.API.GetConfig()
+	if config.PrivacySettings.ShowFullName == nil || *config.PrivacySettings.ShowFullName == false {
+		user.FirstName = ""
+		user.LastName = ""
+	}
+	if config.PrivacySettings.ShowEmailAddress == nil || *config.PrivacySettings.ShowEmailAddress == false {
+		user.Email = ""
+	}
+	newContext := Context{
+		User: User{
+			Avatar: fmt.Sprintf("%s/api/v4/users/%s/image?_=%d", *config.ServiceSettings.SiteURL, user.Id, user.LastPictureUpdate),
+			Name:   user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME),
+			Email:  user.Email,
+			Id:     user.Id,
+		},
+		Group: claims.Context.Group,
+	}
+
+	claims.Context = newContext
+
+	return signClaims(secret, claims)
 }
 
 func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingTopic string, personal bool) (string, error) {
-	var meetingID string
-	meetingID = encodeJitsiMeetingID(meetingTopic)
+	meetingID := encodeJitsiMeetingID(meetingTopic)
+	meetingPersonal := false
 
 	if len(meetingTopic) < 1 {
 		namingScheme := p.getConfiguration().JitsiNamingScheme
 
-		var channelName string
-		var teamName string
-
-		if namingScheme == "teamchannel" || namingScheme == "teamchannel-salt" {
-			meetingTopic = channel.DisplayName + " Meeting"
-			channelName = channel.Name
-			teamName = ""
-			if channel.Type == model.CHANNEL_DIRECT {
-				channelName = channel.Name
-				meetingTopic = user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME) + "'s Meeting"
-			} else if channel.Type == model.CHANNEL_GROUP {
-				channelName = channel.Name
-				meetingTopic = channel.DisplayName + " Meeting"
+		switch namingScheme {
+		case "english-titlecase":
+			meetingID = generateEnglishTitleName()
+		case "uuid":
+			meetingID = generateUUIDName()
+		case "mattermost":
+			if channel.Type == model.CHANNEL_DIRECT || channel.Type == model.CHANNEL_GROUP {
+				meetingID = generatePersonalMeetingName(user.Username, user.Id)
+				meetingTopic = fmt.Sprintf("%s's Personal Meeting", user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME))
+				meetingPersonal = true
 			} else {
 				team, teamErr := p.API.GetTeam(channel.TeamId)
 				if teamErr != nil {
-					teamName = "unknown-team"
-				} else {
-					teamName = team.Name
+					return "", teamErr
 				}
+				meetingTopic = fmt.Sprintf("%s Channel Meeting", channel.DisplayName)
+				meetingID = generateTeamChannelName(team.Name, channel.Name)
 			}
+		default:
+			meetingID = generateEnglishTitleName()
 		}
-
-		meetingID = generateNameFromSelectedScheme(namingScheme, teamName, channelName)
 	}
 	jitsiURL := strings.TrimSpace(p.getConfiguration().JitsiURL)
 	jitsiURL = strings.TrimRight(jitsiURL, "/")
 	meetingURL := jitsiURL + "/" + meetingID
+	meetingLink := meetingURL
 
 	var meetingLinkValidUntil = time.Time{}
 	JWTMeeting := p.getConfiguration().JitsiJWT
+	var jwtToken string
 
 	if JWTMeeting {
-		signer, err2 := jwt.NewSignerHS(jwt.HS256, []byte(p.getConfiguration().JitsiAppSecret))
-		if err2 != nil {
-			log.Printf("Error generating new HS256 signer: %v", err2)
-			return "", errors.New("Internal error")
-		}
-		builder := jwt.NewBuilder(signer)
-
 		// Error check is done in configuration.IsValid()
 		jURL, _ := url.Parse(p.getConfiguration().JitsiURL)
 
@@ -113,13 +188,13 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingT
 		claims.Subject = jURL.Hostname()
 		claims.Room = meetingID
 
-		token, err2 := builder.Build(claims)
+		var err2 error
+		jwtToken, err2 = signClaims(p.getConfiguration().JitsiAppSecret, &claims)
 		if err2 != nil {
-			log.Printf("Error building JWT: %v", err2)
 			return "", err2
 		}
 
-		meetingURL = meetingURL + "?jwt=" + string(token.Raw())
+		meetingURL = meetingURL + "?jwt=" + jwtToken
 	}
 
 	post := &model.Post{
@@ -129,10 +204,11 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingT
 		Type:      "custom_jitsi",
 		Props: map[string]interface{}{
 			"meeting_id":              meetingID,
-			"meeting_link":            meetingURL,
+			"meeting_link":            meetingLink,
 			"jwt_meeting":             JWTMeeting,
+			"meeting_jwt":             jwtToken,
 			"jwt_meeting_valid_until": meetingLinkValidUntil.Format("2006-01-02 15:04:05 Z07:00"),
-			"meeting_personal":        false,
+			"meeting_personal":        meetingPersonal,
 			"meeting_topic":           meetingTopic,
 			"from_webhook":            "true",
 			"override_username":       "Jitsi",

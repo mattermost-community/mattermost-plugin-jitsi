@@ -43,3 +43,14 @@ export function startMeeting(channelId, personal = false, topic = '', meetingId 
         return {data: true};
     };
 }
+
+export function enrichMeetingJwt(meetingJwt) {
+    return async (dispatch, getState) => {
+        try {
+            const data = await Client.enrichMeetingJwt(meetingJwt);
+            return {data};
+        } catch (error) {
+            return {error};
+        }
+    };
+}
