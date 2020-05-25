@@ -197,17 +197,34 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingT
 		meetingURL = meetingURL + "?jwt=" + jwtToken
 	}
 
+	meetingUntil := ""
+	if JWTMeeting {
+		meetingUntil = "Meeting link valid until: " + meetingLinkValidUntil.Format("Mon Jan 2 15:04:05 -0700 MST 2006")
+	}
+
+	meetingTypeString := "Meeting ID"
+	if meetingPersonal {
+		meetingTypeString = "Personal Meeting ID (PMI)"
+	}
+
+	slackAttachment := model.SlackAttachment{
+		Fallback:  fmt.Sprintf("Video Meeting started at [%s](%s).\n\n[Join Meeting](%s)\n\n%s", meetingID, meetingURL, meetingURL, meetingUntil),
+		Title:     meetingTopic,
+		TitleLink: meetingURL,
+		Text:      fmt.Sprintf("%s: [%s](%s)\n\n[:movie_camera:  Join Meeting](%s)\n\n%s", meetingTypeString, meetingID, meetingURL, meetingURL, meetingUntil),
+	}
+
 	post := &model.Post{
 		UserId:    user.Id,
 		ChannelId: channel.Id,
-		Message:   fmt.Sprintf("Meeting started at %s.", meetingURL),
 		Type:      "custom_jitsi",
 		Props: map[string]interface{}{
+			"attachments":             []*model.SlackAttachment{&slackAttachment},
 			"meeting_id":              meetingID,
 			"meeting_link":            meetingLink,
 			"jwt_meeting":             JWTMeeting,
 			"meeting_jwt":             jwtToken,
-			"jwt_meeting_valid_until": meetingLinkValidUntil.Format("2006-01-02 15:04:05 Z07:00"),
+			"jwt_meeting_valid_until": meetingLinkValidUntil.Unix(),
 			"meeting_personal":        meetingPersonal,
 			"meeting_topic":           meetingTopic,
 			"from_webhook":            "true",
