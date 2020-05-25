@@ -250,7 +250,7 @@ func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error 
 	}
 
 	actions = append(actions, &model.PostAction{
-		Name: "Random Words",
+		Name: "Meeting name with random words",
 		Integration: &model.PostActionIntegration{
 			URL: apiURL,
 			Context: map[string]interface{}{
@@ -288,7 +288,7 @@ func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error 
 	}
 
 	actions = append(actions, &model.PostAction{
-		Name: "UUID meeting",
+		Name: "Meeting name with UUID",
 		Integration: &model.PostActionIntegration{
 			URL: apiURL,
 			Context: map[string]interface{}{
@@ -301,7 +301,7 @@ func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error 
 
 	sa := model.SlackAttachment{
 		Title:   "Jitsi Meeting Start",
-		Text:    "Please select the type of meeting that you want to start",
+		Text:    "Select type of meeting you want to start",
 		Actions: actions,
 	}
 

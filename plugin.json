@@ -60,7 +60,7 @@
                 "default": "english-titlecase",
                 "options": [
                     {
-                        "display_name": "Ask for meeting type when you start a meeting",
+                        "display_name": "Allow user to select meeting name",
                         "value": "ask"
                     },
                     {
