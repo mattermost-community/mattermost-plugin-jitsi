@@ -60,20 +60,20 @@
                 "default": "english-titlecase",
                 "options": [
                     {
-                        "display_name": "English words, title-case (e.g. PlayfulDragonsObserveCuriously)",
+                        "display_name": "Random English words in title case (e.g. PlayfulDragonsObserveCuriously)",
                         "value": "english-titlecase"
                     },
                     {
-                        "display_name": "UUID",
+                        "display_name": "UUID (universally unique identifier)",
                         "value": "uuid"
                     },
                     {
-                        "display_name": "10 digit code (name conflict risk!)",
-                        "value": "digits"
+                        "display_name": "Mattermost context specific names. Combination of team name, channel name and random text in public and private channels; personal meeting name in direct and group messages channels.",
+                        "value": "mattermost"
                     },
                     {
-                        "display_name": "Context based meeting id, Team name, channel name and random text for public and private channels, and personal meeting for direct and group messages",
-                        "value": "mattermost"
+                        "display_name": "Random ten-digit number. Not recommended if you use a public server such as meet.jit.si as this option can lead to a naming conflict.",
+                        "value": "digits"
                     }
                 ]
             }
