@@ -68,12 +68,17 @@ export default class PostTypeJitsi extends React.PureComponent {
         }
 
         const preText = `${this.props.creatorName} has started a meeting`;
-        let untilDate = moment.unix(props.jwt_meeting_valid_until);
-        if (untilDate.isValid()) {
-            untilDate = untilDate.format('dddd, MMMM Do YYYY, h:mm:ss a');
-        } else {
-            untilDate = props.jwt_meeting_valid_until;
+        let untilDate = '';
+        if (props.jwt_meeting) {
+            let date = moment.unix(props.jwt_meeting_valid_until);
+            if (date.isValid()) {
+                date = date.format('dddd, MMMM Do YYYY, h:mm:ss a');
+            } else {
+                date = props.jwt_meeting_valid_until;
+            }
+            untilDate = (<div style={style.validUntil}>{' Meeting link valid until: '} <b>{date}</b></div>);
         }
+
         const content = (
             <div>
                 <a
@@ -89,16 +94,13 @@ export default class PostTypeJitsi extends React.PureComponent {
                     />
                     {'JOIN MEETING'}
                 </a>
-                {props.jwt_meeting &&
-                    <p style={style.validUntil}>{' Meeting link valid until: '} <b>{untilDate}</b></p>
-                }
             </div>
         );
 
         if (props.meeting_personal) {
             subtitle = (
                 <span>
-                    {'Personal Meeting ID (PMI) : '}
+                    {'Personal Meeting ID (PMI): '}
                     <a
                         target='_blank'
                         rel='noopener noreferrer'
@@ -111,7 +113,7 @@ export default class PostTypeJitsi extends React.PureComponent {
         } else {
             subtitle = (
                 <span>
-                    {'Meeting ID : '}
+                    {'Meeting ID: '}
                     <a
                         target='_blank'
                         rel='noopener noreferrer'
@@ -141,6 +143,7 @@ export default class PostTypeJitsi extends React.PureComponent {
                             <div>
                                 <div style={style.body}>
                                     {content}
+                                    {untilDate}
                                 </div>
                             </div>
                         </div>
@@ -199,21 +202,8 @@ const getStyle = makeStyleFromTheme((theme) => {
             paddingRight: '8px',
             fill: theme.buttonColor
         },
-        summary: {
-            fontFamily: 'Open Sans',
-            fontSize: '14px',
-            fontWeight: '600',
-            lineHeight: '26px',
-            margin: '0',
-            padding: '14px 0 0 0'
-        },
-        summaryItem: {
-            fontFamily: 'Open Sans',
-            fontSize: '14px',
-            lineHeight: '26px'
-        },
         validUntil: {
-            marginTop: '8px'
+            marginTop: '10px'
         }
     };
 });
