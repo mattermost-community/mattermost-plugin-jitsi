@@ -1,11 +1,14 @@
-import request from 'superagent';
+import {Client4} from 'mattermost-redux/client';
+import {ClientError} from 'mattermost-redux/client/client4';
+
+import {id} from '../manifest';
 
 export default class Client {
     constructor() {
         if (window.basename) {
-            this.url = window.basename + '/plugins/jitsi';
+            this.url = window.basename + '/plugins/' + id;
         } else {
-            this.url = '/plugins/jitsi';
+            this.url = '/plugins/' + id;
         }
     }
 
@@ -18,19 +21,24 @@ export default class Client {
     }
 
     doPost = async (url, body, headers = {}) => {
-        headers['X-Requested-With'] = 'XMLHttpRequest';
+        const options = {
+            method: 'post',
+            body: JSON.stringify(body),
+            headers
+        };
 
-        try {
-            const response = await request.
-                post(url).
-                send(body).
-                set(headers).
-                type('application/json').
-                accept('application/json');
+        const response = await fetch(url, Client4.getOptions(options));
 
-            return response.body;
-        } catch (err) {
-            throw err;
+        if (response.ok) {
+            return response.json();
         }
+
+        const text = await response.text();
+
+        throw new ClientError(Client4.url, {
+            message: text || '',
+            status_code: response.status,
+            url
+        });
     }
 }

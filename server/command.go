@@ -34,8 +34,14 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		return commandError(args.ChannelId, fmt.Sprintf("getChannel() threw error: %s", appErr))
 	}
 
-	if _, err := p.startMeeting(user, channel, input, false); err != nil {
-		return commandError(args.ChannelId, fmt.Sprintf("startMeeting() threw error: %s", appErr))
+	if p.getConfiguration().JitsiNamingScheme == jitsiNameSchemaAsk && input == "" {
+		if err := p.askMeetingType(user, channel); err != nil {
+			return commandError(args.ChannelId, fmt.Sprintf("startMeeting() threw error: %s", appErr))
+		}
+	} else {
+		if _, err := p.startMeeting(user, channel, "", input, false); err != nil {
+			return commandError(args.ChannelId, fmt.Sprintf("startMeeting() threw error: %s", appErr))
+		}
 	}
 
 	return &model.CommandResponse{}, nil

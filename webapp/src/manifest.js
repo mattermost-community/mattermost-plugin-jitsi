@@ -85,6 +85,10 @@ const manifest = JSON.parse(`
                     {
                         "display_name": "Mattermost context specific names. Combination of team name, channel name and random text in public and private channels; personal meeting name in direct and group messages channels.",
                         "value": "mattermost"
+                    },
+                    {
+                        "display_name": "Allow user to select meeting name",
+                        "value": "ask"
                     }
                 ]
             }

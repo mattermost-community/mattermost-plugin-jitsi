@@ -16,9 +16,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-const (
-	PostMeetingKey = "post_meeting_"
-)
+const jitsiNameSchemaAsk = "ask"
+const jitsiNameSchemaEnglish = "english-titlecase"
+const jitsiNameSchemaUUID = "uuid"
+const jitsiNameSchemaMattermost = "mattermost"
 
 type Plugin struct {
 	plugin.MattermostPlugin
@@ -106,6 +107,10 @@ func signClaims(secret string, claims *Claims) (string, error) {
 	return string(token.Raw()), nil
 }
 
+func (p *Plugin) deleteEphemeralPost(userID, postID string) {
+	p.API.DeleteEphemeralPost(userID, postID)
+}
+
 func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, error) {
 	secret := p.getConfiguration().JitsiAppSecret
 
@@ -137,19 +142,21 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 	return signClaims(secret, claims)
 }
 
-func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingTopic string, personal bool) (string, error) {
-	meetingID := encodeJitsiMeetingID(meetingTopic)
+func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingID string, meetingTopic string, personal bool) (string, error) {
+	if meetingID == "" {
+		meetingID = encodeJitsiMeetingID(meetingTopic)
+	}
 	meetingPersonal := false
 
 	if len(meetingTopic) < 1 {
 		namingScheme := p.getConfiguration().JitsiNamingScheme
 
 		switch namingScheme {
-		case "english-titlecase":
+		case jitsiNameSchemaEnglish:
 			meetingID = generateEnglishTitleName()
-		case "uuid":
+		case jitsiNameSchemaUUID:
 			meetingID = generateUUIDName()
-		case "mattermost":
+		case jitsiNameSchemaMattermost:
 			if channel.Type == model.CHANNEL_DIRECT || channel.Type == model.CHANNEL_GROUP {
 				meetingID = generatePersonalMeetingName(user.Username, user.Id)
 				meetingTopic = fmt.Sprintf("%s's Personal Meeting", user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME))
@@ -208,10 +215,9 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingT
 	}
 
 	slackAttachment := model.SlackAttachment{
-		Fallback:  fmt.Sprintf("Video Meeting started at [%s](%s).\n\n[Join Meeting](%s)\n\n%s", meetingID, meetingURL, meetingURL, meetingUntil),
-		Title:     meetingTopic,
-		TitleLink: meetingURL,
-		Text:      fmt.Sprintf("%s: [%s](%s)\n\n[:movie_camera:  Join Meeting](%s)\n\n%s", meetingTypeString, meetingID, meetingURL, meetingURL, meetingUntil),
+		Fallback: fmt.Sprintf("Video Meeting started at [%s](%s).\n\n[Join Meeting](%s)\n\n%s", meetingID, meetingURL, meetingURL, meetingUntil),
+		Title:    meetingTopic,
+		Text:     fmt.Sprintf("%s: [%s](%s)\n\n[:movie_camera:  Join Meeting](%s)\n\n%s", meetingTypeString, meetingID, meetingURL, meetingURL, meetingUntil),
 	}
 
 	post := &model.Post{
@@ -237,11 +243,6 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingT
 		return "", err
 	}
 
-	err := p.API.KVSet(fmt.Sprintf("%v%v", PostMeetingKey, meetingID), []byte(post.Id))
-	if err != nil {
-		return "", err
-	}
-
 	return meetingID, nil
 }
 
@@ -252,5 +253,84 @@ func (c Claims) MarshalBinary() (data []byte, err error) {
 
 func encodeJitsiMeetingID(meeting string) string {
 	reg := regexp.MustCompile("[^a-zA-Z0-9]+")
+	meeting = strings.Replace(meeting, " ", "-", -1)
 	return reg.ReplaceAllString(meeting, "")
+}
+
+func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error {
+	apiURL := *p.API.GetConfig().ServiceSettings.SiteURL + "/plugins/jitsi/api/v1/meetings"
+
+	actions := []*model.PostAction{}
+
+	var team *model.Team
+	if channel.TeamId != "" {
+		team, _ = p.API.GetTeam(channel.TeamId)
+	}
+
+	actions = append(actions, &model.PostAction{
+		Name: "Meeting name with random words",
+		Integration: &model.PostActionIntegration{
+			URL: apiURL,
+			Context: map[string]interface{}{
+				"meeting_id":    generateEnglishTitleName(),
+				"meeting_topic": "Jitsi Meeting",
+				"personal":      true,
+			},
+		},
+	})
+
+	actions = append(actions, &model.PostAction{
+		Name: "Personal meeting",
+		Integration: &model.PostActionIntegration{
+			URL: apiURL,
+			Context: map[string]interface{}{
+				"meeting_id":    generatePersonalMeetingName(user.Username, user.Id),
+				"meeting_topic": fmt.Sprintf("%s's Meeting", user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME)),
+				"personal":      true,
+			},
+		},
+	})
+
+	if channel.Type == model.CHANNEL_OPEN || channel.Type == model.CHANNEL_PRIVATE {
+		actions = append(actions, &model.PostAction{
+			Name: "Channel meeting",
+			Integration: &model.PostActionIntegration{
+				URL: apiURL,
+				Context: map[string]interface{}{
+					"meeting_id":    generateTeamChannelName(team.Name, channel.Name),
+					"meeting_topic": fmt.Sprintf("%s Channel Meeting", channel.DisplayName),
+					"personal":      false,
+				},
+			},
+		})
+	}
+
+	actions = append(actions, &model.PostAction{
+		Name: "Meeting name with UUID",
+		Integration: &model.PostActionIntegration{
+			URL: apiURL,
+			Context: map[string]interface{}{
+				"meeting_id":    generateUUIDName(),
+				"meeting_topic": "Jitsi Meeting",
+				"personal":      false,
+			},
+		},
+	})
+
+	sa := model.SlackAttachment{
+		Title:   "Jitsi Meeting Start",
+		Text:    "Select type of meeting you want to start",
+		Actions: actions,
+	}
+
+	post := &model.Post{
+		UserId:    user.Id,
+		ChannelId: channel.Id,
+	}
+	post.SetProps(map[string]interface{}{
+		"attachments": []*model.SlackAttachment{&sa},
+	})
+	_ = p.API.SendEphemeralPost(user.Id, post)
+
+	return nil
 }
