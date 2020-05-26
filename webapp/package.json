@@ -27,7 +27,7 @@
     "webpack-cli": "^3.0.8"
   },
   "dependencies": {
-    "mattermost-redux": "^1.2.0",
+    "mattermost-redux": "5.22.0",
     "moment": "^2.26.0",
     "react": "16.4.1",
     "react-intl": "2.8.0",

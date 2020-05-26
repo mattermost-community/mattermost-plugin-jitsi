@@ -16,10 +16,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-const (
-	POST_MEETING_KEY = "post_meeting_"
-)
-
 type Plugin struct {
 	plugin.MattermostPlugin
 
@@ -106,6 +102,10 @@ func signClaims(secret string, claims *Claims) (string, error) {
 	return string(token.Raw()), nil
 }
 
+func (p *Plugin) deleteEphemeralPost(userId, postId string) {
+	p.API.DeleteEphemeralPost(userId, postId)
+}
+
 func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, error) {
 	secret := p.getConfiguration().JitsiAppSecret
 
@@ -137,8 +137,10 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 	return signClaims(secret, claims)
 }
 
-func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingTopic string, personal bool) (string, error) {
-	meetingID := encodeJitsiMeetingID(meetingTopic)
+func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingID string, meetingTopic string, personal bool) (string, error) {
+	if meetingID == "" {
+		meetingID = encodeJitsiMeetingID(meetingTopic)
+	}
 	meetingPersonal := false
 
 	if len(meetingTopic) < 1 {
@@ -236,11 +238,6 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingT
 		return "", err
 	}
 
-	err := p.API.KVSet(fmt.Sprintf("%v%v", POST_MEETING_KEY, meetingID), []byte(post.Id))
-	if err != nil {
-		return "", err
-	}
-
 	return meetingID, nil
 }
 
@@ -250,9 +247,88 @@ func (c Claims) MarshalBinary() (data []byte, err error) {
 }
 
 func encodeJitsiMeetingID(meeting string) string {
-	reg, err := regexp.Compile("[^a-zA-Z0-9]+")
+	reg, err := regexp.Compile("[^a-zA-Z0-9-_]+")
 	if err != nil {
 		log.Fatal(err)
 	}
+	meeting = strings.Replace(meeting, " ", "-", -1)
 	return reg.ReplaceAllString(meeting, "")
+}
+
+func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error {
+	apiURL := *p.API.GetConfig().ServiceSettings.SiteURL + "/plugins/jitsi/api/v1/meetings"
+
+	actions := []*model.PostAction{}
+
+	var team *model.Team
+	if channel.TeamId != "" {
+		team, _ = p.API.GetTeam(channel.TeamId)
+	}
+
+	actions = append(actions, &model.PostAction{
+		Name: "Meeting name with random words",
+		Integration: &model.PostActionIntegration{
+			URL: apiURL,
+			Context: map[string]interface{}{
+				"meeting_id":    generateEnglishTitleName(),
+				"meeting_topic": "Jitsi Meeting",
+				"personal":      true,
+			},
+		},
+	})
+
+	actions = append(actions, &model.PostAction{
+		Name: "Personal meeting",
+		Integration: &model.PostActionIntegration{
+			URL: apiURL,
+			Context: map[string]interface{}{
+				"meeting_id":    generatePersonalMeetingName(user.Username, user.Id),
+				"meeting_topic": fmt.Sprintf("%s's Meeting", user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME)),
+				"personal":      true,
+			},
+		},
+	})
+
+	if channel.Type == model.CHANNEL_OPEN || channel.Type == model.CHANNEL_PRIVATE {
+		actions = append(actions, &model.PostAction{
+			Name: "Channel meeting",
+			Integration: &model.PostActionIntegration{
+				URL: apiURL,
+				Context: map[string]interface{}{
+					"meeting_id":    generateTeamChannelName(team.Name, channel.Name),
+					"meeting_topic": fmt.Sprintf("%s Channel Meeting", channel.DisplayName),
+					"personal":      false,
+				},
+			},
+		})
+	}
+
+	actions = append(actions, &model.PostAction{
+		Name: "Meeting name with UUID",
+		Integration: &model.PostActionIntegration{
+			URL: apiURL,
+			Context: map[string]interface{}{
+				"meeting_id":    generateUUIDName(),
+				"meeting_topic": "Jitsi Meeting",
+				"personal":      false,
+			},
+		},
+	})
+
+	sa := model.SlackAttachment{
+		Title:   "Jitsi Meeting Start",
+		Text:    "Select type of meeting you want to start",
+		Actions: actions,
+	}
+
+	post := &model.Post{
+		UserId:    user.Id,
+		ChannelId: channel.Id,
+	}
+	post.SetProps(map[string]interface{}{
+		"attachments": []*model.SlackAttachment{&sa},
+	})
+	_ = p.API.SendEphemeralPost(user.Id, post)
+
+	return nil
 }
