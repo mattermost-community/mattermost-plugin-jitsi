@@ -24,9 +24,9 @@ Go to **System Console > Plugins > Jitsi** and set the following values:
 
 1. **Enable Plugin**: ``true``
 2. **Jitsi URL**: The URL for your on-premise Jitsi server. If you set the Jitsi Server URL to https://meet.jit.si it uses the public server provided by Jitsi.
-3. (Optional) If your Jitsi server uses JSON Web Tokens (JWT) for authentication, set **Use JWT Authentication for Jitsi** to true, and specify the App ID and App Secret used for JWT authentication.
+3. (Optional) If your Jitsi server uses JSON Web Tokens (JWT) for authentication, set **Use JWT Authentication for Jitsi** to true, and specify the **App ID** and **App Secret** used for JWT authentication.
 4. (Optional) **Meeting Link Expiry Time** in minutes. Defaults to 30 minutes.
-5. (Optional) **Meeting Naming Scheme** for auto-generated Jitsi meeting links. Defaults to generating a UUID as the meeting link, but you can also define it as the team and channel name where the Jitsi meeting is created.
+5. **Jitsi Meeting Names** for auto-generated Jitsi meetings. Defaults to using random English words in title case, but you can also use a UUID as the meeting link, or the team and channel name where the Jitsi meeting is created.
 
 You're all set! To test it, go to any Mattermost channel and click the video icon in the channel header to start a new Jitsi meeting.
 
