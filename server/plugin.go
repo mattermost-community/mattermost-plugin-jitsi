@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	POST_MEETING_KEY = "post_meeting_"
+	PostMeetingKey = "post_meeting_"
 )
 
 type Plugin struct {
@@ -52,7 +52,7 @@ type User struct {
 	Avatar string `json:"avatar"`
 	Name   string `json:"name"`
 	Email  string `json:"email"`
-	Id     string `json:"id"`
+	ID     string `json:"id"`
 }
 
 type Context struct {
@@ -96,7 +96,7 @@ func signClaims(secret string, claims *Claims) (string, error) {
 	signer, err2 := jwt.NewSignerHS(jwt.HS256, []byte(secret))
 	if err2 != nil {
 		log.Printf("Error generating new HS256 signer: %v", err2)
-		return "", errors.New("Internal error")
+		return "", errors.New("internal error")
 	}
 	builder := jwt.NewBuilder(signer)
 	token, err := builder.Build(claims)
@@ -115,11 +115,11 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 	}
 
 	config := p.API.GetConfig()
-	if config.PrivacySettings.ShowFullName == nil || *config.PrivacySettings.ShowFullName == false {
+	if config.PrivacySettings.ShowFullName == nil || !*config.PrivacySettings.ShowFullName {
 		user.FirstName = ""
 		user.LastName = ""
 	}
-	if config.PrivacySettings.ShowEmailAddress == nil || *config.PrivacySettings.ShowEmailAddress == false {
+	if config.PrivacySettings.ShowEmailAddress == nil || !*config.PrivacySettings.ShowEmailAddress {
 		user.Email = ""
 	}
 	newContext := Context{
@@ -127,7 +127,7 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 			Avatar: fmt.Sprintf("%s/api/v4/users/%s/image?_=%d", *config.ServiceSettings.SiteURL, user.Id, user.LastPictureUpdate),
 			Name:   user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME),
 			Email:  user.Email,
-			Id:     user.Id,
+			ID:     user.Id,
 		},
 		Group: claims.Context.Group,
 	}
@@ -237,7 +237,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingT
 		return "", err
 	}
 
-	err := p.API.KVSet(fmt.Sprintf("%v%v", POST_MEETING_KEY, meetingID), []byte(post.Id))
+	err := p.API.KVSet(fmt.Sprintf("%v%v", PostMeetingKey, meetingID), []byte(post.Id))
 	if err != nil {
 		return "", err
 	}
@@ -251,9 +251,6 @@ func (c Claims) MarshalBinary() (data []byte, err error) {
 }
 
 func encodeJitsiMeetingID(meeting string) string {
-	reg, err := regexp.Compile("[^a-zA-Z0-9]+")
-	if err != nil {
-		log.Fatal(err)
-	}
+	reg := regexp.MustCompile("[^a-zA-Z0-9]+")
 	return reg.ReplaceAllString(meeting, "")
 }

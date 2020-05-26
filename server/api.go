@@ -10,10 +10,10 @@ import (
 )
 
 type StartMeetingRequest struct {
-	ChannelId string `json:"channel_id"`
+	ChannelID string `json:"channel_id"`
 	Personal  bool   `json:"personal"`
 	Topic     string `json:"topic"`
-	MeetingId int    `json:"meeting_id"`
+	MeetingID int    `json:"meeting_id"`
 }
 
 func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Request) {
@@ -52,12 +52,12 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if _, err := p.API.GetChannelMember(req.ChannelId, userID); err != nil {
+	if _, err := p.API.GetChannelMember(req.ChannelID, userID); err != nil {
 		http.Error(w, "Forbidden", http.StatusForbidden)
 		return
 	}
 
-	channel, appErr := p.API.GetChannel(req.ChannelId)
+	channel, appErr := p.API.GetChannel(req.ChannelID)
 	if appErr != nil {
 		http.Error(w, "Forbidden", http.StatusForbidden)
 		return
@@ -71,12 +71,12 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 
 	b, err2 := json.Marshal(map[string]string{"meeting_id": meetingID})
 	if err2 != nil {
-		log.Printf("Error marshalling the MeetingID to json: %v", err2)
+		log.Printf("Error marshaling the MeetingID to json: %v", err2)
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
+	_, _ = w.Write(b)
 }
 
 func (p *Plugin) handleEnrichMeetingJwt(w http.ResponseWriter, r *http.Request) {
@@ -85,8 +85,8 @@ func (p *Plugin) handleEnrichMeetingJwt(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	userId := r.Header.Get("Mattermost-User-Id")
-	if userId == "" {
+	userID := r.Header.Get("Mattermost-User-Id")
+	if userID == "" {
 		http.Error(w, "Not authorized", http.StatusUnauthorized)
 		return
 	}
@@ -99,7 +99,7 @@ func (p *Plugin) handleEnrichMeetingJwt(w http.ResponseWriter, r *http.Request) 
 
 	var user *model.User
 	var err *model.AppError
-	user, err = p.API.GetUser(userId)
+	user, err = p.API.GetUser(userID)
 	if err != nil {
 		http.Error(w, err.Error(), err.StatusCode)
 	}
@@ -120,10 +120,10 @@ func (p *Plugin) handleEnrichMeetingJwt(w http.ResponseWriter, r *http.Request) 
 
 	b, err2 := json.Marshal(map[string]string{"jwt": meetingJWT})
 	if err2 != nil {
-		log.Printf("Error marshalling the JWT json: %v", err2)
+		log.Printf("Error marshaling the JWT json: %v", err2)
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
+	_, _ = w.Write(b)
 }

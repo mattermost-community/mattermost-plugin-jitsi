@@ -41,7 +41,7 @@ func (c *configuration) Clone() *configuration {
 // IsValid checks if all needed fields are set.
 func (c *configuration) IsValid() error {
 	if len(c.JitsiURL) == 0 {
-		return fmt.Errorf("JitsiUrl is not configured.")
+		return fmt.Errorf("the JitsiUrl is not configured")
 	}
 
 	_, err := url.Parse(c.JitsiURL)

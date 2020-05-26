@@ -78,39 +78,23 @@ const manifestStr = `
       },
       {
         "key": "JitsiNamingScheme",
-        "display_name": "Meeting Naming Scheme",
+        "display_name": "Jitsi Meeting Names",
         "type": "radio",
-        "help_text": "How should the plugin choose a meeting name? Some names may cause conflicts if you use them on a public server, like meet.jit.si.",
+        "help_text": "Select how meeting names are generated.",
         "placeholder": "",
         "default": "english-titlecase",
         "options": [
           {
-            "display_name": "English words, title-case (e.g. PlayfulDragonsObserveCuriously)",
+            "display_name": "Random English words in title case (e.g. PlayfulDragonsObserveCuriously)",
             "value": "english-titlecase"
           },
           {
-            "display_name": "English words, kebab-case (e.g. playful-dragons-observe-curiously)",
-            "value": "english-kebabcase"
-          },
-          {
-            "display_name": "UUID",
+            "display_name": "UUID (universally unique identifier)",
             "value": "uuid"
           },
           {
-            "display_name": "10 digit code (name conflict risk!)",
-            "value": "digits"
-          },
-          {
-            "display_name": "10 letter code (name conflict risk!)",
-            "value": "letters"
-          },
-          {
-            "display_name": "Team name and channel name",
-            "value": "teamchannel"
-          },
-          {
-            "display_name": "Team name and channel name plus a random hash (more secure)",
-            "value": "teamchannel-salt"
+            "display_name": "Mattermost context specific names. Combination of team name, channel name and random text in public and private channels; personal meeting name in direct and group messages channels.",
+            "value": "mattermost"
           }
         ]
       }

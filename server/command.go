@@ -10,10 +10,10 @@ import (
 
 const jitsiCommand = "jitsi"
 
-func commandError(channelId string, detailedError string) (*model.CommandResponse, *model.AppError) {
+func commandError(channelID string, detailedError string) (*model.CommandResponse, *model.AppError) {
 	return &model.CommandResponse{
 			ResponseType: model.COMMAND_RESPONSE_TYPE_EPHEMERAL,
-			ChannelId:    channelId,
+			ChannelId:    channelID,
 			Text:         "We could not start a meeting at this time.",
 		}, &model.AppError{
 			Message:       "We could not start a meeting at this time.",
