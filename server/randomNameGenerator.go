@@ -1,7 +1,7 @@
 package main
 
 import (
-	"crypto/sha1"
+	"crypto/sha256"
 	"fmt"
 	"io"
 	"math/rand"
@@ -152,9 +152,9 @@ func generateTeamChannelName(teamName string, channelName string) string {
 	return name
 }
 
-func generatePersonalMeetingName(username string, userId string) string {
-	h := sha1.New()
-	io.WriteString(h, userId)
+func generatePersonalMeetingName(username string, userID string) string {
+	h := sha256.New()
+	_, _ = io.WriteString(h, userID)
 	hash := fmt.Sprintf("%x", h.Sum(nil))
-	return username + "-" + hash
+	return username + "-" + hash[0:20]
 }

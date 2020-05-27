@@ -7,6 +7,9 @@ endif
 # Ensure that the build tools are compiled. Go's caching makes this quick.
 $(shell cd build/manifest && $(GO) build -o ../bin/manifest)
 
+# Ensure that the deployment tools are compiled. Go's caching makes this quick.
+$(shell cd build/deploy && $(GO) build -o ../bin/deploy)
+
 # Extract the plugin id from the manifest.
 PLUGIN_ID ?= $(shell build/bin/manifest id)
 ifeq ($(PLUGIN_ID),)
@@ -27,6 +30,12 @@ HAS_WEBAPP ?= $(shell build/bin/manifest has_webapp)
 
 # Determine if a /public folder is in use
 HAS_PUBLIC ?= $(wildcard public/.)
+
+# Determine if the mattermost-utilities repo is present
+HAS_MM_UTILITIES ?= $(wildcard $(MM_UTILITIES_DIR)/.)
+
+# Store the current path for later use
+PWD ?= $(shell pwd)
 
 # Ensure that npm (and thus node) is installed.
 ifneq ($(HAS_WEBAPP),)

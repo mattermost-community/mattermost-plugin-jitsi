@@ -16,6 +16,11 @@ import (
 	"github.com/pkg/errors"
 )
 
+const jitsiNameSchemaAsk = "ask"
+const jitsiNameSchemaEnglish = "english-titlecase"
+const jitsiNameSchemaUUID = "uuid"
+const jitsiNameSchemaMattermost = "mattermost"
+
 type Plugin struct {
 	plugin.MattermostPlugin
 
@@ -48,7 +53,7 @@ type User struct {
 	Avatar string `json:"avatar"`
 	Name   string `json:"name"`
 	Email  string `json:"email"`
-	Id     string `json:"id"`
+	ID     string `json:"id"`
 }
 
 type Context struct {
@@ -92,7 +97,7 @@ func signClaims(secret string, claims *Claims) (string, error) {
 	signer, err2 := jwt.NewSignerHS(jwt.HS256, []byte(secret))
 	if err2 != nil {
 		log.Printf("Error generating new HS256 signer: %v", err2)
-		return "", errors.New("Internal error")
+		return "", errors.New("internal error")
 	}
 	builder := jwt.NewBuilder(signer)
 	token, err := builder.Build(claims)
@@ -102,8 +107,8 @@ func signClaims(secret string, claims *Claims) (string, error) {
 	return string(token.Raw()), nil
 }
 
-func (p *Plugin) deleteEphemeralPost(userId, postId string) {
-	p.API.DeleteEphemeralPost(userId, postId)
+func (p *Plugin) deleteEphemeralPost(userID, postID string) {
+	p.API.DeleteEphemeralPost(userID, postID)
 }
 
 func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, error) {
@@ -115,11 +120,11 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 	}
 
 	config := p.API.GetConfig()
-	if config.PrivacySettings.ShowFullName == nil || *config.PrivacySettings.ShowFullName == false {
+	if config.PrivacySettings.ShowFullName == nil || !*config.PrivacySettings.ShowFullName {
 		user.FirstName = ""
 		user.LastName = ""
 	}
-	if config.PrivacySettings.ShowEmailAddress == nil || *config.PrivacySettings.ShowEmailAddress == false {
+	if config.PrivacySettings.ShowEmailAddress == nil || !*config.PrivacySettings.ShowEmailAddress {
 		user.Email = ""
 	}
 	newContext := Context{
@@ -127,7 +132,7 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 			Avatar: fmt.Sprintf("%s/api/v4/users/%s/image?_=%d", *config.ServiceSettings.SiteURL, user.Id, user.LastPictureUpdate),
 			Name:   user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME),
 			Email:  user.Email,
-			Id:     user.Id,
+			ID:     user.Id,
 		},
 		Group: claims.Context.Group,
 	}
@@ -147,11 +152,11 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 		namingScheme := p.getConfiguration().JitsiNamingScheme
 
 		switch namingScheme {
-		case "english-titlecase":
+		case jitsiNameSchemaEnglish:
 			meetingID = generateEnglishTitleName()
-		case "uuid":
+		case jitsiNameSchemaUUID:
 			meetingID = generateUUIDName()
-		case "mattermost":
+		case jitsiNameSchemaMattermost:
 			if channel.Type == model.CHANNEL_DIRECT || channel.Type == model.CHANNEL_GROUP {
 				meetingID = generatePersonalMeetingName(user.Username, user.Id)
 				meetingTopic = fmt.Sprintf("%s's Personal Meeting", user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME))
@@ -247,10 +252,7 @@ func (c Claims) MarshalBinary() (data []byte, err error) {
 }
 
 func encodeJitsiMeetingID(meeting string) string {
-	reg, err := regexp.Compile("[^a-zA-Z0-9-_]+")
-	if err != nil {
-		log.Fatal(err)
-	}
+	reg := regexp.MustCompile("[^a-zA-Z0-9]+")
 	meeting = strings.Replace(meeting, " ", "-", -1)
 	return reg.ReplaceAllString(meeting, "")
 }

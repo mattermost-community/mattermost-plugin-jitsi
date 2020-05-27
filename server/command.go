@@ -10,10 +10,10 @@ import (
 
 const jitsiCommand = "jitsi"
 
-func commandError(channelId string, detailedError string) (*model.CommandResponse, *model.AppError) {
+func commandError(channelID string, detailedError string) (*model.CommandResponse, *model.AppError) {
 	return &model.CommandResponse{
 			ResponseType: model.COMMAND_RESPONSE_TYPE_EPHEMERAL,
-			ChannelId:    channelId,
+			ChannelId:    channelID,
 			Text:         "We could not start a meeting at this time.",
 		}, &model.AppError{
 			Message:       "We could not start a meeting at this time.",
@@ -34,7 +34,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		return commandError(args.ChannelId, fmt.Sprintf("getChannel() threw error: %s", appErr))
 	}
 
-	if p.getConfiguration().JitsiNamingScheme == "ask" && input == "" {
+	if p.getConfiguration().JitsiNamingScheme == jitsiNameSchemaAsk && input == "" {
 		if err := p.askMeetingType(user, channel); err != nil {
 			return commandError(args.ChannelId, fmt.Sprintf("startMeeting() threw error: %s", appErr))
 		}

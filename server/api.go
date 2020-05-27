@@ -12,10 +12,10 @@ import (
 )
 
 type StartMeetingRequest struct {
-	ChannelId string `json:"channel_id"`
+	ChannelID string `json:"channel_id"`
 	Personal  bool   `json:"personal"`
 	Topic     string `json:"topic"`
-	MeetingId int    `json:"meeting_id"`
+	MeetingID int    `json:"meeting_id"`
 }
 
 type StartMeetingFromAction struct {
@@ -73,34 +73,34 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	channelId := req.ChannelId
-	if channelId == "" {
-		channelId = action.ChannelId
+	channelID := req.ChannelID
+	if channelID == "" {
+		channelID = action.ChannelId
 	}
 
-	if _, err := p.API.GetChannelMember(channelId, userID); err != nil {
+	if _, err := p.API.GetChannelMember(channelID, userID); err != nil {
 		http.Error(w, "Forbidden", http.StatusForbidden)
 		return
 	}
 
-	channel, appErr := p.API.GetChannel(channelId)
+	channel, appErr := p.API.GetChannel(channelID)
 	if appErr != nil {
 		http.Error(w, "Forbidden", http.StatusForbidden)
 		return
 	}
 
-	if p.getConfiguration().JitsiNamingScheme == "ask" && action.PostId == "" {
+	if p.getConfiguration().JitsiNamingScheme == jitsiNameSchemaAsk && action.PostId == "" {
 		err := p.askMeetingType(user, channel)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		w.Write([]byte("OK"))
+		_, _ = w.Write([]byte("OK"))
 	} else {
 		var meetingID string
 		var err error
-		if p.getConfiguration().JitsiNamingScheme == "ask" && action.PostId != "" {
+		if p.getConfiguration().JitsiNamingScheme == jitsiNameSchemaAsk && action.PostId != "" {
 			meetingID, err = p.startMeeting(user, channel, action.Context.MeetingID, action.Context.MeetingTopic, action.Context.Personal)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -117,12 +117,12 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 
 		b, err2 := json.Marshal(map[string]string{"meeting_id": meetingID})
 		if err2 != nil {
-			log.Printf("Error marshalling the MeetingID to json: %v", err2)
+			log.Printf("Error marshaling the MeetingID to json: %v", err2)
 			http.Error(w, "Internal error", http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
-		w.Write(b)
+		_, _ = w.Write(b)
 	}
 }
 
@@ -132,8 +132,8 @@ func (p *Plugin) handleEnrichMeetingJwt(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	userId := r.Header.Get("Mattermost-User-Id")
-	if userId == "" {
+	userID := r.Header.Get("Mattermost-User-Id")
+	if userID == "" {
 		http.Error(w, "Not authorized", http.StatusUnauthorized)
 		return
 	}
@@ -146,7 +146,7 @@ func (p *Plugin) handleEnrichMeetingJwt(w http.ResponseWriter, r *http.Request) 
 
 	var user *model.User
 	var err *model.AppError
-	user, err = p.API.GetUser(userId)
+	user, err = p.API.GetUser(userID)
 	if err != nil {
 		http.Error(w, err.Error(), err.StatusCode)
 	}
@@ -167,10 +167,10 @@ func (p *Plugin) handleEnrichMeetingJwt(w http.ResponseWriter, r *http.Request) 
 
 	b, err2 := json.Marshal(map[string]string{"jwt": meetingJWT})
 	if err2 != nil {
-		log.Printf("Error marshalling the JWT json: %v", err2)
+		log.Printf("Error marshaling the JWT json: %v", err2)
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
+	_, _ = w.Write(b)
 }
