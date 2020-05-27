@@ -1,4 +1,4 @@
-import ClientClass from './client.js';
+import ClientClass from './client';
 
 const Client = new ClientClass();
 

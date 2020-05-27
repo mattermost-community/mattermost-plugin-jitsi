@@ -1,4 +1,4 @@
-export function formatDate(date, useMilitaryTime = false) {
+export function formatDate(date: Date, useMilitaryTime: boolean = false): string {
     const monthNames = [
         'Jan', 'Feb', 'Mar',
         'Apr', 'May', 'Jun', 'Jul',
@@ -9,7 +9,7 @@ export function formatDate(date, useMilitaryTime = false) {
     const day = date.getDate();
     const monthIndex = date.getMonth();
     let hours = date.getHours();
-    let minutes = date.getMinutes();
+    const minutes = date.getMinutes();
 
     let ampm = '';
     if (!useMilitaryTime) {
@@ -24,9 +24,10 @@ export function formatDate(date, useMilitaryTime = false) {
         }
     }
 
+    let minutesText = minutes.toString();
     if (minutes < 10) {
-        minutes = '0' + minutes;
+        minutesText = '0' + minutes;
     }
 
-    return monthNames[monthIndex] + ' ' + day + ' at ' + hours + ':' + minutes + ampm;
+    return monthNames[monthIndex] + ' ' + day + ' at ' + hours + ':' + minutesText + ampm;
 }

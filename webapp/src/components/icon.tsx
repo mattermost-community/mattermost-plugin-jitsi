@@ -1,7 +1,6 @@
-import React from 'react';
+import * as React from 'react';
 
-import {Svgs} from '../constants';
-import {makeStyleFromTheme} from 'mattermost-redux/utils/theme_utils';
+import Svgs from '../constants/svgs';
 
 export default class Icon extends React.PureComponent {
     render() {
@@ -15,11 +14,12 @@ export default class Icon extends React.PureComponent {
         );
     }
 }
-const getStyle = makeStyleFromTheme(() => {
+
+function getStyle(): {[key: string]: React.CSSProperties} {
     return {
         iconStyle: {
             position: 'relative',
             top: '-1px'
         }
     };
-});
+}

@@ -98,5 +98,5 @@ const manifest = JSON.parse(`
 `);
 
 export default manifest;
-export const id = manifest.id;
-export const version = manifest.version;
+export const id: string = manifest.id;
+export const version: string = manifest.version;

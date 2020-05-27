@@ -4,23 +4,24 @@ import {ClientError} from 'mattermost-redux/client/client4';
 import {id} from '../manifest';
 
 export default class Client {
+    url: string;
+
     constructor() {
-        if (window.basename) {
-            this.url = window.basename + '/plugins/' + id;
-        } else {
-            this.url = '/plugins/' + id;
+        this.url = '/plugins/' + id;
+        if ((window as any).basename) {
+            this.url = (window as any).basename + '/plugins/' + id;
         }
     }
 
-    startMeeting = async (channelId, personal = false, topic = '', meetingId = 0) => {
+    startMeeting = async (channelId: string, personal: boolean = false, topic: string = '', meetingId: string = '') => {
         return this.doPost(`${this.url}/api/v1/meetings`, {channel_id: channelId, personal, topic, meeting_id: meetingId});
     }
 
-    enrichMeetingJwt = async (meetingJwt) => {
+    enrichMeetingJwt = async (meetingJwt: string) => {
         return this.doPost(`${this.url}/api/v1/meetings/enrich`, {jwt: meetingJwt});
     }
 
-    doPost = async (url, body, headers = {}) => {
+    doPost = async (url: string, body: any, headers: any = {}) => {
         const options = {
             method: 'post',
             body: JSON.stringify(body),

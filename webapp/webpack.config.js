@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = {
     entry: [
-        './src/index.jsx'
+        './src/index.tsx'
     ],
     resolve: {
         modules: [
@@ -14,21 +14,9 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(js|jsx|ts|tsx)$/,
+                test: /\.(ts|tsx)$/,
                 exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/env', '@babel/react'],
-                        plugins: [
-                            '@babel/plugin-proposal-class-properties',
-                            '@babel/plugin-proposal-object-rest-spread'
-                        ],
-                        cacheDirectory: true
-
-                        // Babel configuration is in babel.config.js because jest requires it to be there.
-                    }
-                }
+                use: 'ts-loader'
             }
         ]
     },

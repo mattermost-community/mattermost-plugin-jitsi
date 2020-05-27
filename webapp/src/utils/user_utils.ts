@@ -1,6 +1,9 @@
 import {getFullName} from 'mattermost-redux/utils/user_utils';
+import {UserProfile} from 'mattermost-redux/types/users';
 
-export function displayUsernameForUser(user, config) {
+import {Config} from '../types';
+
+export function displayUsernameForUser(user: UserProfile, config: Config): string {
     if (user) {
         const nameFormat = config.TeammateNameDisplay;
         let name = user.username;

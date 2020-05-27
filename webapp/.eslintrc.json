@@ -12,7 +12,8 @@
     },
     "parser": "babel-eslint",
     "plugins": [
-        "react"
+        "react",
+        "@typescript-eslint"
     ],
     "env": {
         "browser": true,
@@ -38,7 +39,7 @@
         "brace-style": [2, "1tbs", { "allowSingleLine": false }],
         "camelcase": [2, {"properties": "never"}],
         "capitalized-comments": 0,
-        "class-methods-use-this": 1,
+        "class-methods-use-this": 0,
         "comma-dangle": [2, "never"],
         "comma-spacing": [2, {"before": false, "after": true}],
         "comma-style": [2, "last"],
@@ -202,7 +203,7 @@
         "react/jsx-closing-bracket-location": [2, { "location": "tag-aligned" }],
         "react/jsx-curly-spacing": [2, "never"],
         "react/jsx-equals-spacing": [2, "never"],
-        "react/jsx-filename-extension": 2,
+        "react/jsx-filename-extension": [2, { "extensions": [".tsx"] }],
         "react/jsx-first-prop-new-line": [2, "multiline"],
         "react/jsx-handler-names": 0,
         "react/jsx-indent": [2, 4],
