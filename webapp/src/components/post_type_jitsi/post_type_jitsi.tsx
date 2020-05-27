@@ -1,83 +1,76 @@
-import React from 'react';
-import moment from 'moment';
+import * as React from 'react';
 
-import {Svgs} from '../../constants';
+import {Post} from 'mattermost-redux/types/posts';
 
-import PropTypes from 'prop-types';
+import Svgs from '../../constants/svgs';
+
 import {makeStyleFromTheme} from 'mattermost-redux/utils/theme_utils';
 
-export default class PostTypeJitsi extends React.PureComponent {
-    static propTypes = {
+export type Props = {
+    post?: Post,
+    theme: any,
+    creatorName: string,
+    useMilitaryTime: boolean,
+    actions: {
+        enrichMeetingJwt: (jwt: string) => any
+    }
+}
 
-        /*
-         * The post to render the message for.
-         */
-        post: PropTypes.object.isRequired,
+type State = {
+    meetingJwt?: string
+}
 
-        /*
-         * Logged in user's theme.
-         */
-        theme: PropTypes.object.isRequired,
-
-        /*
-         * Creator's name.
-         */
-        creatorName: PropTypes.string.isRequired,
-
-        /*
-         * Actions
-         */
-        actions: PropTypes.shape({
-            enrichMeetingJwt: PropTypes.func.isRequired
-        }).isRequired
-    };
-
-    static defaultProps = {
-        mentionKeys: []
-    };
-
-    constructor(props) {
+export class PostTypeJitsi extends React.PureComponent<Props, State> {
+    constructor(props: Props) {
         super(props);
 
-        this.state = {
-            meetingJwt: null
-        };
+        this.state = {};
     }
 
     componentDidMount() {
         const {post} = this.props;
-        if (post.props.jwt_meeting) {
-            this.props.actions.enrichMeetingJwt(post.props.meeting_jwt).then((response) => {
-                this.setState({meetingJwt: response.data.jwt});
-            });
+        if (post) {
+            if (post.props.jwt_meeting) {
+                this.props.actions.enrichMeetingJwt(post.props.meeting_jwt).then((response: any) => {
+                    if (response.data) {
+                        this.setState({meetingJwt: response.data.jwt});
+                    }
+                });
+            }
         }
+    }
+
+    renderUntilDate = (post: Post, style: any): React.ReactNode => {
+        const props = post.props;
+
+        if (props.jwt_meeting) {
+            const date = new Date(props.jwt_meeting_valid_until * 1000);
+            let dateStr = props.jwt_meeting_valid_until;
+            if (!isNaN(date.getTime())) {
+                dateStr = date.toString();
+            }
+            return (<div style={style.validUntil}>{' Meeting link valid until: '} <b>{dateStr}</b></div>);
+        }
+        return null;
     }
 
     render() {
         const style = getStyle(this.props.theme);
         const post = this.props.post;
-        const props = post.props || {};
+        if (!post) {
+            return null;
+        }
 
-        let subtitle;
+        const props = post.props;
 
         let meetingLink = props.meeting_link;
         if (this.state.meetingJwt) {
             meetingLink += '?jwt=' + this.state.meetingJwt;
         } else if (props.jwt_meeting) {
-            meetingLink += '?jwt=' + props.meeting_jwt;
+            meetingLink += '?jwt=' + (props.meeting_jwt);
         }
 
         const preText = `${this.props.creatorName} has started a meeting`;
-        let untilDate = '';
-        if (props.jwt_meeting) {
-            let date = moment.unix(props.jwt_meeting_valid_until);
-            if (date.isValid()) {
-                date = date.format('dddd, MMMM Do YYYY, h:mm:ss a');
-            } else {
-                date = props.jwt_meeting_valid_until;
-            }
-            untilDate = (<div style={style.validUntil}>{' Meeting link valid until: '} <b>{date}</b></div>);
-        }
 
         const content = (
             <div>
@@ -97,6 +90,7 @@ export default class PostTypeJitsi extends React.PureComponent {
             </div>
         );
 
+        let subtitle;
         if (props.meeting_personal) {
             subtitle = (
                 <span>
@@ -143,7 +137,7 @@ export default class PostTypeJitsi extends React.PureComponent {
                             <div>
                                 <div style={style.body}>
                                     {content}
-                                    {untilDate}
+                                    {this.renderUntilDate(post, style)}
                                 </div>
                             </div>
                         </div>

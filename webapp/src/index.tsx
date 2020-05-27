@@ -1,17 +1,19 @@
 // Copyright (c) 2017-present Mattermost, Inc. All Rights Reserved.
 // See License.txt for license information.
 
-import React from 'react';
+import * as React from 'react';
 
-import Icon from './components/icon.jsx';
+import {Channel} from 'mattermost-redux/types/channels';
+
+import Icon from './components/icon';
 import PostTypeJitsi from './components/post_type_jitsi';
 import {startMeeting} from './actions';
 
 class PluginClass {
-    initialize(registry, store) {
+    initialize(registry: any, store: any) {
         registry.registerChannelHeaderButtonAction(
             <Icon/>,
-            (channel) => {
+            (channel: Channel) => {
                 startMeeting(channel.id)(store.dispatch, store.getState);
             },
             'Start Jitsi Meeting'
@@ -20,4 +22,4 @@ class PluginClass {
     }
 }
 
-global.window.registerPlugin('jitsi', new PluginClass());
+(global as any).window.registerPlugin('jitsi', new PluginClass());

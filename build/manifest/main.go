@@ -38,8 +38,8 @@ const manifest = JSON.parse(` + "`" + `
 ` + "`" + `);
 
 export default manifest;
-export const id = manifest.id;
-export const version = manifest.version;
+export const id: string = manifest.id;
+export const version: string = manifest.version;
 `
 
 func main() {
@@ -145,7 +145,7 @@ func applyManifest(manifest *model.Manifest) error {
 
 		// write generated code to file by using JS file template.
 		if err := ioutil.WriteFile(
-			"webapp/src/manifest.js",
+			"webapp/src/manifest.ts",
 			[]byte(fmt.Sprintf(pluginIDJSFileTemplate, manifestStr)),
 			0644,
 		); err != nil {
