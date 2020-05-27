@@ -55,7 +55,7 @@ export function startMeeting(channelId: string, personal: boolean = false, topic
 }
 
 export function enrichMeetingJwt(meetingJwt: string) {
-    return async (dispatch: DispatchFunc, getState: GetStateFunc) => {
+    return async () => {
         try {
             const data = await Client.enrichMeetingJwt(meetingJwt);
             return {data};
