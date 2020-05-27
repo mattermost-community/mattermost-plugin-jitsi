@@ -7,9 +7,9 @@ module.exports = {
     resolve: {
         modules: [
             'src',
-            'node_modules',
+            'node_modules'
         ],
-        extensions: ['*', '.js', '.jsx', '.ts', '.tsx'],
+        extensions: ['*', '.js', '.jsx', '.ts', '.tsx']
     },
     module: {
         rules: [
@@ -24,24 +24,24 @@ module.exports = {
                             '@babel/plugin-proposal-class-properties',
                             '@babel/plugin-proposal-object-rest-spread'
                         ],
-                        cacheDirectory: true,
+                        cacheDirectory: true
 
                         // Babel configuration is in babel.config.js because jest requires it to be there.
-                    },
-                },
-            },
-        ],
+                    }
+                }
+            }
+        ]
     },
     externals: {
         react: 'React',
         redux: 'Redux',
         'react-redux': 'ReactRedux',
         'prop-types': 'PropTypes',
-        'react-bootstrap': 'ReactBootstrap',
+        'react-bootstrap': 'ReactBootstrap'
     },
     output: {
         path: path.join(__dirname, '/dist'),
         publicPath: '/',
-        filename: 'main.js',
-    },
+        filename: 'main.js'
+    }
 };
