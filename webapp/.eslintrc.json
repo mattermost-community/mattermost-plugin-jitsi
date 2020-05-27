@@ -1,5 +1,7 @@
 {
-    "extends": "eslint:recommended",
+    "extends": [
+        "eslint:recommended"
+    ],
     "parserOptions": {
         "ecmaVersion": 8,
         "sourceType": "module",
@@ -10,7 +12,7 @@
             "experimentalObjectRestSpread": true
         }
     },
-    "parser": "babel-eslint",
+    "parser": "@typescript-eslint/parser",
     "plugins": [
         "react",
         "@typescript-eslint"
@@ -164,7 +166,10 @@
         "no-unsafe-finally": 2,
         "no-unsafe-negation": 2,
         "no-unused-expressions": 2,
-        "no-unused-vars": [2, {"vars": "all", "args": "none"}],
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": [
+            "error"
+        ],
         "no-useless-computed-key": 2,
         "no-useless-concat": 2,
         "no-useless-constructor": 2,
@@ -196,6 +201,7 @@
         "quote-props": [2, "as-needed"],
         "quotes": [2, "single", "avoid-escape"],
         "radix": 2,
+        "@typescript-eslint/explicit-member-accessibility": 0,
         "react/display-name": [2, { "ignoreTranspilerName": false }],
         "react/forbid-component-props": 0,
         "react/forbid-elements": [2, { "forbid": ["embed"] }],
@@ -217,7 +223,6 @@
         "react/jsx-no-target-blank": 2,
         "react/jsx-no-undef": 2,
         "react/jsx-pascal-case": 2,
-        "react/jsx-space-before-closing": [2, "never"],
         "react/jsx-tag-spacing": [2, { "closingSlash": "never", "beforeSelfClosing": "never", "afterOpening": "never" }],
         "react/jsx-uses-react": 2,
         "react/jsx-uses-vars": 2,
