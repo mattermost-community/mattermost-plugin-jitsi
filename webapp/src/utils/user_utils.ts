@@ -3,7 +3,7 @@ import {UserProfile} from 'mattermost-redux/types/users';
 
 import {Config} from '../types';
 
-export function displayUsernameForUser(user: UserProfile, config: Config): string {
+export function displayUsernameForUser(user: UserProfile | null, config: Config): string {
     if (user) {
         const nameFormat = config.TeammateNameDisplay;
         let name = user.username;
