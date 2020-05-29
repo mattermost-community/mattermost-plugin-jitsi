@@ -77,6 +77,9 @@ export default class Conference extends React.PureComponent<Props, State> {
                 this.minimize();
             }
         });
+        this.api.on('readyToClose', () => {
+            this.close();
+        });
         this.api.on('tileViewChanged', (event: {enabled: boolean}) => {
             if (!this.state.minimized) {
                 this.setState({wasTileView: event.enabled});
