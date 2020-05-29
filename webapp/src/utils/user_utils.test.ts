@@ -1,3 +1,5 @@
+import {describe, expect, it} from '@jest/globals';
+
 import {UserProfile} from 'mattermost-redux/types/users';
 
 import {displayUsernameForUser} from './user_utils';
