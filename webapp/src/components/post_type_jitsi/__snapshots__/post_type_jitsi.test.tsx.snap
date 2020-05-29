@@ -50,7 +50,8 @@ exports[`PostTypeJitsi should render a post if the post type is not null, and sh
         <span>
           Meeting ID: 
           <a
-            href="http://test-meeting-link/test?jwt=xxxxxxxxxxxx"
+            href="http://test-meeting-link/test?jwt=xxxxxxxxxxxx#config.callDisplayName=\\"Test topic\\""
+            onClick={[Function]}
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -71,7 +72,8 @@ exports[`PostTypeJitsi should render a post if the post type is not null, and sh
             <div>
               <a
                 className="btn btn-lg btn-primary"
-                href="http://test-meeting-link/test?jwt=xxxxxxxxxxxx"
+                href="http://test-meeting-link/test?jwt=xxxxxxxxxxxx#config.callDisplayName=\\"Test topic\\""
+                onClick={[Function]}
                 rel="noopener noreferrer"
                 style={
                   Object {
@@ -174,7 +176,8 @@ exports[`PostTypeJitsi should render a post without token if there is no jwt tok
         <span>
           Meeting ID: 
           <a
-            href="http://test-meeting-link/test"
+            href="http://test-meeting-link/test#config.callDisplayName=\\"Test topic\\""
+            onClick={[Function]}
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -195,7 +198,8 @@ exports[`PostTypeJitsi should render a post without token if there is no jwt tok
             <div>
               <a
                 className="btn btn-lg btn-primary"
-                href="http://test-meeting-link/test"
+                href="http://test-meeting-link/test#config.callDisplayName=\\"Test topic\\""
+                onClick={[Function]}
                 rel="noopener noreferrer"
                 style={
                   Object {
@@ -287,7 +291,8 @@ exports[`PostTypeJitsi should render the a different subtitle if the meeting is 
         <span>
           Personal Meeting ID (PMI): 
           <a
-            href="http://test-meeting-link/test?jwt=xxxxxxxxxxxx"
+            href="http://test-meeting-link/test?jwt=xxxxxxxxxxxx#config.callDisplayName=\\"Test topic\\""
+            onClick={[Function]}
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -308,7 +313,8 @@ exports[`PostTypeJitsi should render the a different subtitle if the meeting is 
             <div>
               <a
                 className="btn btn-lg btn-primary"
-                href="http://test-meeting-link/test?jwt=xxxxxxxxxxxx"
+                href="http://test-meeting-link/test?jwt=xxxxxxxxxxxx#config.callDisplayName=\\"Test topic\\""
+                onClick={[Function]}
                 rel="noopener noreferrer"
                 style={
                   Object {

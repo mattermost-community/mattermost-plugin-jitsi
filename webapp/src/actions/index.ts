@@ -81,3 +81,15 @@ export function loadConfig() {
         }
     };
 }
+
+export function openJitsiMeeting(post: Post | null, jwt: string | null) {
+    return (dispatch: DispatchFunc) => {
+        dispatch({
+            type: ActionTypes.OPEN_MEETING,
+            data: {
+                post,
+                jwt
+            }
+        });
+    };
+}

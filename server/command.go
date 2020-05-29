@@ -16,6 +16,7 @@ const commandHelp = `* |/jitsi| - Create a new meeting
 * |/jitsi settings [setting] [value]| - Update your user settings (see below for options)
 
 ###### Jitsi Settings:
+* |/jitsi settings embedded [true/false]|: When true, Jitsi meeting is embedded as a floating window inside Mattermost. When false, Jitsi meeting opens in a new window.
 * |/jitsi settings naming_scheme [words/uuid/mattermost/ask]|: Select how meeting names are generated with one of these options:
     * |words|: Random English words in title case (e.g. PlayfulDragonsObserveCuriously)
     * |uuid|: UUID (universally unique identifier)
@@ -132,7 +133,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 	}
 
 	if len(parameters) == 0 {
-		text = fmt.Sprintf("###### Jitsi Settings:\n* Naming Scheme: `%s`", userConfig.NamingScheme)
+		text = fmt.Sprintf("###### Jitsi Settings:\n* Embedded: `%v`\n* Naming Scheme: `%s`", userConfig.Embedded, userConfig.NamingScheme)
 		post := &model.Post{
 			UserId:    args.UserId,
 			ChannelId: args.ChannelId,
@@ -148,6 +149,17 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 	}
 
 	switch parameters[0] {
+	case "embedded":
+		switch parameters[1] {
+		case "true":
+			userConfig.Embedded = true
+		case "false":
+			userConfig.Embedded = false
+		default:
+			text = "Invalid `embedded` value, use `true` or `false`."
+			userConfig = nil
+			break
+		}
 	case "naming_scheme":
 		switch parameters[1] {
 		case "ask":
@@ -164,7 +176,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 			break
 		}
 	default:
-		text = "Invalid config field, use `naming_scheme`."
+		text = "Invalid config field, use `embedded` or `naming_scheme`."
 		userConfig = nil
 		break
 	}

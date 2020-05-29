@@ -23,6 +23,7 @@ const jitsiNameSchemaMattermost = "mattermost"
 const configChangeEvent = "config_update"
 
 type UserConfig struct {
+	Embedded     bool   `json:"embedded"`
 	NamingScheme string `json:"naming_scheme"`
 }
 
@@ -207,6 +208,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 
 		meetingURL = meetingURL + "?jwt=" + jwtToken
 	}
+	meetingURL = meetingURL + "#config.callDisplayName=\"" + meetingTopic + "\""
 
 	meetingUntil := ""
 	if JWTMeeting {
@@ -347,6 +349,7 @@ func (p *Plugin) getUserConfig(userID string) (*UserConfig, error) {
 
 	if data == nil {
 		return &UserConfig{
+			Embedded:     p.getConfiguration().JitsiEmbedded,
 			NamingScheme: p.getConfiguration().JitsiNamingScheme,
 		}, nil
 	}

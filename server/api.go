@@ -6,10 +6,17 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"sync"
 
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
 )
+
+const externalAPICacheTTL = 3600000
+
+var externalAPICache []byte
+var externalAPILastUpdate int64
+var externalAPICacheMutex sync.Mutex
 
 type StartMeetingRequest struct {
 	ChannelID string `json:"channel_id"`
@@ -35,6 +42,8 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 		p.handleStartMeeting(w, r)
 	case "/api/v1/config":
 		p.handleConfig(w, r)
+	case "/jitsi_meet_external_api.js":
+		p.proxyExternalAPIjs(w, r)
 	default:
 		http.NotFound(w, r)
 	}
@@ -62,6 +71,32 @@ func (p *Plugin) handleConfig(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	_, _ = w.Write(b)
+}
+
+func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, r *http.Request) {
+	externalAPICacheMutex.Lock()
+	defer externalAPICacheMutex.Unlock()
+
+	if externalAPICache != nil && externalAPILastUpdate > (model.GetMillis()-externalAPICacheTTL) {
+		w.Header().Set("Content-Type", "application/javascript")
+		_, _ = w.Write(externalAPICache)
+		return
+	}
+	resp, err := http.Get(p.getConfiguration().JitsiURL + "/external_api.js")
+	if err != nil {
+		http.Error(w, "Internal error", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		http.Error(w, "Internal error", http.StatusInternalServerError)
+		return
+	}
+	externalAPICache = body
+	externalAPILastUpdate = model.GetMillis()
+	w.Header().Set("Content-Type", "application/javascript")
+	_, _ = w.Write(body)
 }
 
 func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
@@ -197,7 +232,7 @@ func (p *Plugin) handleEnrichMeetingJwt(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	b, err2 := json.Marshal(map[string]string{"jwt": meetingJWT})
+	b, err2 := json.Marshal(map[string]interface{}{"jwt": meetingJWT})
 	if err2 != nil {
 		log.Printf("Error marshaling the JWT json: %v", err2)
 		http.Error(w, "Internal error", http.StatusInternalServerError)

@@ -45,6 +45,14 @@ const manifestStr = `
         "default": null
       },
       {
+        "key": "JitsiEmbedded",
+        "display_name": "Embed Jitsi video inside Mattermost",
+        "type": "bool",
+        "help_text": "(Experimental) When true, Jitsi video is embedded as a floating window inside Mattermost.",
+        "placeholder": "",
+        "default": null
+      },
+      {
         "key": "JitsiJWT",
         "display_name": "Use JWT Authentication for Jitsi",
         "type": "bool",

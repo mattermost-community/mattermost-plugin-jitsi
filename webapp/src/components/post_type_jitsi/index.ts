@@ -7,8 +7,9 @@ import {GenericAction} from 'mattermost-redux/types/actions';
 
 import {Post} from 'mattermost-redux/types/posts';
 
+import {id as pluginId} from '../../manifest';
 import {displayUsernameForUser} from '../../utils/user_utils';
-import {enrichMeetingJwt} from '../../actions';
+import {enrichMeetingJwt, openJitsiMeeting} from '../../actions';
 
 import {PostTypeJitsi} from './post_type_jitsi';
 
@@ -19,19 +20,22 @@ type OwnProps = {
 function mapStateToProps(state: GlobalState, ownProps: OwnProps) {
     const post = ownProps.post;
     const user = state.entities.users.profiles[post.user_id];
+    const config = (state as any)[`plugins-${pluginId}`].config;
 
     return {
         ...ownProps,
         theme: getTheme(state),
         creatorName: displayUsernameForUser(user, state.entities.general.config),
-        useMilitaryTime: getBool(state, 'display_settings', 'use_military_time', false)
+        useMilitaryTime: getBool(state, 'display_settings', 'use_military_time', false),
+        meetingEmbedded: Boolean(config.embedded)
     };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<GenericAction>) {
     return {
         actions: bindActionCreators({
-            enrichMeetingJwt
+            enrichMeetingJwt,
+            openJitsiMeeting
         }, dispatch)
     };
 }

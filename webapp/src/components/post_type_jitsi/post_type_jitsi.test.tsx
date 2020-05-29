@@ -34,7 +34,8 @@ describe('PostTypeJitsi', () => {
     };
 
     const actions = {
-        enrichMeetingJwt: jest.fn().mockImplementation(() => Promise.resolve({data: {jwt: 'test-enriched-jwt'}}))
+        enrichMeetingJwt: jest.fn().mockImplementation(() => Promise.resolve({data: {jwt: 'test-enriched-jwt'}})),
+        openJitsiMeeting: jest.fn()
     };
 
     const theme = {
@@ -46,6 +47,7 @@ describe('PostTypeJitsi', () => {
         theme,
         creatorName: 'test',
         useMilitaryTime: false,
+        meetingEmbedded: false,
         actions
     };
 
@@ -123,5 +125,33 @@ describe('PostTypeJitsi', () => {
             <PostTypeJitsi {...props}/>
         );
         expect(wrapper).toMatchSnapshot();
+    });
+
+    it('should prevent the default link behavior and call the action to open jitsi if embedded is true', () => {
+        defaultProps.actions.openJitsiMeeting.mockClear();
+        const props = {
+            ...defaultProps,
+            meetingEmbedded: true
+        };
+
+        const wrapper = shallow(<PostTypeJitsi {...props}/>);
+        const event = {preventDefault: jest.fn()};
+        wrapper.find('a.btn-primary').simulate('click', event);
+        expect(defaultProps.actions.openJitsiMeeting).toBeCalled();
+        expect(event.preventDefault).toBeCalled();
+    });
+
+    it('should not prevent the default link behavior and should not call the action to open jitsi if embedded is false', () => {
+        defaultProps.actions.openJitsiMeeting.mockClear();
+        const props = {
+            ...defaultProps,
+            meetingEmbedded: false
+        };
+
+        const wrapper = shallow(<PostTypeJitsi {...props}/>);
+        const event = {preventDefault: jest.fn()};
+        wrapper.find('a.btn-primary').simulate('click', event);
+        expect(defaultProps.actions.openJitsiMeeting).not.toBeCalled();
+        expect(event.preventDefault).not.toBeCalled();
     });
 });
