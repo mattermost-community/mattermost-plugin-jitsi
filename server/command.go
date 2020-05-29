@@ -150,23 +150,21 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 	switch parameters[0] {
 	case "naming_scheme":
 		switch parameters[1] {
-		case "ask":
+		case jitsiNameSchemaAsk:
 			userConfig.NamingScheme = "ask"
-		case "english-titlecase":
+		case jitsiNameSchemaEnglish:
 			userConfig.NamingScheme = "english-titlecase"
-		case "uuid":
+		case jitsiNameSchemaUUID:
 			userConfig.NamingScheme = "uuid"
-		case "mattermost":
+		case jitsiNameSchemaMattermost:
 			userConfig.NamingScheme = "mattermost"
 		default:
 			text = "Invalid `naming_scheme` value, use `ask`, `english-titlecase`, `uuid` or `mattermost`."
 			userConfig = nil
-			break
 		}
 	default:
 		text = "Invalid config field, use `naming_scheme`."
 		userConfig = nil
-		break
 	}
 
 	if userConfig == nil {
