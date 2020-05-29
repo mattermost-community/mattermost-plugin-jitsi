@@ -33,9 +33,35 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 		p.handleEnrichMeetingJwt(w, r)
 	case "/api/v1/meetings":
 		p.handleStartMeeting(w, r)
+	case "/api/v1/config":
+		p.handleConfig(w, r)
 	default:
 		http.NotFound(w, r)
 	}
+}
+
+func (p *Plugin) handleConfig(w http.ResponseWriter, r *http.Request) {
+	userID := r.Header.Get("Mattermost-User-Id")
+
+	if userID == "" {
+		http.Error(w, "Not authorized", http.StatusUnauthorized)
+		return
+	}
+
+	config, err := p.getUserConfig(userID)
+	if err != nil {
+		http.Error(w, "Internal error", http.StatusInternalServerError)
+		return
+	}
+
+	b, err2 := json.Marshal(config)
+	if err2 != nil {
+		log.Printf("Error marshaling the Config to json: %v", err2)
+		http.Error(w, "Internal error", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_, _ = w.Write(b)
 }
 
 func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
@@ -89,7 +115,13 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if p.getConfiguration().JitsiNamingScheme == jitsiNameSchemaAsk && action.PostId == "" {
+	userConfig, err := p.getUserConfig(userID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if userConfig.NamingScheme == jitsiNameSchemaAsk && action.PostId == "" {
 		err := p.askMeetingType(user, channel)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -100,7 +132,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 	} else {
 		var meetingID string
 		var err error
-		if p.getConfiguration().JitsiNamingScheme == jitsiNameSchemaAsk && action.PostId != "" {
+		if userConfig.NamingScheme == jitsiNameSchemaAsk && action.PostId != "" {
 			meetingID, err = p.startMeeting(user, channel, action.Context.MeetingID, action.Context.MeetingTopic, action.Context.Personal)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)

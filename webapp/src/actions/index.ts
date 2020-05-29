@@ -2,6 +2,8 @@ import {PostTypes} from 'mattermost-redux/action_types';
 import {DispatchFunc, GetStateFunc} from 'mattermost-redux/types/actions';
 import {Post} from 'mattermost-redux/types/posts';
 
+import ActionTypes from '../action_types';
+
 import Client from '../client';
 
 export function startMeeting(channelId: string, personal: boolean = false, topic: string = '', meetingId: string = '') {
@@ -58,6 +60,21 @@ export function enrichMeetingJwt(meetingJwt: string) {
     return async () => {
         try {
             const data = await Client.enrichMeetingJwt(meetingJwt);
+            return {data};
+        } catch (error) {
+            return {error};
+        }
+    };
+}
+
+export function loadConfig() {
+    return async (dispatch: DispatchFunc) => {
+        try {
+            const data = await Client.loadConfig();
+            dispatch({
+                type: ActionTypes.CONFIG_RECEIVED,
+                data
+            });
             return {data};
         } catch (error) {
             return {error};

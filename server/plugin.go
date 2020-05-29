@@ -20,6 +20,11 @@ const jitsiNameSchemaAsk = "ask"
 const jitsiNameSchemaEnglish = "english-titlecase"
 const jitsiNameSchemaUUID = "uuid"
 const jitsiNameSchemaMattermost = "mattermost"
+const configChangeEvent = "config_update"
+
+type UserConfig struct {
+	NamingScheme string `json:"naming_scheme"`
+}
 
 type Plugin struct {
 	plugin.MattermostPlugin
@@ -38,11 +43,7 @@ func (p *Plugin) OnActivate() error {
 		return err
 	}
 
-	if err := p.API.RegisterCommand(&model.Command{
-		Trigger:          jitsiCommand,
-		AutoComplete:     true,
-		AutoCompleteDesc: "Start a Jitsi meeting for the current channel. Optionally, append desired meeting topic after the command",
-	}); err != nil {
+	if err := p.API.RegisterCommand(createJitsiCommand()); err != nil {
 		return err
 	}
 
@@ -149,9 +150,12 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 	meetingPersonal := false
 
 	if len(meetingTopic) < 1 {
-		namingScheme := p.getConfiguration().JitsiNamingScheme
+		userConfig, err := p.getUserConfig(user.Id)
+		if err != nil {
+			return "", err
+		}
 
-		switch namingScheme {
+		switch userConfig.NamingScheme {
 		case jitsiNameSchemaEnglish:
 			meetingID = generateEnglishTitleName()
 		case jitsiNameSchemaUUID:
@@ -332,5 +336,41 @@ func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error 
 	})
 	_ = p.API.SendEphemeralPost(user.Id, post)
 
+	return nil
+}
+
+func (p *Plugin) getUserConfig(userID string) (*UserConfig, error) {
+	data, appErr := p.API.KVGet("config_" + userID)
+	if appErr != nil {
+		return nil, appErr
+	}
+
+	if data == nil {
+		return &UserConfig{
+			NamingScheme: p.getConfiguration().JitsiNamingScheme,
+		}, nil
+	}
+
+	var userConfig UserConfig
+	err := json.Unmarshal(data, &userConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	return &userConfig, nil
+}
+
+func (p *Plugin) setUserConfig(userID string, config *UserConfig) error {
+	b, err := json.Marshal(config)
+	if err != nil {
+		return err
+	}
+
+	appErr := p.API.KVSet("config_"+userID, b)
+	if appErr != nil {
+		return appErr
+	}
+
+	p.API.PublishWebSocketEvent(configChangeEvent, nil, &model.WebsocketBroadcast{UserId: userID})
 	return nil
 }
