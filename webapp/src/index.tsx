@@ -7,19 +7,27 @@ import {Channel} from 'mattermost-redux/types/channels';
 
 import Icon from './components/icon';
 import PostTypeJitsi from './components/post_type_jitsi';
-import Conference from './components/conference';
+import RootPortal from './components/root_portal';
 import reducer from './reducers';
 import {startMeeting, loadConfig} from './actions';
 
 class PluginClass {
+    rootPortal: RootPortal | null = null
+
     initialize(registry: any, store: any) {
         if ((window as any).JitsiMeetExternalAPI) {
-            registry.registerRootComponent(Conference);
+            this.rootPortal = new RootPortal(registry, store);
+            if (this.rootPortal) {
+                this.rootPortal.render();
+            }
         } else {
             const script = document.createElement('script');
             script.type = 'text/javascript';
             script.onload = () => {
-                registry.registerRootComponent(Conference);
+                this.rootPortal = new RootPortal(registry, store);
+                if (this.rootPortal) {
+                    this.rootPortal.render();
+                }
             };
             script.src = (window as any).basename + '/plugins/jitsi/jitsi_meet_external_api.js';
             document.head.appendChild(script);
@@ -35,6 +43,12 @@ class PluginClass {
         registry.registerPostTypeComponent('custom_jitsi', PostTypeJitsi);
         registry.registerWebSocketEventHandler('custom_jitsi_config_update', () => store.dispatch(loadConfig()));
         store.dispatch(loadConfig());
+    }
+
+    uninitialize() {
+        if (this.rootPortal) {
+            this.rootPortal.cleanup();
+        }
     }
 }
 
