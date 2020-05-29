@@ -26,6 +26,7 @@ import (
 type configuration struct {
 	JitsiURL           string
 	JitsiJWT           bool
+	JitsiEmbedded      bool
 	JitsiAppID         string
 	JitsiAppSecret     string
 	JitsiLinkValidTime int

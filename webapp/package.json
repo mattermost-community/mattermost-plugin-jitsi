@@ -8,8 +8,8 @@
     "debug": "webpack --mode=none",
     "webpack-stats": "webpack --profile --json > stats.json",
     "bundle-analyzer": "webpack-bundle-analyzer stats.json",
-    "lint": "eslint --ignore-pattern node_modules --ignore-pattern dist --ext .ts --ext .tsx --ext tsx --ext ts . --quiet",
-    "fix": "eslint --ignore-pattern node_modules --ignore-pattern dist --ext .ts --ext .tsx --ext tsx --ext ts . --quiet --fix",
+    "lint": "eslint --ignore-pattern node_modules --ignore-pattern dist --ext tsx --ext ts . --quiet",
+    "fix": "eslint --ignore-pattern node_modules --ignore-pattern dist --ext tsx --ext ts . --quiet --fix",
     "test": "jest --forceExit --detectOpenHandles --verbose",
     "test:watch": "jest --watch",
     "test-ci": "jest --forceExit --detectOpenHandles --maxWorkers=2"
@@ -42,6 +42,7 @@
     "mattermost-webapp": "github:mattermost/mattermost-webapp#23f5f93d9f12a7e2b5623e5cee6814366abd9a0f",
     "ts-jest": "26.0.0",
     "ts-loader": "7.0.5",
+    "typescript": "3.9.3",
     "webpack": "4.43.0",
     "webpack-bundle-analyzer": "3.8.0",
     "webpack-cli": "3.3.11"
@@ -50,9 +51,9 @@
     "core-js": "3.6.5",
     "mattermost-redux": "5.23.0",
     "react": "16.13.1",
+    "react-intl": "4.6.3",
     "react-redux": "7.2.0",
-    "redux": "4.0.5",
-    "typescript": "3.9.3"
+    "redux": "4.0.5"
   },
   "jest": {
     "preset": "ts-jest",

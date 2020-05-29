@@ -7,11 +7,23 @@ import {Channel} from 'mattermost-redux/types/channels';
 
 import Icon from './components/icon';
 import PostTypeJitsi from './components/post_type_jitsi';
+import Conference from './components/conference';
 import reducer from './reducers';
 import {startMeeting, loadConfig} from './actions';
 
 class PluginClass {
     initialize(registry: any, store: any) {
+        if ((window as any).JitsiMeetExternalAPI) {
+            registry.registerRootComponent(Conference);
+        } else {
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.onload = () => {
+                registry.registerRootComponent(Conference);
+            };
+            script.src = (window as any).basename + '/plugins/jitsi/jitsi_meet_external_api.js';
+            document.head.appendChild(script);
+        }
         registry.registerReducer(reducer);
         registry.registerChannelHeaderButtonAction(
             <Icon/>,
