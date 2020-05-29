@@ -16,7 +16,7 @@ class PluginClass {
 
     initialize(registry: any, store: any) {
         if ((window as any).JitsiMeetExternalAPI) {
-            this.rootPortal = new RootPortal(store);
+            this.rootPortal = new RootPortal(registry, store);
             if (this.rootPortal) {
                 this.rootPortal.render();
             }
@@ -24,7 +24,7 @@ class PluginClass {
             const script = document.createElement('script');
             script.type = 'text/javascript';
             script.onload = () => {
-                this.rootPortal = new RootPortal(store);
+                this.rootPortal = new RootPortal(registry, store);
                 if (this.rootPortal) {
                     this.rootPortal.render();
                 }

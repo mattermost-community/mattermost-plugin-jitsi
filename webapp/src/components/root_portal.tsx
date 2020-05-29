@@ -15,12 +15,14 @@ export default class RootPortal {
     el: HTMLElement;
     store: any;
 
-    constructor(store: any) {
+    constructor(registry: any, store: any) {
         this.el = document.createElement('div');
         this.store = store;
         const rootPortal = document.getElementById('root-portal');
         if (rootPortal) {
             rootPortal.appendChild(this.el);
+        } else {
+            registry.registerRootComponent(Conference);
         }
     }
 
@@ -32,10 +34,13 @@ export default class RootPortal {
     }
 
     render() {
-        ReactDOM.render((
-            <Provider store={this.store}>
-                <Conference/>
-            </Provider>
-        ), this.el);
+        const rootPortal = document.getElementById('root-portal');
+        if (rootPortal) {
+            ReactDOM.render((
+                <Provider store={this.store}>
+                    <Conference/>
+                </Provider>
+            ), this.el);
+        }
     }
 }
