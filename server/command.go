@@ -9,6 +9,18 @@ import (
 )
 
 const jitsiCommand = "jitsi"
+const commandHelp = `* |/jitsi| - Create a new meeting
+* |/jitsi [topic]| - Create a new meeting with specified topic
+* |/jitsi help| - Show this help text
+* |/jitsi settings| - View your current user settings for the Jitsi plugin
+* |/jitsi settings [setting] [value]| - Update your user settings (see below for options)
+
+###### Jitsi Settings:
+* |/jitsi settings naming_scheme [words/uuid/mattermost/ask]|: Select how meeting names are generated with one of these options:
+    * |words|: Random English words in title case (e.g. PlayfulDragonsObserveCuriously)
+    * |uuid|: UUID (universally unique identifier)
+    * |mattermost|: Mattermost specific names. Combination of team name, channel name and random text in public and private channels; personal meeting name in direct and group messages channels.
+    * |ask|: The plugin asks you to select the name every time you start a meeting`
 
 func commandError(channelID string, detailedError string) (*model.CommandResponse, *model.AppError) {
 	return &model.CommandResponse{
@@ -21,7 +33,43 @@ func commandError(channelID string, detailedError string) (*model.CommandRespons
 		}
 }
 
+func createJitsiCommand() *model.Command {
+	return &model.Command{
+		Trigger:          jitsiCommand,
+		AutoComplete:     true,
+		AutoCompleteDesc: "Start a Jitsi meeting in current channel. Other available commands: help, settings",
+		AutoCompleteHint: "[command]",
+	}
+}
+
 func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+	split := strings.Fields(args.Command)
+	command := split[0]
+	var parameters []string
+	action := ""
+	if len(split) > 1 {
+		action = split[1]
+	}
+	if len(split) > 2 {
+		parameters = split[2:]
+	}
+
+	if command != "/"+jitsiCommand {
+		return &model.CommandResponse{}, nil
+	}
+
+	if action == "help" {
+		return p.executeHelpCommand(c, args)
+	}
+
+	if action == "settings" {
+		return p.executeSettingsCommand(c, args, parameters)
+	}
+
+	return p.executeStartMeetingCommand(c, args)
+}
+
+func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 	input := strings.TrimSpace(strings.TrimPrefix(args.Command, "/"+jitsiCommand))
 
 	user, appErr := p.API.GetUser(args.UserId)
@@ -34,7 +82,12 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		return commandError(args.ChannelId, fmt.Sprintf("getChannel() threw error: %s", appErr))
 	}
 
-	if p.getConfiguration().JitsiNamingScheme == jitsiNameSchemaAsk && input == "" {
+	userConfig, err := p.getUserConfig(args.UserId)
+	if err != nil {
+		return commandError(args.ChannelId, fmt.Sprintf("getChannel() threw error: %s", err))
+	}
+
+	if userConfig.NamingScheme == jitsiNameSchemaAsk && input == "" {
 		if err := p.askMeetingType(user, channel); err != nil {
 			return commandError(args.ChannelId, fmt.Sprintf("startMeeting() threw error: %s", appErr))
 		}
@@ -43,6 +96,94 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 			return commandError(args.ChannelId, fmt.Sprintf("startMeeting() threw error: %s", appErr))
 		}
 	}
+
+	return &model.CommandResponse{}, nil
+}
+
+func (p *Plugin) executeHelpCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+	text := "###### Mattermost Jitsi Plugin - Slash Command Help\n" + strings.Replace(commandHelp, "|", "`", -1)
+	post := &model.Post{
+		UserId:    args.UserId,
+		ChannelId: args.ChannelId,
+		Message:   text,
+	}
+	_ = p.API.SendEphemeralPost(args.UserId, post)
+
+	return &model.CommandResponse{}, nil
+}
+
+func (p *Plugin) settingsError(userID string, channelID string, errorText string) (*model.CommandResponse, *model.AppError) {
+	post := &model.Post{
+		UserId:    userID,
+		ChannelId: channelID,
+		Message:   errorText,
+	}
+	_ = p.API.SendEphemeralPost(userID, post)
+
+	return &model.CommandResponse{}, nil
+}
+
+func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandArgs, parameters []string) (*model.CommandResponse, *model.AppError) {
+	text := ""
+
+	userConfig, err := p.getUserConfig(args.UserId)
+	if err != nil {
+		return p.settingsError(args.UserId, args.ChannelId, err.Error())
+	}
+
+	if len(parameters) == 0 {
+		text = fmt.Sprintf("###### Jitsi Settings:\n* Naming Scheme: `%s`", userConfig.NamingScheme)
+		post := &model.Post{
+			UserId:    args.UserId,
+			ChannelId: args.ChannelId,
+			Message:   text,
+		}
+		_ = p.API.SendEphemeralPost(args.UserId, post)
+
+		return &model.CommandResponse{}, nil
+	}
+
+	if len(parameters) != 2 {
+		return p.settingsError(args.UserId, args.ChannelId, "Invalid settings parameters\n")
+	}
+
+	switch parameters[0] {
+	case "naming_scheme":
+		switch parameters[1] {
+		case "ask":
+			userConfig.NamingScheme = "ask"
+		case "english-titlecase":
+			userConfig.NamingScheme = "english-titlecase"
+		case "uuid":
+			userConfig.NamingScheme = "uuid"
+		case "mattermost":
+			userConfig.NamingScheme = "mattermost"
+		default:
+			text = "Invalid `naming_scheme` value, use `ask`, `english-titlecase`, `uuid` or `mattermost`."
+			userConfig = nil
+			break
+		}
+	default:
+		text = "Invalid config field, use `naming_scheme`."
+		userConfig = nil
+		break
+	}
+
+	if userConfig == nil {
+		return p.settingsError(args.UserId, args.ChannelId, text)
+	}
+
+	err = p.setUserConfig(args.UserId, userConfig)
+	if err != nil {
+		return p.settingsError(args.UserId, args.ChannelId, err.Error())
+	}
+
+	post := &model.Post{
+		UserId:    args.UserId,
+		ChannelId: args.ChannelId,
+		Message:   "Jitsi settings updated",
+	}
+	_ = p.API.SendEphemeralPost(args.UserId, post)
 
 	return &model.CommandResponse{}, nil
 }

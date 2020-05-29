@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"reflect"
 
+	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/pkg/errors"
 )
 
@@ -102,6 +103,7 @@ func (p *Plugin) setConfiguration(configuration *configuration) {
 		panic("setConfiguration called with the existing configuration")
 	}
 
+	p.API.PublishWebSocketEvent(configChangeEvent, nil, &model.WebsocketBroadcast{})
 	p.configuration = configuration
 }
 

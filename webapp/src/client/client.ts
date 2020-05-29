@@ -21,6 +21,10 @@ export default class Client {
         return this.doPost(`${this.url}/api/v1/meetings/enrich`, {jwt: meetingJwt});
     }
 
+    loadConfig = async () => {
+        return this.doPost(`${this.url}/api/v1/config`, {});
+    }
+
     doPost = async (url: string, body: any, headers: any = {}) => {
         const options = {
             method: 'post',
