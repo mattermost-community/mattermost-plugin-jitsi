@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -ex
+
+sudo docker build -t mattermost-plugin-jitsi-builder .
+sudo docker run --rm -it -v $(pwd):/src -w /src mattermost-plugin-jitsi-builder make "$@"

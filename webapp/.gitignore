@@ -1,0 +1,4 @@
+node_modules
+.npminstall
+package-lock.json
+junit.xml
