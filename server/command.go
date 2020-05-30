@@ -158,7 +158,6 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 		default:
 			text = "Invalid `embedded` value, use `true` or `false`."
 			userConfig = nil
-			break
 		}
 	case "naming_scheme":
 		switch parameters[1] {
