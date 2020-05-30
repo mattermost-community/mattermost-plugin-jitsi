@@ -191,5 +191,4 @@ func TestCommandStartMeeting(t *testing.T) {
 		require.Equal(t, response, &model.CommandResponse{})
 		require.Nil(t, err)
 	})
-
 }
