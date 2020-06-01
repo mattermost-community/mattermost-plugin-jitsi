@@ -27,7 +27,7 @@ Originally developed by [Sean Sackowitz](https://github.com/seansackowitz).
 Go to **System Console > Plugins > Jitsi** and set the following values:
 
 1. **Enable Plugin**: ``true``
-2. **Jitsi Server URL**: The URL for your on-premise Jitsi server. If you set the Jitsi Server URL to https://meet.jit.si it uses the public server provided by Jitsi.
+2. **Jitsi Server URL**: The URL for your Jitsi server. If you set the Jitsi Server URL to https://meet.jit.si it uses the public server provided by Jitsi.
 3. **Embed Jitsi video inside Mattermost**: When true, Jitsi video is embedded as a floating window inside Mattermost. This feature is experimental.
 4. (Optional) If your Jitsi server uses JSON Web Tokens (JWT) for authentication, set:
 
