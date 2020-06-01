@@ -58,7 +58,7 @@ export default class Conference extends React.PureComponent<Props, State> {
 
         const noSSL = url.protocol === 'http:';
 
-        const domain = url.hostname;
+        const domain = url.host;
         const options = {
             roomName: post.props.meeting_id,
             width: this.state.minimized ? MINIMIZED_WIDTH : vw,
@@ -297,6 +297,7 @@ function getStyle(height: number, width: number, position: 'top' | 'bottom'): {[
             display: 'flex',
             zIndex: loadingZIndex,
             fontSize: '48px',
+            opacity: 0.85,
             color: 'white'
         },
         background: {
@@ -311,12 +312,13 @@ function getStyle(height: number, width: number, position: 'top' | 'bottom'): {[
         },
         buttons: {
             position: 'absolute',
-            bottom: position === POSITION_TOP ? '' : (height - 15) + 'px',
-            top: position === POSITION_TOP ? '25px' : '',
-            right: '25px',
+            bottom: position === POSITION_TOP ? '' : (height - 10) + 'px',
+            top: position === POSITION_TOP ? '20px' : '',
+            right: '22px',
             color: 'white',
-            fontSize: '24px',
+            fontSize: '18px',
             cursor: 'pointer',
+            opacity: 0.85,
             zIndex: buttonsZIndex
         }
     };
