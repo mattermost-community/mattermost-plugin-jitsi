@@ -1,10 +1,11 @@
 # Mattermost Jitsi Plugin (Beta)
 
+**Maintainer:** [Jesús Espino](https://github.com/jespino)
+**Originally developed by:** [Sean Sackowitz](https://github.com/seansackowitz).
+
 Start and join voice calls, video calls and use screen sharing with your team members with a Jitsi plugin for Mattermost.
 
 Clicking a video icon in a Mattermost channel posts a message that invites team members to join a Jitsi meetings call.
-
-Originally developed by [Sean Sackowitz](https://github.com/seansackowitz).
 
 ![image](https://user-images.githubusercontent.com/13119842/82381170-ba500680-99f7-11ea-8254-d4503999783e.png)
 
