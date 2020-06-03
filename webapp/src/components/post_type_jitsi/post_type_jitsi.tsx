@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {FormattedMessage, IntlProvider} from 'react-intl';
+import {FormattedMessage} from 'react-intl';
 
 import {Post} from 'mattermost-redux/types/posts';
 
@@ -7,13 +7,10 @@ import Svgs from '../../constants/svgs';
 
 import {makeStyleFromTheme} from 'mattermost-redux/utils/theme_utils';
 
-import {getTranslations} from '../../../i18n';
-
 export type Props = {
     post?: Post,
     theme: any,
     creatorName: string,
-    currentLocale: string,
     useMilitaryTime: boolean,
     meetingEmbedded: boolean,
     actions: {
@@ -75,7 +72,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
         return null;
     }
 
-    renderContent = () => {
+    render() {
         const style = getStyle(this.props.theme);
         const post = this.props.post;
         if (!post) {
@@ -173,18 +170,6 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
                     </div>
                 </div>
             </div>
-        );
-    }
-
-    render() {
-        return (
-            <IntlProvider
-                locale={this.props.currentLocale}
-                key={this.props.currentLocale}
-                messages={getTranslations(this.props.currentLocale)}
-            >
-                {this.renderContent()}
-            </IntlProvider>
         );
     }
 }

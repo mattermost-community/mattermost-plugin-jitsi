@@ -2,7 +2,6 @@ import {connect} from 'react-redux';
 import {bindActionCreators, Dispatch} from 'redux';
 
 import {getBool, getTheme} from 'mattermost-redux/selectors/entities/preferences';
-import {getCurrentUserLocale} from 'mattermost-redux/selectors/entities/i18n';
 import {GlobalState} from 'mattermost-redux/types/store';
 import {GenericAction} from 'mattermost-redux/types/actions';
 
@@ -22,15 +21,13 @@ function mapStateToProps(state: GlobalState, ownProps: OwnProps) {
     const post = ownProps.post;
     const user = state.entities.users.profiles[post.user_id];
     const config = (state as any)[`plugins-${pluginId}`].config;
-    const currentLocale = getCurrentUserLocale(state);
 
     return {
         ...ownProps,
         theme: getTheme(state),
         creatorName: displayUsernameForUser(user, state.entities.general.config),
         useMilitaryTime: getBool(state, 'display_settings', 'use_military_time', false),
-        meetingEmbedded: Boolean(config.embedded),
-        currentLocale
+        meetingEmbedded: Boolean(config.embedded)
     };
 }
 

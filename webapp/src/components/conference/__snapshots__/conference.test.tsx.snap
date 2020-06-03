@@ -1,14 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Conference should render and initialize the conference interface 1`] = `
-<IntlProvider
-  defaultFormats={Object {}}
-  defaultLocale="en"
-  formats={Object {}}
-  messages={Object {}}
-  onError={[Function]}
-  textComponent={Symbol(react.fragment)}
->
+<Fragment>
   <div
     id="jitsiMeet"
     style={
@@ -114,29 +107,13 @@ exports[`Conference should render and initialize the conference interface 1`] = 
       <Component />
     </FormattedMessage>
   </div>
-</IntlProvider>
+</Fragment>
 `;
 
-exports[`Conference should render null if the post type is null 1`] = `
-<IntlProvider
-  defaultFormats={Object {}}
-  defaultLocale="en"
-  formats={Object {}}
-  messages={Object {}}
-  onError={[Function]}
-  textComponent={Symbol(react.fragment)}
-/>
-`;
+exports[`Conference should render null if the post type is null 1`] = `""`;
 
 exports[`Conference should show the correct buttons depending on the state should have down, open outside, maximize and close buttons 1`] = `
-<IntlProvider
-  defaultFormats={Object {}}
-  defaultLocale="en"
-  formats={Object {}}
-  messages={Object {}}
-  onError={[Function]}
-  textComponent={Symbol(react.fragment)}
->
+<Fragment>
   <div
     id="jitsiMeet"
     style={
@@ -235,18 +212,11 @@ exports[`Conference should show the correct buttons depending on the state shoul
       <Component />
     </FormattedMessage>
   </div>
-</IntlProvider>
+</Fragment>
 `;
 
 exports[`Conference should show the correct buttons depending on the state should have open outside, minimize and close buttons 1`] = `
-<IntlProvider
-  defaultFormats={Object {}}
-  defaultLocale="en"
-  formats={Object {}}
-  messages={Object {}}
-  onError={[Function]}
-  textComponent={Symbol(react.fragment)}
->
+<Fragment>
   <div
     id="jitsiMeet"
     style={
@@ -352,18 +322,11 @@ exports[`Conference should show the correct buttons depending on the state shoul
       <Component />
     </FormattedMessage>
   </div>
-</IntlProvider>
+</Fragment>
 `;
 
 exports[`Conference should show the correct buttons depending on the state should have up, open outside, maximize and close buttons 1`] = `
-<IntlProvider
-  defaultFormats={Object {}}
-  defaultLocale="en"
-  formats={Object {}}
-  messages={Object {}}
-  onError={[Function]}
-  textComponent={Symbol(react.fragment)}
->
+<Fragment>
   <div
     id="jitsiMeet"
     style={
@@ -462,18 +425,11 @@ exports[`Conference should show the correct buttons depending on the state shoul
       <Component />
     </FormattedMessage>
   </div>
-</IntlProvider>
+</Fragment>
 `;
 
 exports[`Conference should show the the loading spinner depending on the state should not show loading 1`] = `
-<IntlProvider
-  defaultFormats={Object {}}
-  defaultLocale="en"
-  formats={Object {}}
-  messages={Object {}}
-  onError={[Function]}
-  textComponent={Symbol(react.fragment)}
->
+<Fragment>
   <div
     id="jitsiMeet"
     style={
@@ -555,18 +511,11 @@ exports[`Conference should show the the loading spinner depending on the state s
       <Component />
     </FormattedMessage>
   </div>
-</IntlProvider>
+</Fragment>
 `;
 
 exports[`Conference should show the the loading spinner depending on the state should show loading 1`] = `
-<IntlProvider
-  defaultFormats={Object {}}
-  defaultLocale="en"
-  formats={Object {}}
-  messages={Object {}}
-  onError={[Function]}
-  textComponent={Symbol(react.fragment)}
->
+<Fragment>
   <div
     id="jitsiMeet"
     style={
@@ -672,5 +621,5 @@ exports[`Conference should show the the loading spinner depending on the state s
       <Component />
     </FormattedMessage>
   </div>
-</IntlProvider>
+</Fragment>
 `;

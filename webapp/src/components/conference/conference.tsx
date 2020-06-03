@@ -1,9 +1,7 @@
 import * as React from 'react';
-import {FormattedMessage, IntlProvider} from 'react-intl';
+import {FormattedMessage} from 'react-intl';
 
 import {Post} from 'mattermost-redux/types/posts';
-
-import {getTranslations} from '../../../i18n';
 
 const BORDER_SIZE = 40;
 const POSITION_TOP = 'top';
@@ -286,7 +284,7 @@ export default class Conference extends React.PureComponent<Props, State> {
             </div>);
     }
 
-    renderContent = () => {
+    render() {
         if (this.props.post === null) {
             return null;
         }
@@ -312,18 +310,6 @@ export default class Conference extends React.PureComponent<Props, State> {
 
                 {this.renderButtons(style)}
             </React.Fragment>
-        );
-    }
-
-    render() {
-        return (
-            <IntlProvider
-                locale={this.props.currentLocale}
-                key={this.props.currentLocale}
-                messages={getTranslations(this.props.currentLocale)}
-            >
-                {this.renderContent()}
-            </IntlProvider>
         );
     }
 }
