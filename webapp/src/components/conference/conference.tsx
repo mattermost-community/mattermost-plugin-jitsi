@@ -12,7 +12,6 @@ const MINIMIZED_HEIGHT = 240;
 type Props = {
     post: Post | null,
     jwt: string | null,
-    currentLocale: string,
     actions: {
         openJitsiMeeting: (post: Post | null, jwt: string | null) => void
     }
