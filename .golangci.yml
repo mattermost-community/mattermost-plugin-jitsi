@@ -47,6 +47,9 @@ linters:
 
 issues:
   exclude-rules:
+    - path: build/manifest/main.go
+      linters:
+        - gosec
     - path: server/manifest.go
       linters:
         - unused

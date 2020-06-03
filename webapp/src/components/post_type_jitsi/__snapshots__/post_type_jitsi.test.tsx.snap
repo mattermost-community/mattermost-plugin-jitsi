@@ -115,7 +115,7 @@ exports[`PostTypeJitsi should render a post if the post type is not null, and sh
                Meeting link valid until: 
                
               <b>
-                Thu Jan 01 1970 01:02:03 GMT+0100 (GMT+01:00)
+                Thu Jan 01 1970 00:02:03 GMT+0000 (Coordinated Universal Time)
               </b>
             </div>
           </div>
@@ -356,7 +356,7 @@ exports[`PostTypeJitsi should render the a different subtitle if the meeting is 
                Meeting link valid until: 
                
               <b>
-                Thu Jan 01 1970 01:02:03 GMT+0100 (GMT+01:00)
+                Thu Jan 01 1970 00:02:03 GMT+0000 (Coordinated Universal Time)
               </b>
             </div>
           </div>
