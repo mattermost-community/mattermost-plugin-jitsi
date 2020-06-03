@@ -1,7 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Conference should render and initialize the conference interface 1`] = `
-<Fragment>
+<IntlProvider
+  defaultFormats={Object {}}
+  defaultLocale="en"
+  formats={Object {}}
+  messages={Object {}}
+  onError={[Function]}
+  textComponent={Symbol(react.fragment)}
+>
   <div
     id="jitsiMeet"
     style={
@@ -73,11 +80,13 @@ exports[`Conference should render and initialize the conference interface 1`] = 
       }
     }
   >
-    <i
-      aria-label="Minimize"
-      className="icon icon-arrow-collapse"
-      onClick={[Function]}
-    />
+    <FormattedMessage
+      defaultMessage="Minimize"
+      id="jitsi.minimize"
+      values={Object {}}
+    >
+      <Component />
+    </FormattedMessage>
     <a
       href="http://test-meeting-link/test#config.callDisplayName=\\"Test topic\\""
       onClick={[Function]}
@@ -89,30 +98,45 @@ exports[`Conference should render and initialize the conference interface 1`] = 
       }
       target="_blank"
     >
-      <i
-        aria-label="Open in new tab"
-        className="icon icon-arrow-left"
-        style={
-          Object {
-            "display": "inline-block",
-            "transform": "rotate(135deg)",
-          }
-        }
-      />
+      <FormattedMessage
+        defaultMessage="Open in new tab"
+        id="jitsi.open-in-new-tab"
+        values={Object {}}
+      >
+        <Component />
+      </FormattedMessage>
     </a>
-    <i
-      aria-label="Close"
-      className="icon icon-close"
-      onClick={[Function]}
-    />
+    <FormattedMessage
+      defaultMessage="Close"
+      id="jitsi.close"
+      values={Object {}}
+    >
+      <Component />
+    </FormattedMessage>
   </div>
-</Fragment>
+</IntlProvider>
 `;
 
-exports[`Conference should render null if the post type is null 1`] = `""`;
+exports[`Conference should render null if the post type is null 1`] = `
+<IntlProvider
+  defaultFormats={Object {}}
+  defaultLocale="en"
+  formats={Object {}}
+  messages={Object {}}
+  onError={[Function]}
+  textComponent={Symbol(react.fragment)}
+/>
+`;
 
 exports[`Conference should show the correct buttons depending on the state should have down, open outside, maximize and close buttons 1`] = `
-<Fragment>
+<IntlProvider
+  defaultFormats={Object {}}
+  defaultLocale="en"
+  formats={Object {}}
+  messages={Object {}}
+  onError={[Function]}
+  textComponent={Symbol(react.fragment)}
+>
   <div
     id="jitsiMeet"
     style={
@@ -170,22 +194,20 @@ exports[`Conference should show the correct buttons depending on the state shoul
       }
     }
   >
-    <i
-      aria-label="Move down"
-      className="icon icon-arrow-left"
-      onClick={[Function]}
-      style={
-        Object {
-          "display": "inline-block",
-          "transform": "rotate(270deg)",
-        }
-      }
-    />
-    <i
-      aria-label="Maximize"
-      className="icon icon-arrow-expand"
-      onClick={[Function]}
-    />
+    <FormattedMessage
+      defaultMessage="Move down"
+      id="jitsi.move-down"
+      values={Object {}}
+    >
+      <Component />
+    </FormattedMessage>
+    <FormattedMessage
+      defaultMessage="Maximize"
+      id="jitsi.maximize"
+      values={Object {}}
+    >
+      <Component />
+    </FormattedMessage>
     <a
       href="http://test-meeting-link/test#config.callDisplayName=\\"Test topic\\""
       onClick={[Function]}
@@ -197,28 +219,34 @@ exports[`Conference should show the correct buttons depending on the state shoul
       }
       target="_blank"
     >
-      <i
-        aria-label="Open in new tab"
-        className="icon icon-arrow-left"
-        style={
-          Object {
-            "display": "inline-block",
-            "transform": "rotate(135deg)",
-          }
-        }
-      />
+      <FormattedMessage
+        defaultMessage="Open in new tab"
+        id="jitsi.open-in-new-tab"
+        values={Object {}}
+      >
+        <Component />
+      </FormattedMessage>
     </a>
-    <i
-      aria-label="Close"
-      className="icon icon-close"
-      onClick={[Function]}
-    />
+    <FormattedMessage
+      defaultMessage="Close"
+      id="jitsi.close"
+      values={Object {}}
+    >
+      <Component />
+    </FormattedMessage>
   </div>
-</Fragment>
+</IntlProvider>
 `;
 
 exports[`Conference should show the correct buttons depending on the state should have open outside, minimize and close buttons 1`] = `
-<Fragment>
+<IntlProvider
+  defaultFormats={Object {}}
+  defaultLocale="en"
+  formats={Object {}}
+  messages={Object {}}
+  onError={[Function]}
+  textComponent={Symbol(react.fragment)}
+>
   <div
     id="jitsiMeet"
     style={
@@ -290,11 +318,13 @@ exports[`Conference should show the correct buttons depending on the state shoul
       }
     }
   >
-    <i
-      aria-label="Minimize"
-      className="icon icon-arrow-collapse"
-      onClick={[Function]}
-    />
+    <FormattedMessage
+      defaultMessage="Minimize"
+      id="jitsi.minimize"
+      values={Object {}}
+    >
+      <Component />
+    </FormattedMessage>
     <a
       href="http://test-meeting-link/test#config.callDisplayName=\\"Test topic\\""
       onClick={[Function]}
@@ -306,28 +336,34 @@ exports[`Conference should show the correct buttons depending on the state shoul
       }
       target="_blank"
     >
-      <i
-        aria-label="Open in new tab"
-        className="icon icon-arrow-left"
-        style={
-          Object {
-            "display": "inline-block",
-            "transform": "rotate(135deg)",
-          }
-        }
-      />
+      <FormattedMessage
+        defaultMessage="Open in new tab"
+        id="jitsi.open-in-new-tab"
+        values={Object {}}
+      >
+        <Component />
+      </FormattedMessage>
     </a>
-    <i
-      aria-label="Close"
-      className="icon icon-close"
-      onClick={[Function]}
-    />
+    <FormattedMessage
+      defaultMessage="Close"
+      id="jitsi.close"
+      values={Object {}}
+    >
+      <Component />
+    </FormattedMessage>
   </div>
-</Fragment>
+</IntlProvider>
 `;
 
 exports[`Conference should show the correct buttons depending on the state should have up, open outside, maximize and close buttons 1`] = `
-<Fragment>
+<IntlProvider
+  defaultFormats={Object {}}
+  defaultLocale="en"
+  formats={Object {}}
+  messages={Object {}}
+  onError={[Function]}
+  textComponent={Symbol(react.fragment)}
+>
   <div
     id="jitsiMeet"
     style={
@@ -385,22 +421,20 @@ exports[`Conference should show the correct buttons depending on the state shoul
       }
     }
   >
-    <i
-      aria-label="Move up"
-      className="icon icon-arrow-left"
-      onClick={[Function]}
-      style={
-        Object {
-          "display": "inline-block",
-          "transform": "rotate(90deg)",
-        }
-      }
-    />
-    <i
-      aria-label="Maximize"
-      className="icon icon-arrow-expand"
-      onClick={[Function]}
-    />
+    <FormattedMessage
+      defaultMessage="Move up"
+      id="jitsi.move-up"
+      values={Object {}}
+    >
+      <Component />
+    </FormattedMessage>
+    <FormattedMessage
+      defaultMessage="Maximize"
+      id="jitsi.maximize"
+      values={Object {}}
+    >
+      <Component />
+    </FormattedMessage>
     <a
       href="http://test-meeting-link/test#config.callDisplayName=\\"Test topic\\""
       onClick={[Function]}
@@ -412,28 +446,34 @@ exports[`Conference should show the correct buttons depending on the state shoul
       }
       target="_blank"
     >
-      <i
-        aria-label="Open in new tab"
-        className="icon icon-arrow-left"
-        style={
-          Object {
-            "display": "inline-block",
-            "transform": "rotate(135deg)",
-          }
-        }
-      />
+      <FormattedMessage
+        defaultMessage="Open in new tab"
+        id="jitsi.open-in-new-tab"
+        values={Object {}}
+      >
+        <Component />
+      </FormattedMessage>
     </a>
-    <i
-      aria-label="Close"
-      className="icon icon-close"
-      onClick={[Function]}
-    />
+    <FormattedMessage
+      defaultMessage="Close"
+      id="jitsi.close"
+      values={Object {}}
+    >
+      <Component />
+    </FormattedMessage>
   </div>
-</Fragment>
+</IntlProvider>
 `;
 
 exports[`Conference should show the the loading spinner depending on the state should not show loading 1`] = `
-<Fragment>
+<IntlProvider
+  defaultFormats={Object {}}
+  defaultLocale="en"
+  formats={Object {}}
+  messages={Object {}}
+  onError={[Function]}
+  textComponent={Symbol(react.fragment)}
+>
   <div
     id="jitsiMeet"
     style={
@@ -481,11 +521,13 @@ exports[`Conference should show the the loading spinner depending on the state s
       }
     }
   >
-    <i
-      aria-label="Minimize"
-      className="icon icon-arrow-collapse"
-      onClick={[Function]}
-    />
+    <FormattedMessage
+      defaultMessage="Minimize"
+      id="jitsi.minimize"
+      values={Object {}}
+    >
+      <Component />
+    </FormattedMessage>
     <a
       href="http://test-meeting-link/test#config.callDisplayName=\\"Test topic\\""
       onClick={[Function]}
@@ -497,28 +539,34 @@ exports[`Conference should show the the loading spinner depending on the state s
       }
       target="_blank"
     >
-      <i
-        aria-label="Open in new tab"
-        className="icon icon-arrow-left"
-        style={
-          Object {
-            "display": "inline-block",
-            "transform": "rotate(135deg)",
-          }
-        }
-      />
+      <FormattedMessage
+        defaultMessage="Open in new tab"
+        id="jitsi.open-in-new-tab"
+        values={Object {}}
+      >
+        <Component />
+      </FormattedMessage>
     </a>
-    <i
-      aria-label="Close"
-      className="icon icon-close"
-      onClick={[Function]}
-    />
+    <FormattedMessage
+      defaultMessage="Close"
+      id="jitsi.close"
+      values={Object {}}
+    >
+      <Component />
+    </FormattedMessage>
   </div>
-</Fragment>
+</IntlProvider>
 `;
 
 exports[`Conference should show the the loading spinner depending on the state should show loading 1`] = `
-<Fragment>
+<IntlProvider
+  defaultFormats={Object {}}
+  defaultLocale="en"
+  formats={Object {}}
+  messages={Object {}}
+  onError={[Function]}
+  textComponent={Symbol(react.fragment)}
+>
   <div
     id="jitsiMeet"
     style={
@@ -590,11 +638,13 @@ exports[`Conference should show the the loading spinner depending on the state s
       }
     }
   >
-    <i
-      aria-label="Minimize"
-      className="icon icon-arrow-collapse"
-      onClick={[Function]}
-    />
+    <FormattedMessage
+      defaultMessage="Minimize"
+      id="jitsi.minimize"
+      values={Object {}}
+    >
+      <Component />
+    </FormattedMessage>
     <a
       href="http://test-meeting-link/test#config.callDisplayName=\\"Test topic\\""
       onClick={[Function]}
@@ -606,22 +656,21 @@ exports[`Conference should show the the loading spinner depending on the state s
       }
       target="_blank"
     >
-      <i
-        aria-label="Open in new tab"
-        className="icon icon-arrow-left"
-        style={
-          Object {
-            "display": "inline-block",
-            "transform": "rotate(135deg)",
-          }
-        }
-      />
+      <FormattedMessage
+        defaultMessage="Open in new tab"
+        id="jitsi.open-in-new-tab"
+        values={Object {}}
+      >
+        <Component />
+      </FormattedMessage>
     </a>
-    <i
-      aria-label="Close"
-      className="icon icon-close"
-      onClick={[Function]}
-    />
+    <FormattedMessage
+      defaultMessage="Close"
+      id="jitsi.close"
+      values={Object {}}
+    >
+      <Component />
+    </FormattedMessage>
   </div>
-</Fragment>
+</IntlProvider>
 `;
