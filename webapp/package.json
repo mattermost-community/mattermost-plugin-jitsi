@@ -10,9 +10,9 @@
     "bundle-analyzer": "webpack-bundle-analyzer stats.json",
     "lint": "eslint --ignore-pattern node_modules --ignore-pattern dist --ext tsx --ext ts . --quiet",
     "fix": "eslint --ignore-pattern node_modules --ignore-pattern dist --ext tsx --ext ts . --quiet --fix",
-    "test": "jest --forceExit --detectOpenHandles --verbose",
-    "test:watch": "jest --watch",
-    "test-ci": "jest --forceExit --detectOpenHandles --maxWorkers=2"
+    "test": "LANG=C TZ=UTC jest --forceExit --detectOpenHandles --verbose",
+    "test:watch": "LANG=C TZ=UTC jest --watch",
+    "test-ci": "LANG=C TZ=UTC jest --forceExit --detectOpenHandles --maxWorkers=2"
   },
   "author": "",
   "license": "",

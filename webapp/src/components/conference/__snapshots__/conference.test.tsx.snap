@@ -45,6 +45,7 @@ exports[`Conference should render and initialize the conference interface 1`] = 
         "fontSize": "48px",
         "height": 10,
         "justifyContent": "center",
+        "opacity": 0.85,
         "position": "absolute",
         "right": "20px",
         "top": "",
@@ -60,12 +61,13 @@ exports[`Conference should render and initialize the conference interface 1`] = 
   <div
     style={
       Object {
-        "bottom": "-5px",
+        "bottom": "0px",
         "color": "white",
         "cursor": "pointer",
-        "fontSize": "24px",
+        "fontSize": "18px",
+        "opacity": 0.85,
         "position": "absolute",
-        "right": "25px",
+        "right": "22px",
         "top": "",
         "zIndex": 1200,
       }
@@ -140,6 +142,7 @@ exports[`Conference should show the correct buttons depending on the state shoul
         "fontSize": "48px",
         "height": 240,
         "justifyContent": "center",
+        "opacity": 0.85,
         "position": "absolute",
         "right": "20px",
         "top": "20px",
@@ -158,10 +161,11 @@ exports[`Conference should show the correct buttons depending on the state shoul
         "bottom": "",
         "color": "white",
         "cursor": "pointer",
-        "fontSize": "24px",
+        "fontSize": "18px",
+        "opacity": 0.85,
         "position": "absolute",
-        "right": "25px",
-        "top": "25px",
+        "right": "22px",
+        "top": "20px",
         "zIndex": 1200,
       }
     }
@@ -258,6 +262,7 @@ exports[`Conference should show the correct buttons depending on the state shoul
         "fontSize": "48px",
         "height": 10,
         "justifyContent": "center",
+        "opacity": 0.85,
         "position": "absolute",
         "right": "20px",
         "top": "",
@@ -273,12 +278,13 @@ exports[`Conference should show the correct buttons depending on the state shoul
   <div
     style={
       Object {
-        "bottom": "-5px",
+        "bottom": "0px",
         "color": "white",
         "cursor": "pointer",
-        "fontSize": "24px",
+        "fontSize": "18px",
+        "opacity": 0.85,
         "position": "absolute",
-        "right": "25px",
+        "right": "22px",
         "top": "",
         "zIndex": 1200,
       }
@@ -351,6 +357,7 @@ exports[`Conference should show the correct buttons depending on the state shoul
         "fontSize": "48px",
         "height": 240,
         "justifyContent": "center",
+        "opacity": 0.85,
         "position": "absolute",
         "right": "20px",
         "top": "",
@@ -366,12 +373,13 @@ exports[`Conference should show the correct buttons depending on the state shoul
   <div
     style={
       Object {
-        "bottom": "225px",
+        "bottom": "230px",
         "color": "white",
         "cursor": "pointer",
-        "fontSize": "24px",
+        "fontSize": "18px",
+        "opacity": 0.85,
         "position": "absolute",
-        "right": "25px",
+        "right": "22px",
         "top": "",
         "zIndex": 1200,
       }
@@ -461,12 +469,13 @@ exports[`Conference should show the the loading spinner depending on the state s
   <div
     style={
       Object {
-        "bottom": "-5px",
+        "bottom": "0px",
         "color": "white",
         "cursor": "pointer",
-        "fontSize": "24px",
+        "fontSize": "18px",
+        "opacity": 0.85,
         "position": "absolute",
-        "right": "25px",
+        "right": "22px",
         "top": "",
         "zIndex": 1200,
       }
@@ -553,6 +562,7 @@ exports[`Conference should show the the loading spinner depending on the state s
         "fontSize": "48px",
         "height": 10,
         "justifyContent": "center",
+        "opacity": 0.85,
         "position": "absolute",
         "right": "20px",
         "top": "",
@@ -568,12 +578,13 @@ exports[`Conference should show the the loading spinner depending on the state s
   <div
     style={
       Object {
-        "bottom": "-5px",
+        "bottom": "0px",
         "color": "white",
         "cursor": "pointer",
-        "fontSize": "24px",
+        "fontSize": "18px",
+        "opacity": 0.85,
         "position": "absolute",
-        "right": "25px",
+        "right": "22px",
         "top": "",
         "zIndex": 1200,
       }
