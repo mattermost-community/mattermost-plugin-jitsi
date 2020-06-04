@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/url"
 	"regexp"
 	"strings"
@@ -11,6 +10,7 @@ import (
 	"time"
 
 	"github.com/cristalhq/jwt/v2"
+	"github.com/mattermost/mattermost-server/v5/mlog"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
 	"github.com/pkg/errors"
@@ -77,28 +77,28 @@ type Claims struct {
 func verifyJwt(secret string, jwtToken string) (*Claims, error) {
 	verifier, err := jwt.NewVerifierHS(jwt.HS256, []byte(secret))
 	if err != nil {
-		log.Printf("Error generating new HS256 signer: %v", err)
+		mlog.Error("Error generating new HS256 signer", mlog.Err(err))
 		return nil, err
 	}
 
 	newToken, err := jwt.ParseAndVerifyString(jwtToken, verifier)
 	if err != nil {
-		log.Printf("Error parsing or verifiying jwt: %v", err)
+		mlog.Error("Error parsing or verifiying jwt", mlog.Err(err))
 		return nil, err
 	}
 
 	var claims Claims
 	if err = json.Unmarshal(newToken.RawClaims(), &claims); err != nil {
-		log.Printf("Error unmarshalling claims from jwt: %v", err)
+		mlog.Error("Error unmarshalling claims from jwt", mlog.Err(err))
 		return nil, err
 	}
 	return &claims, nil
 }
 
 func signClaims(secret string, claims *Claims) (string, error) {
-	signer, err2 := jwt.NewSignerHS(jwt.HS256, []byte(secret))
-	if err2 != nil {
-		log.Printf("Error generating new HS256 signer: %v", err2)
+	signer, err := jwt.NewSignerHS(jwt.HS256, []byte(secret))
+	if err != nil {
+		mlog.Error("Error generating new HS256 signer", mlog.Err(err))
 		return "", errors.New("internal error")
 	}
 	builder := jwt.NewBuilder(signer)
@@ -115,6 +115,7 @@ func (p *Plugin) deleteEphemeralPost(userID, postID string) {
 
 func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, error) {
 	secret := p.getConfiguration().JitsiAppSecret
+	sanitizedUser := user.DeepCopy()
 
 	claims, err := verifyJwt(secret, jwtToken)
 	if err != nil {
@@ -123,18 +124,18 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 
 	config := p.API.GetConfig()
 	if config.PrivacySettings.ShowFullName == nil || !*config.PrivacySettings.ShowFullName {
-		user.FirstName = ""
-		user.LastName = ""
+		sanitizedUser.FirstName = ""
+		sanitizedUser.LastName = ""
 	}
 	if config.PrivacySettings.ShowEmailAddress == nil || !*config.PrivacySettings.ShowEmailAddress {
-		user.Email = ""
+		sanitizedUser.Email = ""
 	}
 	newContext := Context{
 		User: User{
-			Avatar: fmt.Sprintf("%s/api/v4/users/%s/image?_=%d", *config.ServiceSettings.SiteURL, user.Id, user.LastPictureUpdate),
-			Name:   user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME),
-			Email:  user.Email,
-			ID:     user.Id,
+			Avatar: fmt.Sprintf("%s/api/v4/users/%s/image?_=%d", *config.ServiceSettings.SiteURL, sanitizedUser.Id, sanitizedUser.LastPictureUpdate),
+			Name:   sanitizedUser.GetDisplayName(model.SHOW_NICKNAME_FULLNAME),
+			Email:  sanitizedUser.Email,
+			ID:     sanitizedUser.Id,
 		},
 		Group: claims.Context.Group,
 	}
