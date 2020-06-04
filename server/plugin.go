@@ -179,7 +179,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 			meetingID = generateEnglishTitleName()
 		}
 	}
-	jitsiURL := strings.TrimSpace(p.getConfiguration().JitsiURL)
+	jitsiURL := strings.TrimSpace(p.getConfiguration().GetJitsiURL())
 	jitsiURL = strings.TrimRight(jitsiURL, "/")
 	meetingURL := jitsiURL + "/" + meetingID
 	meetingLink := meetingURL
@@ -190,7 +190,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 
 	if JWTMeeting {
 		// Error check is done in configuration.IsValid()
-		jURL, _ := url.Parse(p.getConfiguration().JitsiURL)
+		jURL, _ := url.Parse(p.getConfiguration().GetJitsiURL())
 
 		meetingLinkValidUntil = time.Now().Add(time.Duration(p.getConfiguration().JitsiLinkValidTime) * time.Minute)
 
