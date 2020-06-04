@@ -171,7 +171,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if userConfig.NamingScheme == jitsiNameSchemaAsk && action.PostId == "" {
-		err := p.askMeetingType(user, channel)
+		err = p.askMeetingType(user, channel)
 		if err != nil {
 			mlog.Error("Error asking the user for meeting name type", mlog.Err(err))
 			http.Error(w, err.Error(), http.StatusInternalServerError)
