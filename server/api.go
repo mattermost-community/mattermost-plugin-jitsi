@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"sync"
 
+	"github.com/mattermost/mattermost-server/v5/mlog"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
 )
@@ -59,18 +59,22 @@ func (p *Plugin) handleConfig(w http.ResponseWriter, r *http.Request) {
 
 	config, err := p.getUserConfig(userID)
 	if err != nil {
+		mlog.Error("Error getting user config", mlog.Err(err))
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
 
-	b, err2 := json.Marshal(config)
-	if err2 != nil {
-		log.Printf("Error marshaling the Config to json: %v", err2)
+	b, err := json.Marshal(config)
+	if err != nil {
+		mlog.Error("Error marshaling the Config to json", mlog.Err(err))
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	_, _ = w.Write(b)
+	_, err = w.Write(b)
+	if err != nil {
+		mlog.Warn("Unable to write response body", mlog.String("handler", "handleConfig"), mlog.Err(err))
+	}
 }
 
 func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, r *http.Request) {
@@ -84,24 +88,30 @@ func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 	}
 	resp, err := http.Get(p.getConfiguration().JitsiURL + "/external_api.js")
 	if err != nil {
+		mlog.Error("Error getting the external_api.js file from your Jitsi instance, please verify your JitsiURL setting", mlog.Err(err))
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		mlog.Error("Error getting reading the content", mlog.String("url", p.getConfiguration().JitsiURL+"/external_api.js"), mlog.Err(err))
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
 	externalAPICache = body
 	externalAPILastUpdate = model.GetMillis()
 	w.Header().Set("Content-Type", "application/javascript")
-	_, _ = w.Write(body)
+	_, err = w.Write(body)
+	if err != nil {
+		mlog.Warn("Unable to write response body", mlog.String("handler", "proxyExternalAPIjs"), mlog.Err(err))
+	}
 }
 
 func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 	if err := p.getConfiguration().IsValid(); err != nil {
-		http.Error(w, err.Error(), http.StatusTeapot)
+		mlog.Error("Invalid plugin configuration", mlog.Err(err))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -114,6 +124,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 
 	user, appErr := p.API.GetUser(userID)
 	if appErr != nil {
+		mlog.Debug("Unable to the user", mlog.Err(appErr))
 		http.Error(w, "Forbidden", http.StatusForbidden)
 		return
 	}
@@ -123,6 +134,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 
 	bodyData, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		mlog.Debug("Unable to read request body", mlog.Err(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -130,6 +142,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 	err1 := json.NewDecoder(bytes.NewReader(bodyData)).Decode(&req)
 	err2 := json.NewDecoder(bytes.NewReader(bodyData)).Decode(&action)
 	if err1 != nil && err2 != nil {
+		mlog.Debug("Unable to decode the request content as start meeting request or start meeting action")
 		http.Error(w, "Unable to decode your request", http.StatusBadRequest)
 		return
 	}
@@ -152,50 +165,61 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 
 	userConfig, err := p.getUserConfig(userID)
 	if err != nil {
+		mlog.Error("Error getting user config", mlog.Err(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	if userConfig.NamingScheme == jitsiNameSchemaAsk && action.PostId == "" {
-		err := p.askMeetingType(user, channel)
+		err = p.askMeetingType(user, channel)
 		if err != nil {
+			mlog.Error("Error asking the user for meeting name type", mlog.Err(err))
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		_, _ = w.Write([]byte("OK"))
-	} else {
-		var meetingID string
-		var err error
-		if userConfig.NamingScheme == jitsiNameSchemaAsk && action.PostId != "" {
-			meetingID, err = p.startMeeting(user, channel, action.Context.MeetingID, action.Context.MeetingTopic, action.Context.Personal)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			p.deleteEphemeralPost(action.UserId, action.PostId)
-		} else {
-			meetingID, err = p.startMeeting(user, channel, "", req.Topic, req.Personal)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
+		_, err = w.Write([]byte("OK"))
+		if err != nil {
+			mlog.Warn("Unable to write response body", mlog.String("handler", "handleStartMeeting"), mlog.Err(err))
 		}
+		return
+	}
 
-		b, err2 := json.Marshal(map[string]string{"meeting_id": meetingID})
-		if err2 != nil {
-			log.Printf("Error marshaling the MeetingID to json: %v", err2)
-			http.Error(w, "Internal error", http.StatusInternalServerError)
+	var meetingID string
+	if userConfig.NamingScheme == jitsiNameSchemaAsk && action.PostId != "" {
+		meetingID, err = p.startMeeting(user, channel, action.Context.MeetingID, action.Context.MeetingTopic, action.Context.Personal)
+		if err != nil {
+			mlog.Error("Error starting a new meeting from ask response", mlog.Err(err))
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write(b)
+		p.deleteEphemeralPost(action.UserId, action.PostId)
+	} else {
+		meetingID, err = p.startMeeting(user, channel, "", req.Topic, req.Personal)
+		if err != nil {
+			mlog.Error("Error starting a new meeting", mlog.Err(err))
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	b, err := json.Marshal(map[string]string{"meeting_id": meetingID})
+	if err != nil {
+		mlog.Error("Error marshaling the MeetingID to json", mlog.Err(err))
+		http.Error(w, "Internal error", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_, err = w.Write(b)
+	if err != nil {
+		mlog.Warn("Unable to write response body", mlog.String("handler", "handleStartMeeting"), mlog.Err(err))
 	}
 }
 
 func (p *Plugin) handleEnrichMeetingJwt(w http.ResponseWriter, r *http.Request) {
 	if err := p.getConfiguration().IsValid(); err != nil {
-		http.Error(w, err.Error(), http.StatusTeapot)
+		mlog.Error("Invalid plugin configuration", mlog.Err(err))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -208,6 +232,7 @@ func (p *Plugin) handleEnrichMeetingJwt(w http.ResponseWriter, r *http.Request) 
 	var req EnrichMeetingJwtRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		mlog.Debug("Unable to read request body", mlog.Err(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
@@ -227,17 +252,20 @@ func (p *Plugin) handleEnrichMeetingJwt(w http.ResponseWriter, r *http.Request) 
 
 	meetingJWT, err2 := p.updateJwtUserInfo(req.Jwt, user)
 	if err2 != nil {
-		log.Printf("Error updating JWT context: %v", err2)
+		mlog.Error("Error updating JWT context", mlog.Err(err2))
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
 
 	b, err2 := json.Marshal(map[string]interface{}{"jwt": meetingJWT})
 	if err2 != nil {
-		log.Printf("Error marshaling the JWT json: %v", err2)
+		mlog.Error("Error marshaling the JWT json", mlog.Err(err2))
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	_, _ = w.Write(b)
+	_, err2 = w.Write(b)
+	if err2 != nil {
+		mlog.Warn("Unable to write response body", mlog.String("handler", "handleEnrichMeetingJwt"), mlog.Err(err))
+	}
 }
