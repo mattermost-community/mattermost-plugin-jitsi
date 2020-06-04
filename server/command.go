@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/mattermost/mattermost-server/v5/mlog"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
@@ -11,7 +12,7 @@ import (
 
 const jitsiCommand = "jitsi"
 
-func commandError(channelID string, detailedError string) (*model.CommandResponse, *model.AppError) {
+func startMeetingError(channelID string, detailedError string) (*model.CommandResponse, *model.AppError) {
 	return &model.CommandResponse{
 			ResponseType: model.COMMAND_RESPONSE_TYPE_EPHEMERAL,
 			ChannelId:    channelID,
@@ -63,26 +64,26 @@ func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.Comma
 
 	user, appErr := p.API.GetUser(args.UserId)
 	if appErr != nil {
-		return commandError(args.ChannelId, fmt.Sprintf("getUser() threw error: %s", appErr))
+		return startMeetingError(args.ChannelId, fmt.Sprintf("getUser() threw error: %s", appErr))
 	}
 
 	channel, appErr := p.API.GetChannel(args.ChannelId)
 	if appErr != nil {
-		return commandError(args.ChannelId, fmt.Sprintf("getChannel() threw error: %s", appErr))
+		return startMeetingError(args.ChannelId, fmt.Sprintf("getChannel() threw error: %s", appErr))
 	}
 
 	userConfig, err := p.getUserConfig(args.UserId)
 	if err != nil {
-		return commandError(args.ChannelId, fmt.Sprintf("getChannel() threw error: %s", err))
+		return startMeetingError(args.ChannelId, fmt.Sprintf("getChannel() threw error: %s", err))
 	}
 
 	if userConfig.NamingScheme == jitsiNameSchemaAsk && input == "" {
 		if err := p.askMeetingType(user, channel); err != nil {
-			return commandError(args.ChannelId, fmt.Sprintf("startMeeting() threw error: %s", appErr))
+			return startMeetingError(args.ChannelId, fmt.Sprintf("startMeeting() threw error: %s", appErr))
 		}
 	} else {
 		if _, err := p.startMeeting(user, channel, "", input, false); err != nil {
-			return commandError(args.ChannelId, fmt.Sprintf("startMeeting() threw error: %s", appErr))
+			return startMeetingError(args.ChannelId, fmt.Sprintf("startMeeting() threw error: %s", appErr))
 		}
 	}
 
@@ -145,7 +146,13 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 
 	userConfig, err := p.getUserConfig(args.UserId)
 	if err != nil {
-		return p.settingsError(args.UserId, args.ChannelId, err.Error())
+		mlog.Debug("Unable to get user config", mlog.Err(err))
+		return p.settingsError(args.UserId, args.ChannelId, l.MustLocalize(&i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID:    "jitsi.command.settings.unable_to_get",
+				Other: "Unable to get user settings",
+			},
+		}))
 	}
 
 	if len(parameters) == 0 {
@@ -231,7 +238,13 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 
 	err = p.setUserConfig(args.UserId, userConfig)
 	if err != nil {
-		return p.settingsError(args.UserId, args.ChannelId, err.Error())
+		mlog.Debug("Unable to set user settings", mlog.Err(err))
+		return p.settingsError(args.UserId, args.ChannelId, l.MustLocalize(&i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID:    "jitsi.command.settings.unable_to_set",
+				Other: "Unable to set user settings",
+			},
+		}))
 	}
 
 	post := &model.Post{

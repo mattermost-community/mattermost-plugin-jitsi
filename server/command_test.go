@@ -44,7 +44,7 @@ func TestCommandHelp(t *testing.T) {
 		Message:   helpText,
 	}).Return(nil)
 	response, err := p.ExecuteCommand(&plugin.Context{}, &model.CommandArgs{UserId: "test-user", ChannelId: "test-channel", Command: "/jitsi help"})
-	require.Equal(t, response, &model.CommandResponse{})
+	require.Equal(t, &model.CommandResponse{}, response)
 	require.Nil(t, err)
 }
 
@@ -58,7 +58,7 @@ func TestCommandSetings(t *testing.T) {
 	}
 
 	response, err := p.ExecuteCommand(&plugin.Context{}, &model.CommandArgs{UserId: "test-user", ChannelId: "test-channel", Command: "jitsi help"})
-	require.Equal(t, response, &model.CommandResponse{})
+	require.Equal(t, &model.CommandResponse{}, response)
 	require.Nil(t, err)
 
 	tests := []struct {
@@ -94,7 +94,7 @@ func TestCommandSetings(t *testing.T) {
 		{
 			name:      "set invalid number of parameters",
 			command:   "/jitsi settings other",
-			output:    "Invalid settings parameters\n",
+			output:    "Invalid settings parameters",
 			newConfig: nil,
 		},
 		{
@@ -123,7 +123,7 @@ func TestCommandSetings(t *testing.T) {
 				apiMock.On("PublishWebSocketEvent", configChangeEvent, nilMap, &model.WebsocketBroadcast{UserId: "test-user"})
 			}
 			response, err := p.ExecuteCommand(&plugin.Context{}, &model.CommandArgs{UserId: "test-user", ChannelId: "test-channel", Command: tt.command})
-			require.Equal(t, response, &model.CommandResponse{})
+			require.Equal(t, &model.CommandResponse{}, response)
 			require.Nil(t, err)
 		})
 	}
@@ -154,7 +154,7 @@ func TestCommandStartMeeting(t *testing.T) {
 		apiMock.On("GetConfig").Return(&config, nil)
 
 		response, err := p.ExecuteCommand(&plugin.Context{}, &model.CommandArgs{UserId: "test-user", ChannelId: "test-channel", Command: "/jitsi"})
-		require.Equal(t, response, &model.CommandResponse{})
+		require.Equal(t, &model.CommandResponse{}, response)
 		require.Nil(t, err)
 	})
 
@@ -172,7 +172,7 @@ func TestCommandStartMeeting(t *testing.T) {
 		apiMock.On("KVGet", "config_test-user", mock.Anything).Return(nil, nil)
 
 		response, err := p.ExecuteCommand(&plugin.Context{}, &model.CommandArgs{UserId: "test-user", ChannelId: "test-channel", Command: "/jitsi"})
-		require.Equal(t, response, &model.CommandResponse{})
+		require.Equal(t, &model.CommandResponse{}, response)
 		require.Nil(t, err)
 	})
 
@@ -188,7 +188,7 @@ func TestCommandStartMeeting(t *testing.T) {
 		apiMock.On("KVGet", "config_test-user", mock.Anything).Return(nil, nil)
 
 		response, err := p.ExecuteCommand(&plugin.Context{}, &model.CommandArgs{UserId: "test-user", ChannelId: "test-channel", Command: "/jitsi topic"})
-		require.Equal(t, response, &model.CommandResponse{})
+		require.Equal(t, &model.CommandResponse{}, response)
 		require.Nil(t, err)
 	})
 }
