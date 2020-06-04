@@ -39,6 +39,14 @@
     "hash": "sha1-f72c018607477396d845c7a3e11be73490b79a56",
     "other": "Parametros de configuración invalidos"
   },
+  "jitsi.command.settings.unable_to_get": {
+    "hash": "sha1-7e8adf669715dc73bf3f13568593cc30539af7ec",
+    "other": "No se ha podido obtener la configuración del usuario"
+  },
+  "jitsi.command.settings.unable_to_set": {
+    "hash": "sha1-3bab2d5cd97e52eb365ab5e25aa5c89bf2a78f31",
+    "other": "No se ha podido guardar la configuración del usuario"
+  },
   "jitsi.command.settings.updated": {
     "hash": "sha1-ea98a80baec114b32359809c03c7b11038b18eb6",
     "other": "Configuración de Jitsi actualizada"

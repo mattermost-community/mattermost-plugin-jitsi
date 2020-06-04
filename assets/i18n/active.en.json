@@ -9,6 +9,8 @@
   "jitsi.command.help.title": "###### Mattermost Jitsi Plugin - Slash Command help\n",
   "jitsi.command.settings.current_values": "###### Jitsi Settings:\n* Embedded: |{{.Embedded}}|\n* Naming Scheme: |{{.NamingScheme}}|",
   "jitsi.command.settings.invalid_parameters": "Invalid settings parameters",
+  "jitsi.command.settings.unable_to_get": "Unable to get user settings",
+  "jitsi.command.settings.unable_to_set": "Unable to set user settings",
   "jitsi.command.settings.updated": "Jitsi settings updated",
   "jitsi.command.settings.wrong_embedded_value": "Invalid `embedded` value, use `true` or `false`.",
   "jitsi.command.settings.wrong_field": "Invalid config field, use `embedded` or `naming_scheme`.",
