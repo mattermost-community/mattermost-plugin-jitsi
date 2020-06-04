@@ -31,8 +31,8 @@ const manifest = JSON.parse(`
                 "display_name": "Jitsi Server URL",
                 "type": "text",
                 "help_text": "The URL for your Jitsi server, for example https://jitsi.example.com. Defaults to https://meet.jit.si, which is the public server provided by Jitsi.",
-                "placeholder": "https://jitsi.example.com",
-                "default": null
+                "placeholder": "https://meet.jit.si",
+                "default": "https://meet.jit.si"
             },
             {
                 "key": "JitsiEmbedded",
