@@ -147,7 +147,8 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 
 func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingID string, meetingTopic string, personal bool) (string, error) {
 	if meetingID == "" {
-		if meetingTopic != "" && encodeJitsiMeetingID(meetingTopic) == "" {
+		meetingID = encodeJitsiMeetingID(meetingTopic)
+		if meetingTopic != "" && meetingID == "" {
 			post := &model.Post{
 				UserId:    user.Id,
 				ChannelId: channel.Id,
@@ -156,7 +157,6 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 			_ = p.API.SendEphemeralPost(user.Id, post)
 			return "", nil
 		}
-		meetingID = encodeJitsiMeetingID(meetingTopic)
 	}
 	meetingPersonal := false
 
