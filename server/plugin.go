@@ -147,6 +147,15 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 
 func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingID string, meetingTopic string, personal bool) (string, error) {
 	if meetingID == "" {
+		if meetingTopic != "" && encodeJitsiMeetingID(meetingTopic) == "" {
+			post := &model.Post{
+				UserId:    user.Id,
+				ChannelId: channel.Id,
+				Message:   "Invalid meeting topic format, please include at least one alphanumeric character in your topic.",
+			}
+			_ = p.API.SendEphemeralPost(user.Id, post)
+			return "", nil
+		}
 		meetingID = encodeJitsiMeetingID(meetingTopic)
 	}
 	meetingPersonal := false
