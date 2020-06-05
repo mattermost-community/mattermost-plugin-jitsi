@@ -16,10 +16,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-const jitsiNameSchemaAsk = "ask"
-const jitsiNameSchemaEnglish = "english-titlecase"
-const jitsiNameSchemaUUID = "uuid"
-const jitsiNameSchemaMattermost = "mattermost"
+const jitsiNameSchemeAsk = "ask"
+const jitsiNameSchemeWords = "words"
+const jitsiNameSchemeUUID = "uuid"
+const jitsiNameSchemeMattermost = "mattermost"
 const configChangeEvent = "config_update"
 
 type UserConfig struct {
@@ -158,11 +158,11 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 		}
 
 		switch userConfig.NamingScheme {
-		case jitsiNameSchemaEnglish:
+		case jitsiNameSchemeWords:
 			meetingID = generateEnglishTitleName()
-		case jitsiNameSchemaUUID:
+		case jitsiNameSchemeUUID:
 			meetingID = generateUUIDName()
-		case jitsiNameSchemaMattermost:
+		case jitsiNameSchemeMattermost:
 			if channel.Type == model.CHANNEL_DIRECT || channel.Type == model.CHANNEL_GROUP {
 				meetingID = generatePersonalMeetingName(user.Username, user.Id)
 				meetingTopic = fmt.Sprintf("%s's Personal Meeting", user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME))
