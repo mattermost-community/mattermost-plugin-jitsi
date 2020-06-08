@@ -164,7 +164,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 			meetingID = generateUUIDName()
 		case jitsiNameSchemaMattermost:
 			if channel.Type == model.CHANNEL_DIRECT || channel.Type == model.CHANNEL_GROUP {
-				meetingID = generatePersonalMeetingName(user.Username, user.Id)
+				meetingID = generatePersonalMeetingName(user.Username)
 				meetingTopic = fmt.Sprintf("%s's Personal Meeting", user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME))
 				meetingPersonal = true
 			} else {
@@ -291,7 +291,7 @@ func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error 
 		Integration: &model.PostActionIntegration{
 			URL: apiURL,
 			Context: map[string]interface{}{
-				"meeting_id":    generatePersonalMeetingName(user.Username, user.Id),
+				"meeting_id":    generatePersonalMeetingName(user.Username),
 				"meeting_topic": fmt.Sprintf("%s's Meeting", user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME)),
 				"personal":      true,
 			},
