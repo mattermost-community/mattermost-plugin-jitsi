@@ -1,12 +1,13 @@
 package main
 
 import (
+	"crypto/rand"
 	"crypto/sha256"
 	"fmt"
 	"io"
-	"math/rand"
+	"math/big"
+	mrand "math/rand"
 	"strings"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -109,15 +110,22 @@ var ADJECTIVE = []string{"Abominable", "Accurate", "Adorable", "All", "Alleged",
 
 var LETTERS = []rune("abcdefghijklmnopqrstuvwxyz")
 
+func randomInt(max int) int {
+	value, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		return mrand.Intn(max)
+	}
+	return int(value.Int64())
+}
+
 func randomElement(s []string) string {
-	rand.Seed(time.Now().UnixNano())
-	return s[rand.Intn(len(s)-1)]
+	return s[randomInt(len(s))]
 }
 
 func randomString(runes []rune, n int) string {
 	b := make([]rune, n)
 	for i := range b {
-		b[i] = runes[rand.Intn(len(runes))]
+		b[i] = runes[randomInt(len(runes))]
 	}
 	return string(b)
 }
