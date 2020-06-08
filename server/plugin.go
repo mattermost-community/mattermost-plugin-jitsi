@@ -148,6 +148,10 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingID string, meetingTopic string, personal bool) (string, error) {
 	if meetingID == "" {
 		meetingID = encodeJitsiMeetingID(meetingTopic)
+		if meetingID != "" {
+			meetingID += "-"
+		}
+		meetingID += randomString(LETTERS, 20)
 	}
 	meetingPersonal := false
 
