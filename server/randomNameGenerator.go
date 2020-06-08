@@ -8,6 +8,7 @@ import (
 	"math/big"
 	mrand "math/rand"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -113,6 +114,7 @@ var LETTERS = []rune("abcdefghijklmnopqrstuvwxyz")
 func randomInt(max int) int {
 	value, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
 	if err != nil {
+		mrand.Seed(time.Now().UnixNano())
 		return mrand.Intn(max)
 	}
 	return int(value.Int64())
