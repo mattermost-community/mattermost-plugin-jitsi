@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {bindActionCreators, Dispatch, ActionCreatorsMapObject, Action} from 'redux';
+import {bindActionCreators, Dispatch, ActionCreatorsMapObject} from 'redux';
 
 import {getBool, getTheme} from 'mattermost-redux/selectors/entities/preferences';
 import {GenericAction, ActionFunc, ActionResult} from 'mattermost-redux/types/actions';
