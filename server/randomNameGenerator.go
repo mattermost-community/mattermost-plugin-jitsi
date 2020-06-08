@@ -6,11 +6,10 @@ import (
 	"fmt"
 	"io"
 	"math/big"
-	mrand "math/rand"
 	"strings"
-	"time"
 
 	"github.com/google/uuid"
+	"github.com/mattermost/mattermost-server/v5/mlog"
 )
 
 var PLURALNOUN = []string{"Aliens", "Animals", "Antelopes", "Ants", "Apes", "Apples", "Baboons",
@@ -114,8 +113,8 @@ var LETTERS = []rune("abcdefghijklmnopqrstuvwxyz")
 func randomInt(max int) int {
 	value, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
 	if err != nil {
-		mrand.Seed(time.Now().UnixNano())
-		return mrand.Intn(max)
+		mlog.Error("Error generating random number", mlog.Err(err))
+		panic(err.Error())
 	}
 	return int(value.Int64())
 }
