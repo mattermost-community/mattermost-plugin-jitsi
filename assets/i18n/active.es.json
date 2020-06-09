@@ -72,8 +72,8 @@
     "other": "Reunión Jitsi"
   },
   "jitsi.start_meeting.fallback_text": {
-    "hash": "sha1-6b8d02ec8b227754311ab1de7633192e591c1112",
-    "other": "Reunión de video iniciada en [{{.MeetingID}}]({{.MeetingURL}}).\n\n[Unirse a la reunión]({{.MeetingURL}})\n\n{{.MeetingUntil}}"
+    "hash": "sha1-966e32415e15bfa55bd920874c5dec72fb10cc89",
+    "other": "Reunión de video iniciada en [{{.MeetingID}}]({{.MeetingURL}}).\n\n[Unirse a la reunión]({{.MeetingURL}})"
   },
   "jitsi.start_meeting.meeting_id": {
     "hash": "sha1-8a1315eaeb59e44132aa5c27e4f53e7ba92359f7",
@@ -92,7 +92,7 @@
     "other": "Sala de reuniones personal de {{.Name}}"
   },
   "jitsi.start_meeting.slack_attachment_text": {
-    "hash": "sha1-0c067218f8ffec6c0820e7cd7d0dbbc74c2e0485",
-    "other": "{{.MeetingType}}: [{{.MeetingID}}]({{.MeetingURL}})\n\n[Unirse a la reunión]({{.MeetingURL}})\n\n{{.MeetingUntil}}"
+    "hash": "sha1-696bfd831ce1351f275652d581135165ecbd79e3",
+    "other": "{{.MeetingType}}: [{{.MeetingID}}]({{.MeetingURL}})\n\n[Unirse a la reunión]({{.MeetingURL}})"
   }
 }

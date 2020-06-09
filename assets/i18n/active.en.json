@@ -17,10 +17,10 @@
   "jitsi.command.settings.wrong_naming_scheme_value": "Invalid `naming_scheme` value, use `ask`, `english-titlecase`, `uuid` or `mattermost`.",
   "jitsi.start_meeting.channel_meeting_topic": "{{.ChannelName}} Channel Meeting",
   "jitsi.start_meeting.default_meeting_topic": "Jitsi Meeting",
-  "jitsi.start_meeting.fallback_text": "Video Meeting started at [{{.MeetingID}}]({{.MeetingURL}}).\n\n[Join Meeting]({{.MeetingURL}})\n\n{{.MeetingUntil}}",
+  "jitsi.start_meeting.fallback_text": "Video Meeting started at [{{.MeetingID}}]({{.MeetingURL}}).\\n\\n[Join Meeting]({{.MeetingURL}})",
   "jitsi.start_meeting.meeting_id": "Meeting ID",
   "jitsi.start_meeting.meeting_link_valid_until": "Meeting link valid until: {{.Datetime}}",
   "jitsi.start_meeting.personal_meeting_id": "Personal Meeting ID (PMI)",
   "jitsi.start_meeting.personal_meeting_topic": "{{.Name}}'s Personal Meeting",
-  "jitsi.start_meeting.slack_attachment_text": "{{.MeetingType}}: [{{.MeetingID}}]({{.MeetingURL}})\n\n[Join Meeting]({{.MeetingURL}})\n\n{{.MeetingUntil}}"
+  "jitsi.start_meeting.slack_attachment_text": "{{.MeetingType}}: [{{.MeetingID}}]({{.MeetingURL}})\\n\\n[Join Meeting]({{.MeetingURL}})"
 }

@@ -272,39 +272,26 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 	slackAttachment := model.SlackAttachment{
 		Fallback: l.MustLocalize(&i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
-				ID: "jitsi.start_meeting.fallback_text",
-				Other: `Video Meeting started at [{{.MeetingID}}]({{.MeetingURL}}).
-
-[Join Meeting]({{.MeetingURL}})
-
-{{.MeetingUntil}}`,
+				ID:    "jitsi.start_meeting.fallback_text",
+				Other: "Video Meeting started at [{{.MeetingID}}]({{.MeetingURL}}).\n\n[Join Meeting]({{.MeetingURL}})",
 			},
 			TemplateData: map[string]string{
-				"MeetingID":    meetingID,
-				"MeetingURL":   meetingURL,
-				"MeetingUntil": meetingUntil,
+				"MeetingID":  meetingID,
+				"MeetingURL": meetingURL,
 			},
-		}),
+		}) + "\n\n" + meetingUntil,
 		Title: slackMeetingTopic,
-		Text: fmt.Sprintf(
-			l.MustLocalize(&i18n.LocalizeConfig{
-				DefaultMessage: &i18n.Message{
-					ID: "jitsi.start_meeting.slack_attachment_text",
-					Other: `{{.MeetingType}}: [{{.MeetingID}}]({{.MeetingURL}})
-
-[Join Meeting]({{.MeetingURL}})
-
-{{.MeetingUntil}}`,
-				},
-				TemplateData: map[string]string{
-					"MeetingType":  meetingTypeString,
-					"MeetingID":    meetingID,
-					"MeetingURL":   meetingURL,
-					"MeetingUntil": meetingUntil,
-				},
-			}),
-			meetingTypeString, meetingID, meetingURL, meetingURL, meetingUntil,
-		),
+		Text: l.MustLocalize(&i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID:    "jitsi.start_meeting.slack_attachment_text",
+				Other: "{{.MeetingType}}: [{{.MeetingID}}]({{.MeetingURL}})\n\n[Join Meeting]({{.MeetingURL}})",
+			},
+			TemplateData: map[string]string{
+				"MeetingType": meetingTypeString,
+				"MeetingID":   meetingID,
+				"MeetingURL":  meetingURL,
+			},
+		}) + "\n\n" + meetingUntil,
 	}
 
 	post := &model.Post{

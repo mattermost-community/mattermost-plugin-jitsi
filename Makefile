@@ -152,15 +152,6 @@ else
 endif
 endif
 
-i18n-extract-server:
-	goi18n extract -format json -outdir assets/i18n/ server/
-	touch assets/i18n/translate.es.json
-	goi18n merge -format json -outdir assets/i18n/ assets/i18n/active.*.json assets/i18n/translate.es.json
-
-i18n-merge-server:
-	goi18n merge -format json -outdir assets/i18n/ assets/i18n/active.*.json assets/i18n/translate.es.json
-	rm assets/i18n/translate.es.json
-
 ## Clean removes all build artifacts.
 .PHONY: clean
 clean:
