@@ -54,3 +54,13 @@ func (p *Plugin) getUserLocalizer(userID string) *i18n.Localizer {
 func (p *Plugin) getServerLocalizer() *i18n.Localizer {
 	return i18n.NewLocalizer(p.i18nBundle, *p.API.GetConfig().LocalizationSettings.DefaultServerLocale)
 }
+
+// localize returns a localized message
+func (p *Plugin) localize(l *i18n.Localizer, m *i18n.LocalizeConfig) string {
+	s, err := l.Localize(m)
+	if err != nil {
+		p.API.LogWarn("Failed to localize message", "mesage ID", m.DefaultMessage.ID, "error", err.Error())
+		return ""
+	}
+	return s
+}
