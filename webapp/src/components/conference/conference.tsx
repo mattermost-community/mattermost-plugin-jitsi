@@ -1,10 +1,13 @@
 import * as React from 'react';
+import {FormattedMessage} from 'react-intl';
 
 import {Post} from 'mattermost-redux/types/posts';
 
-const BORDER_SIZE = 40;
+const BORDER_SIZE = 20;
 const POSITION_TOP = 'top';
 const POSITION_BOTTOM = 'bottom';
+const BUTTONS_PADDING_TOP = 10;
+const BUTTONS_PADDING_RIGHT = 2;
 const MINIMIZED_WIDTH = 320;
 const MINIMIZED_HEIGHT = 240;
 
@@ -18,7 +21,7 @@ type Props = {
 
 type State = {
     minimized: boolean,
-    position: 'top' | 'bottom',
+    position: typeof POSITION_TOP | typeof POSITION_BOTTOM,
     loading: boolean,
     wasTileView: boolean,
     isTileView: boolean,
@@ -43,11 +46,11 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 
     getViewportWidth(): number {
-        return Math.max(document.documentElement.clientWidth || 0, window?.innerWidth || 0) - BORDER_SIZE;
+        return Math.max(document.documentElement.clientWidth || 0, window?.innerWidth || 0) - (BORDER_SIZE * 2);
     }
 
     getViewportHeight(): number {
-        return Math.max(document.documentElement.clientHeight || 0, window?.innerHeight || 0) - BORDER_SIZE;
+        return Math.max(document.documentElement.clientHeight || 0, window?.innerHeight || 0) - (BORDER_SIZE * 2);
     }
 
     initJitsi = (post: Post) => {
@@ -122,6 +125,9 @@ export default class Conference extends React.PureComponent<Props, State> {
     componentDidUpdate(prevProps: Props, prevState: State) {
         if (this.props.post) {
             if (prevProps.post !== this.props.post) {
+                if (this.api) {
+                    this.api.dispose();
+                }
                 this.initJitsi(this.props.post);
             }
             if (prevState.minimized !== this.state.minimized) {
@@ -188,31 +194,63 @@ export default class Conference extends React.PureComponent<Props, State> {
         return (
             <div style={style.buttons}>
                 {this.state.minimized && this.state.position === POSITION_TOP &&
-                    <i
-                        onClick={this.togglePosition}
-                        style={{transform: 'rotate(270deg)', display: 'inline-block'}}
-                        className='icon icon-arrow-left'
-                        aria-label={'Move down'}
-                    />}
+                    <FormattedMessage
+                        id='jitsi.move-down'
+                        defaultMessage='Move down'
+                    >
+                        {(text: string) => (
+                            <i
+                                onClick={this.togglePosition}
+                                style={{transform: 'rotate(270deg)', display: 'inline-block'}}
+                                className='icon icon-arrow-left'
+                                aria-label={text}
+                                title={text}
+                            />
+                        )}
+                    </FormattedMessage>}
                 {this.state.minimized && this.state.position === POSITION_BOTTOM &&
-                    <i
-                        onClick={this.togglePosition}
-                        style={{transform: 'rotate(90deg)', display: 'inline-block'}}
-                        className='icon icon-arrow-left'
-                        aria-label={'Move up'}
-                    />}
+                    <FormattedMessage
+                        id='jitsi.move-up'
+                        defaultMessage='Move up'
+                    >
+                        {(text: string) => (
+                            <i
+                                onClick={this.togglePosition}
+                                style={{transform: 'rotate(90deg)', display: 'inline-block'}}
+                                className='icon icon-arrow-left'
+                                aria-label={text}
+                                title={text}
+                            />
+                        )}
+                    </FormattedMessage>}
                 {!this.state.minimized &&
-                    <i
-                        onClick={this.minimize}
-                        className='icon icon-arrow-collapse'
-                        aria-label={'Minimize'}
-                    />}
+                    <FormattedMessage
+                        id='jitsi.minimize'
+                        defaultMessage='Minimize'
+                    >
+                        {(text: string) => (
+                            <i
+                                onClick={this.minimize}
+                                className='icon icon-arrow-collapse'
+                                aria-label={text}
+                                title={text}
+                            />
+                        )}
+                    </FormattedMessage>}
                 {this.state.minimized &&
-                    <i
-                        onClick={this.maximize}
-                        className='icon icon-arrow-expand'
-                        aria-label={'Maximize'}
-                    />}
+                    <FormattedMessage
+                        id='jitsi.maximize'
+                        defaultMessage='Maximize'
+                    >
+                        {(text: string) => (
+                            <i
+                                onClick={this.maximize}
+                                className='icon icon-arrow-expand'
+                                aria-label={text}
+                                title={text}
+                            />
+                        )}
+                    </FormattedMessage>}
                 <a
                     style={{color: 'white'}}
                     onClick={this.close}
@@ -220,17 +258,33 @@ export default class Conference extends React.PureComponent<Props, State> {
                     rel='noopener noreferrer'
                     href={meetingLink}
                 >
-                    <i
-                        style={{transform: 'rotate(135deg)', display: 'inline-block'}}
-                        className='icon icon-arrow-left'
-                        aria-label={'Open in new tab'}
-                    />
+                    <FormattedMessage
+                        id='jitsi.open-in-new-tab'
+                        defaultMessage='Open in new tab'
+                    >
+                        {(text: string) => (
+                            <i
+                                style={{transform: 'rotate(135deg)', display: 'inline-block'}}
+                                className='icon icon-arrow-left'
+                                aria-label={text}
+                                title={text}
+                            />
+                        )}
+                    </FormattedMessage>
                 </a>
-                <i
-                    onClick={this.close}
-                    className='icon icon-close'
-                    aria-label={'Close'}
-                />
+                <FormattedMessage
+                    id='jitsi.close'
+                    defaultMessage='Close'
+                >
+                    {(text: string) => (
+                        <i
+                            onClick={this.close}
+                            className='icon icon-close'
+                            aria-label={text}
+                            title={text}
+                        />
+                    )}
+                </FormattedMessage>
             </div>);
     }
 
@@ -279,9 +333,9 @@ function getStyle(height: number, width: number, position: 'top' | 'bottom'): {[
             alignItems: 'center',
             justifyContent: 'center',
             background: '#474747',
-            bottom: position === POSITION_TOP ? '' : '20px',
-            top: position === POSITION_TOP ? '20px' : '',
-            right: '20px',
+            bottom: position === POSITION_BOTTOM ? `${BORDER_SIZE}px` : '',
+            top: position === POSITION_TOP ? `${BORDER_SIZE}px` : '',
+            right: `${BORDER_SIZE}px`,
             zIndex: jitsiZIndex
         },
         loading: {
@@ -289,9 +343,9 @@ function getStyle(height: number, width: number, position: 'top' | 'bottom'): {[
             height,
             width,
             background: '#00000077',
-            bottom: position === POSITION_TOP ? '' : '20px',
-            top: position === POSITION_TOP ? '20px' : '',
-            right: '20px',
+            bottom: position === POSITION_BOTTOM ? `${BORDER_SIZE}px` : '',
+            top: position === POSITION_TOP ? `${BORDER_SIZE}px` : '',
+            right: `${BORDER_SIZE}px`,
             alignItems: 'center',
             justifyContent: 'center',
             display: 'flex',
@@ -312,9 +366,9 @@ function getStyle(height: number, width: number, position: 'top' | 'bottom'): {[
         },
         buttons: {
             position: 'absolute',
-            bottom: position === POSITION_TOP ? '' : (height - 10) + 'px',
-            top: position === POSITION_TOP ? '20px' : '',
-            right: '22px',
+            bottom: position === POSITION_BOTTOM ? ((height - BORDER_SIZE) + BUTTONS_PADDING_TOP) + 'px' : '',
+            top: position === POSITION_TOP ? `${BORDER_SIZE}px` : '',
+            right: `${BORDER_SIZE + BUTTONS_PADDING_RIGHT}px`,
             color: 'white',
             fontSize: '18px',
             cursor: 'pointer',

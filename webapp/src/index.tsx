@@ -4,15 +4,18 @@
 import * as React from 'react';
 
 import {Channel} from 'mattermost-redux/types/channels';
+import {Post} from 'mattermost-redux/types/posts';
 
 import Icon from './components/icon';
 import PostTypeJitsi from './components/post_type_jitsi';
+import I18nProvider from './components/i18n_provider';
 import RootPortal from './components/root_portal';
 import reducer from './reducers';
 import {startMeeting, loadConfig} from './actions';
+import {id as pluginId} from './manifest';
 
 class PluginClass {
-    rootPortal: RootPortal | null = null
+    rootPortal?: RootPortal
 
     initialize(registry: any, store: any) {
         if ((window as any).JitsiMeetExternalAPI) {
@@ -29,18 +32,18 @@ class PluginClass {
                     this.rootPortal.render();
                 }
             };
-            script.src = (window as any).basename + '/plugins/jitsi/jitsi_meet_external_api.js';
+            script.src = `${(window as any).basename}/plugins/${pluginId}/jitsi_meet_external_api.js`;
             document.head.appendChild(script);
         }
         registry.registerReducer(reducer);
         registry.registerChannelHeaderButtonAction(
             <Icon/>,
             (channel: Channel) => {
-                startMeeting(channel.id)(store.dispatch, store.getState);
+                store.dispatch(startMeeting(channel.id));
             },
             'Start Jitsi Meeting'
         );
-        registry.registerPostTypeComponent('custom_jitsi', PostTypeJitsi);
+        registry.registerPostTypeComponent('custom_jitsi', (props: {post: Post}) => (<I18nProvider><PostTypeJitsi post={props.post}/></I18nProvider>));
         registry.registerWebSocketEventHandler('custom_jitsi_config_update', () => store.dispatch(loadConfig()));
         store.dispatch(loadConfig());
     }

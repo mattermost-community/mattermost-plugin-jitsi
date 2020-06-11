@@ -18,6 +18,8 @@ Clicking a video icon in a Mattermost channel posts a message that invites team 
     - whether Jitsi meetings appear as a floating window inside Mattermost or in a separate window
     - how meeting names are generated
 
+The plugin has been tested on Chrome, Firefox and the Mattermost Desktop Apps.
+
 ## Installation
 
 1. Go to https://github.com/mattermost/mattermost-plugin-jitsi/releases to download the latest release file in tar.gz format.

@@ -7,22 +7,10 @@ import (
 	"github.com/mattermost/mattermost-server/v5/mlog"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
 const jitsiCommand = "jitsi"
-const commandHelp = `* |/jitsi| - Create a new meeting
-* |/jitsi [topic]| - Create a new meeting with specified topic
-* |/jitsi help| - Show this help text
-* |/jitsi settings| - View your current user settings for the Jitsi plugin
-* |/jitsi settings [setting] [value]| - Update your user settings (see below for options)
-
-###### Jitsi Settings:
-* |/jitsi settings embedded [true/false]|: When true, Jitsi meeting is embedded as a floating window inside Mattermost. When false, Jitsi meeting opens in a new window.
-* |/jitsi settings naming_scheme [words/uuid/mattermost/ask]|: Select how meeting names are generated with one of these options:
-    * |words|: Random English words in title case (e.g. PlayfulDragonsObserveCuriously)
-    * |uuid|: UUID (universally unique identifier)
-    * |mattermost|: Mattermost specific names. Combination of team name, channel name and random text in public and private channels; personal meeting name in direct and group messages channels.
-    * |ask|: The plugin asks you to select the name every time you start a meeting`
 
 func startMeetingError(channelID string, detailedError string) (*model.CommandResponse, *model.AppError) {
 	return &model.CommandResponse{
@@ -103,7 +91,34 @@ func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.Comma
 }
 
 func (p *Plugin) executeHelpCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
-	text := "###### Mattermost Jitsi Plugin - Slash Command Help\n" + strings.Replace(commandHelp, "|", "`", -1)
+	l := p.getUserLocalizer(args.UserId)
+	helpTitle := p.localize(l, &i18n.LocalizeConfig{
+		DefaultMessage: &i18n.Message{
+			ID: "jitsi.command.help.title",
+			Other: `###### Mattermost Jitsi Plugin - Slash Command help
+`,
+		},
+	})
+	commandHelp := p.localize(l, &i18n.LocalizeConfig{
+		DefaultMessage: &i18n.Message{
+			ID: "jitsi.command.help.text",
+			Other: `* |/jitsi| - Create a new meeting
+* |/jitsi [topic]| - Create a new meeting with specified topic
+* |/jitsi help| - Show this help text
+* |/jitsi settings| - View your current user settings for the Jitsi plugin
+* |/jitsi settings [setting] [value]| - Update your user settings (see below for options)
+
+###### Jitsi Settings:
+* |/jitsi settings embedded [true/false]|: When true, Jitsi meeting is embedded as a floating window inside Mattermost. When false, Jitsi meeting opens in a new window.
+* |/jitsi settings naming_scheme [words/uuid/mattermost/ask]|: Select how meeting names are generated with one of these options:
+    * |words|: Random English words in title case (e.g. PlayfulDragonsObserveCuriously)
+    * |uuid|: UUID (universally unique identifier)
+    * |mattermost|: Mattermost specific names. Combination of team name, channel name and random text in public and private channels; personal meeting name in direct and group messages channels.
+    * |ask|: The plugin asks you to select the name every time you start a meeting`,
+		},
+	})
+
+	text := helpTitle + strings.Replace(commandHelp, "|", "`", -1)
 	post := &model.Post{
 		UserId:    args.UserId,
 		ChannelId: args.ChannelId,
@@ -126,20 +141,37 @@ func (p *Plugin) settingsError(userID string, channelID string, errorText string
 }
 
 func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandArgs, parameters []string) (*model.CommandResponse, *model.AppError) {
+	l := p.getUserLocalizer(args.UserId)
 	text := ""
 
 	userConfig, err := p.getUserConfig(args.UserId)
 	if err != nil {
 		mlog.Debug("Unable to get user config", mlog.Err(err))
-		return p.settingsError(args.UserId, args.ChannelId, "Unable to get user settings.")
+		return p.settingsError(args.UserId, args.ChannelId, p.localize(l, &i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID:    "jitsi.command.settings.unable_to_get",
+				Other: "Unable to get user settings",
+			},
+		}))
 	}
 
 	if len(parameters) == 0 {
-		text = fmt.Sprintf("###### Jitsi Settings:\n* Embedded: `%v`\n* Naming Scheme: `%s`", userConfig.Embedded, userConfig.NamingScheme)
+		text = p.localize(l, &i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID: "jitsi.command.settings.current_values",
+				Other: `###### Jitsi Settings:
+* Embedded: |{{.Embedded}}|
+* Naming Scheme: |{{.NamingScheme}}|`,
+			},
+			TemplateData: map[string]string{
+				"Embedded":     fmt.Sprintf("%v", userConfig.Embedded),
+				"NamingScheme": userConfig.NamingScheme,
+			},
+		})
 		post := &model.Post{
 			UserId:    args.UserId,
 			ChannelId: args.ChannelId,
-			Message:   text,
+			Message:   strings.Replace(text, "|", "`", -1),
 		}
 		_ = p.API.SendEphemeralPost(args.UserId, post)
 
@@ -147,7 +179,12 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 	}
 
 	if len(parameters) != 2 {
-		return p.settingsError(args.UserId, args.ChannelId, "Invalid settings parameters")
+		return p.settingsError(args.UserId, args.ChannelId, p.localize(l, &i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID:    "jitsi.command.settings.invalid_parameters",
+				Other: "Invalid settings parameters",
+			},
+		}))
 	}
 
 	switch parameters[0] {
@@ -158,7 +195,12 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 		case "false":
 			userConfig.Embedded = false
 		default:
-			text = "Invalid `embedded` value, use `true` or `false`."
+			text = p.localize(l, &i18n.LocalizeConfig{
+				DefaultMessage: &i18n.Message{
+					ID:    "jitsi.command.settings.wrong_embedded_value",
+					Other: "Invalid `embedded` value, use `true` or `false`.",
+				},
+			})
 			userConfig = nil
 		}
 	case "naming_scheme":
@@ -172,11 +214,21 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 		case jitsiNameSchemeMattermost:
 			userConfig.NamingScheme = "mattermost"
 		default:
-			text = "Invalid `naming_scheme` value, use `ask`, `words`, `uuid` or `mattermost`."
+			text = p.localize(l, &i18n.LocalizeConfig{
+				DefaultMessage: &i18n.Message{
+					ID:    "jitsi.command.settings.wrong_naming_scheme_value",
+					Other: "Invalid `naming_scheme` value, use `ask`, `words`, `uuid` or `mattermost`.",
+				},
+			})
 			userConfig = nil
 		}
 	default:
-		text = "Invalid config field, use `embedded` or `naming_scheme`."
+		text = p.localize(l, &i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID:    "jitsi.command.settings.wrong_field",
+				Other: "Invalid config field, use `embedded` or `naming_scheme`.",
+			},
+		})
 		userConfig = nil
 	}
 
@@ -187,13 +239,23 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 	err = p.setUserConfig(args.UserId, userConfig)
 	if err != nil {
 		mlog.Debug("Unable to set user settings", mlog.Err(err))
-		return p.settingsError(args.UserId, args.ChannelId, "Unable to set user settings")
+		return p.settingsError(args.UserId, args.ChannelId, p.localize(l, &i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID:    "jitsi.command.settings.unable_to_set",
+				Other: "Unable to set user settings",
+			},
+		}))
 	}
 
 	post := &model.Post{
 		UserId:    args.UserId,
 		ChannelId: args.ChannelId,
-		Message:   "Jitsi settings updated",
+		Message: p.localize(l, &i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID:    "jitsi.command.settings.updated",
+				Other: "Jitsi settings updated",
+			},
+		}),
 	}
 	_ = p.API.SendEphemeralPost(args.UserId, post)
 
