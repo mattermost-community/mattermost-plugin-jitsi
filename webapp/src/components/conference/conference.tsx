@@ -149,6 +149,9 @@ export default class Conference extends React.PureComponent<Props, State> {
                 wasFilmStrip: true,
                 isFilmStrip: true
             });
+            if (this.api) {
+                this.api.dispose();
+            }
         }, 200);
     }
 
@@ -289,14 +292,17 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 
     render() {
-        if (this.props.post === null) {
-            return null;
-        }
         const vw = this.getViewportWidth();
         const width = this.state.minimized ? MINIMIZED_WIDTH : vw;
         const vh = this.getViewportHeight();
         const height = this.state.minimized ? MINIMIZED_HEIGHT : vh;
         const style = getStyle(height, width, this.state.position);
+        if (this.props.post === null) {
+            style.jitsiMeetContainer.display = 'none';
+            style.background.display = 'none';
+            style.loading.display = 'none';
+            style.buttons.display = 'none';
+        }
         return (
             <React.Fragment>
                 <div
