@@ -60,8 +60,8 @@
     "other": "Configuración no valida, use `embedded` o `naming_scheme`."
   },
   "jitsi.command.settings.wrong_naming_scheme_value": {
-    "hash": "sha1-86a17554abf585c80cf9876554a43d14e150f30c",
-    "other": "Valor invalido para la configuración `naming_scheme`, use `ask`, `english-titlecase`, `uuid` o `mattermost`."
+    "hash": "sha1-fb39ca34d10fa7b9ccea30f0ebf7e1f7936b6b32",
+    "other": "Valor de `naming_scheme` invalido, use `ask`, `words`, `uuid` o `mattermost`."
   },
   "jitsi.start_meeting.channel_meeting_topic": {
     "hash": "sha1-87eea3707ed3cad060b73cb43c0d4efe4ec8cc84",
@@ -72,8 +72,8 @@
     "other": "Reunión Jitsi"
   },
   "jitsi.start_meeting.fallback_text": {
-    "hash": "sha1-966e32415e15bfa55bd920874c5dec72fb10cc89",
-    "other": "Reunión de video iniciada en [{{.MeetingID}}]({{.MeetingURL}}).\n\n[Unirse a la reunión]({{.MeetingURL}})"
+    "hash": "sha1-e956f3c3fd1a6c3995976154e0f45099234a1f0a",
+    "other": "Reunión de vidio iniciada en [{{.MeetingID}}]({{.MeetingURL}}).\n\n[Unirse a la reunión]({{.MeetingURL}})"
   },
   "jitsi.start_meeting.meeting_id": {
     "hash": "sha1-8a1315eaeb59e44132aa5c27e4f53e7ba92359f7",
@@ -92,7 +92,7 @@
     "other": "Sala de reuniones personal de {{.Name}}"
   },
   "jitsi.start_meeting.slack_attachment_text": {
-    "hash": "sha1-696bfd831ce1351f275652d581135165ecbd79e3",
+    "hash": "sha1-7726587ccfee9bb7539aad458c154f8be3d95dcd",
     "other": "{{.MeetingType}}: [{{.MeetingID}}]({{.MeetingURL}})\n\n[Unirse a la reunión]({{.MeetingURL}})"
   }
 }

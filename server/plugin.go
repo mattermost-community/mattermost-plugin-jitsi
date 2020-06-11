@@ -276,8 +276,10 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 	slackAttachment := model.SlackAttachment{
 		Fallback: p.localize(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
-				ID:    "jitsi.start_meeting.fallback_text",
-				Other: "Video Meeting started at [{{.MeetingID}}]({{.MeetingURL}}).\n\n[Join Meeting]({{.MeetingURL}})",
+				ID: "jitsi.start_meeting.fallback_text",
+				Other: `Video Meeting started at [{{.MeetingID}}]({{.MeetingURL}}).
+
+[Join Meeting]({{.MeetingURL}})`,
 			},
 			TemplateData: map[string]string{
 				"MeetingID":  meetingID,
@@ -287,8 +289,10 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 		Title: slackMeetingTopic,
 		Text: p.localize(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
-				ID:    "jitsi.start_meeting.slack_attachment_text",
-				Other: "{{.MeetingType}}: [{{.MeetingID}}]({{.MeetingURL}})\n\n[Join Meeting]({{.MeetingURL}})",
+				ID: "jitsi.start_meeting.slack_attachment_text",
+				Other: `{{.MeetingType}}: [{{.MeetingID}}]({{.MeetingURL}})
+
+[Join Meeting]({{.MeetingURL}})`,
 			},
 			TemplateData: map[string]string{
 				"MeetingType": meetingTypeString,
