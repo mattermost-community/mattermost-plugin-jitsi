@@ -5,3 +5,5 @@ dist
 
 # VSCode
 .vscode
+
+assets/i18n/translate.*.json

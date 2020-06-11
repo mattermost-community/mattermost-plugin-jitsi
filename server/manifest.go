@@ -40,7 +40,7 @@ const manifestStr = `
         "key": "JitsiURL",
         "display_name": "Jitsi Server URL",
         "type": "text",
-        "help_text": "The URL for an on-premise Jitsi server. For example, https://jitsi.example.com.",
+        "help_text": "The URL for your Jitsi server. For example, https://jitsi.example.com.",
         "placeholder": "https://jitsi.example.com",
         "default": null
       },

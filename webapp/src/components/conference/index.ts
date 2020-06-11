@@ -1,17 +1,16 @@
 import {connect} from 'react-redux';
 import {bindActionCreators, Dispatch} from 'redux';
 
-import {GlobalState} from 'mattermost-redux/types/store';
 import {GenericAction} from 'mattermost-redux/types/actions';
 
-import {id as pluginId} from '../../manifest';
+import {GlobalState} from '../../types';
 import Conference from './conference';
 import {openJitsiMeeting} from '../../actions';
 
 function mapStateToProps(state: GlobalState) {
     return {
-        post: (state as any)[`plugins-${pluginId}`].openMeeting,
-        jwt: (state as any)[`plugins-${pluginId}`].openMeetingJwt
+        post: state['plugins-jitsi'].openMeeting,
+        jwt: state['plugins-jitsi'].openMeetingJwt
     };
 }
 

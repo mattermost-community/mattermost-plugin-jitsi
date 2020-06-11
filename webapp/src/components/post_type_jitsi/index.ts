@@ -1,13 +1,12 @@
 import {connect} from 'react-redux';
-import {bindActionCreators, Dispatch} from 'redux';
+import {bindActionCreators, Dispatch, ActionCreatorsMapObject} from 'redux';
 
 import {getBool, getTheme} from 'mattermost-redux/selectors/entities/preferences';
-import {GlobalState} from 'mattermost-redux/types/store';
-import {GenericAction} from 'mattermost-redux/types/actions';
+import {GenericAction, ActionFunc, ActionResult} from 'mattermost-redux/types/actions';
 
 import {Post} from 'mattermost-redux/types/posts';
 
-import {id as pluginId} from '../../manifest';
+import {GlobalState} from '../../types';
 import {displayUsernameForUser} from '../../utils/user_utils';
 import {enrichMeetingJwt, openJitsiMeeting} from '../../actions';
 
@@ -20,7 +19,7 @@ type OwnProps = {
 function mapStateToProps(state: GlobalState, ownProps: OwnProps) {
     const post = ownProps.post;
     const user = state.entities.users.profiles[post.user_id];
-    const config = (state as any)[`plugins-${pluginId}`].config;
+    const config = state['plugins-jitsi'].config;
 
     return {
         ...ownProps,
@@ -31,9 +30,14 @@ function mapStateToProps(state: GlobalState, ownProps: OwnProps) {
     };
 }
 
+type Actions = {
+    enrichMeetingJwt: (jwt: string) => Promise<ActionResult>,
+    openJitsiMeeting: (post: Post | null, jwt: string | null) => ActionResult,
+}
+
 function mapDispatchToProps(dispatch: Dispatch<GenericAction>) {
     return {
-        actions: bindActionCreators({
+        actions: bindActionCreators<ActionCreatorsMapObject<ActionFunc>, Actions>({
             enrichMeetingJwt,
             openJitsiMeeting
         }, dispatch)

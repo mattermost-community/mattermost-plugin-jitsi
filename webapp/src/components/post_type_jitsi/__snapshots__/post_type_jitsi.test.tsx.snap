@@ -2,7 +2,15 @@
 
 exports[`PostTypeJitsi should render a post if the post type is not null, and should try to enrich the token 1`] = `
 <div>
-  test has started a meeting
+  <FormattedMessage
+    defaultMessage="{creator} has started a meeting"
+    id="jitsi.creator-has-started-a-meeting"
+    values={
+      Object {
+        "creator": "test",
+      }
+    }
+  />
   <div
     style={
       Object {
@@ -48,7 +56,11 @@ exports[`PostTypeJitsi should render a post if the post type is not null, and sh
           Test topic
         </h1>
         <span>
-          Meeting ID: 
+          <FormattedMessage
+            defaultMessage="Meeting ID: "
+            id="jitsi.meeting-id"
+            values={Object {}}
+          />
           <a
             href="http://test-meeting-link/test?jwt=xxxxxxxxxxxx#config.callDisplayName=\\"Test topic\\""
             onClick={[Function]}
@@ -102,7 +114,11 @@ exports[`PostTypeJitsi should render a post if the post type is not null, and sh
                     }
                   }
                 />
-                JOIN MEETING
+                <FormattedMessage
+                  defaultMessage="JOIN MEETING"
+                  id="jitsi.join-meeting"
+                  values={Object {}}
+                />
               </a>
             </div>
             <div
@@ -112,8 +128,11 @@ exports[`PostTypeJitsi should render a post if the post type is not null, and sh
                 }
               }
             >
-               Meeting link valid until: 
-               
+              <FormattedMessage
+                defaultMessage=" Meeting link valid until: "
+                id="jitsi.link-valid-until"
+                values={Object {}}
+              />
               <b>
                 Thu Jan 01 1970 00:02:03 GMT+0000 (Coordinated Universal Time)
               </b>
@@ -128,7 +147,15 @@ exports[`PostTypeJitsi should render a post if the post type is not null, and sh
 
 exports[`PostTypeJitsi should render a post without token if there is no jwt token, and shouldn't try to enrich the token 1`] = `
 <div>
-  test has started a meeting
+  <FormattedMessage
+    defaultMessage="{creator} has started a meeting"
+    id="jitsi.creator-has-started-a-meeting"
+    values={
+      Object {
+        "creator": "test",
+      }
+    }
+  />
   <div
     style={
       Object {
@@ -174,7 +201,11 @@ exports[`PostTypeJitsi should render a post without token if there is no jwt tok
           Test topic
         </h1>
         <span>
-          Meeting ID: 
+          <FormattedMessage
+            defaultMessage="Meeting ID: "
+            id="jitsi.meeting-id"
+            values={Object {}}
+          />
           <a
             href="http://test-meeting-link/test#config.callDisplayName=\\"Test topic\\""
             onClick={[Function]}
@@ -228,7 +259,11 @@ exports[`PostTypeJitsi should render a post without token if there is no jwt tok
                     }
                   }
                 />
-                JOIN MEETING
+                <FormattedMessage
+                  defaultMessage="JOIN MEETING"
+                  id="jitsi.join-meeting"
+                  values={Object {}}
+                />
               </a>
             </div>
           </div>
@@ -243,7 +278,15 @@ exports[`PostTypeJitsi should render null if the post type is null 1`] = `""`;
 
 exports[`PostTypeJitsi should render the a different subtitle if the meeting is personal 1`] = `
 <div>
-  test has started a meeting
+  <FormattedMessage
+    defaultMessage="{creator} has started a meeting"
+    id="jitsi.creator-has-started-a-meeting"
+    values={
+      Object {
+        "creator": "test",
+      }
+    }
+  />
   <div
     style={
       Object {
@@ -289,7 +332,11 @@ exports[`PostTypeJitsi should render the a different subtitle if the meeting is 
           Test topic
         </h1>
         <span>
-          Personal Meeting ID (PMI): 
+          <FormattedMessage
+            defaultMessage="Personal Meeting ID (PMI): "
+            id="jitsi.personal-meeting-id"
+            values={Object {}}
+          />
           <a
             href="http://test-meeting-link/test?jwt=xxxxxxxxxxxx#config.callDisplayName=\\"Test topic\\""
             onClick={[Function]}
@@ -343,7 +390,11 @@ exports[`PostTypeJitsi should render the a different subtitle if the meeting is 
                     }
                   }
                 />
-                JOIN MEETING
+                <FormattedMessage
+                  defaultMessage="JOIN MEETING"
+                  id="jitsi.join-meeting"
+                  values={Object {}}
+                />
               </a>
             </div>
             <div
@@ -353,8 +404,11 @@ exports[`PostTypeJitsi should render the a different subtitle if the meeting is 
                 }
               }
             >
-               Meeting link valid until: 
-               
+              <FormattedMessage
+                defaultMessage=" Meeting link valid until: "
+                id="jitsi.link-valid-until"
+                values={Object {}}
+              />
               <b>
                 Thu Jan 01 1970 00:02:03 GMT+0000 (Coordinated Universal Time)
               </b>
@@ -380,6 +434,10 @@ exports[`PostTypeJitsi should render the default topic if the topic is empty 1`]
     }
   }
 >
-  Jitsi Meeting
+  <FormattedMessage
+    defaultMessage="Jitsi Meeting"
+    id="jitsi.default-title"
+    values={Object {}}
+  />
 </h1>
 `;
