@@ -2,10 +2,8 @@ package main
 
 import (
 	"crypto/rand"
-	"crypto/sha256"
-	"fmt"
-	"io"
 	"math/big"
+	"math/rand"
 	"strings"
 
 	"github.com/google/uuid"
@@ -161,9 +159,6 @@ func generateTeamChannelName(teamName string, channelName string) string {
 	return name
 }
 
-func generatePersonalMeetingName(username string, userID string) string {
-	h := sha256.New()
-	_, _ = io.WriteString(h, userID)
-	hash := fmt.Sprintf("%x", h.Sum(nil))
-	return username + "-" + hash[0:20]
+func generatePersonalMeetingName(username string) string {
+	return username + "-" + randomString(LETTERS, 20)
 }
