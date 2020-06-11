@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/rand"
 	"math/big"
-	"math/rand"
 	"strings"
 
 	"github.com/google/uuid"
