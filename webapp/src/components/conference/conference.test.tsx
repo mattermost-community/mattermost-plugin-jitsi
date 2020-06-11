@@ -213,7 +213,8 @@ describe('Conference', () => {
             isFilmStrip: false
         });
         instance.api = {
-            executeCommand: jest.fn()
+            executeCommand: jest.fn(),
+            dispose: jest.fn()
         };
         instance.close();
         expect(defaultProps.actions.openJitsiMeeting).not.toBeCalled();
@@ -221,6 +222,7 @@ describe('Conference', () => {
         setTimeout(() => {
             expect(defaultProps.actions.openJitsiMeeting).toBeCalledTimes(1);
             expect(defaultProps.actions.openJitsiMeeting).toBeCalledWith(null, null);
+            expect(instance.api.dispose).toBeCalled();
             expect(instance.state).toEqual({
                 minimized: false,
                 loading: true,

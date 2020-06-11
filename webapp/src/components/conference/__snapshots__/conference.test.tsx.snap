@@ -110,7 +110,67 @@ exports[`Conference should render and initialize the conference interface 1`] = 
 </Fragment>
 `;
 
-exports[`Conference should render null if the post type is null 1`] = `""`;
+exports[`Conference should render null if the post type is null 1`] = `
+<Fragment>
+  <div
+    id="jitsiMeet"
+    style={
+      Object {
+        "alignItems": "center",
+        "background": "#474747",
+        "bottom": "20px",
+        "display": "none",
+        "height": 10,
+        "justifyContent": "center",
+        "position": "absolute",
+        "right": "20px",
+        "top": "",
+        "width": 10,
+        "zIndex": 1100,
+      }
+    }
+  />
+  <div
+    style={
+      Object {
+        "background": "black",
+        "display": "none",
+        "height": "100%",
+        "left": 0,
+        "opacity": 0.7,
+        "position": "absolute",
+        "top": 0,
+        "width": "100%",
+        "zIndex": 1000,
+      }
+    }
+  />
+  <div
+    style={
+      Object {
+        "alignItems": "center",
+        "background": "#00000077",
+        "bottom": "20px",
+        "color": "white",
+        "display": "none",
+        "fontSize": "48px",
+        "height": 10,
+        "justifyContent": "center",
+        "opacity": 0.85,
+        "position": "absolute",
+        "right": "20px",
+        "top": "",
+        "width": 10,
+        "zIndex": 1200,
+      }
+    }
+  >
+    <i
+      className="fa fa-spinner fa-fw fa-pulse spinner"
+    />
+  </div>
+</Fragment>
+`;
 
 exports[`Conference should show the correct buttons depending on the state should have down, open outside, maximize and close buttons 1`] = `
 <Fragment>
