@@ -6,6 +6,7 @@ import * as ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 
 import Conference from './conference/';
+import I18nProvider from './i18n_provider/';
 
 type Props = {
     children: React.ReactNode,
@@ -38,7 +39,9 @@ export default class RootPortal {
         if (rootPortal) {
             ReactDOM.render((
                 <Provider store={this.store}>
-                    <Conference/>
+                    <I18nProvider>
+                        <Conference/>
+                    </I18nProvider>
                 </Provider>
             ), this.el);
         }

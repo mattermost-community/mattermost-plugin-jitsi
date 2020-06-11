@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {FormattedMessage} from 'react-intl';
 
 import {Post} from 'mattermost-redux/types/posts';
 
@@ -188,31 +189,63 @@ export default class Conference extends React.PureComponent<Props, State> {
         return (
             <div style={style.buttons}>
                 {this.state.minimized && this.state.position === POSITION_TOP &&
-                    <i
-                        onClick={this.togglePosition}
-                        style={{transform: 'rotate(270deg)', display: 'inline-block'}}
-                        className='icon icon-arrow-left'
-                        aria-label={'Move down'}
-                    />}
+                    <FormattedMessage
+                        id='jitsi.move-down'
+                        defaultMessage='Move down'
+                    >
+                        {(text: string) => (
+                            <i
+                                onClick={this.togglePosition}
+                                style={{transform: 'rotate(270deg)', display: 'inline-block'}}
+                                className='icon icon-arrow-left'
+                                aria-label={text}
+                                title={text}
+                            />
+                        )}
+                    </FormattedMessage>}
                 {this.state.minimized && this.state.position === POSITION_BOTTOM &&
-                    <i
-                        onClick={this.togglePosition}
-                        style={{transform: 'rotate(90deg)', display: 'inline-block'}}
-                        className='icon icon-arrow-left'
-                        aria-label={'Move up'}
-                    />}
+                    <FormattedMessage
+                        id='jitsi.move-up'
+                        defaultMessage='Move up'
+                    >
+                        {(text: string) => (
+                            <i
+                                onClick={this.togglePosition}
+                                style={{transform: 'rotate(90deg)', display: 'inline-block'}}
+                                className='icon icon-arrow-left'
+                                aria-label={text}
+                                title={text}
+                            />
+                        )}
+                    </FormattedMessage>}
                 {!this.state.minimized &&
-                    <i
-                        onClick={this.minimize}
-                        className='icon icon-arrow-collapse'
-                        aria-label={'Minimize'}
-                    />}
+                    <FormattedMessage
+                        id='jitsi.minimize'
+                        defaultMessage='Minimize'
+                    >
+                        {(text: string) => (
+                            <i
+                                onClick={this.minimize}
+                                className='icon icon-arrow-collapse'
+                                aria-label={text}
+                                title={text}
+                            />
+                        )}
+                    </FormattedMessage>}
                 {this.state.minimized &&
-                    <i
-                        onClick={this.maximize}
-                        className='icon icon-arrow-expand'
-                        aria-label={'Maximize'}
-                    />}
+                    <FormattedMessage
+                        id='jitsi.maximize'
+                        defaultMessage='Maximize'
+                    >
+                        {(text: string) => (
+                            <i
+                                onClick={this.maximize}
+                                className='icon icon-arrow-expand'
+                                aria-label={text}
+                                title={text}
+                            />
+                        )}
+                    </FormattedMessage>}
                 <a
                     style={{color: 'white'}}
                     onClick={this.close}
@@ -220,17 +253,33 @@ export default class Conference extends React.PureComponent<Props, State> {
                     rel='noopener noreferrer'
                     href={meetingLink}
                 >
-                    <i
-                        style={{transform: 'rotate(135deg)', display: 'inline-block'}}
-                        className='icon icon-arrow-left'
-                        aria-label={'Open in new tab'}
-                    />
+                    <FormattedMessage
+                        id='jitsi.open-in-new-tab'
+                        defaultMessage='Open in new tab'
+                    >
+                        {(text: string) => (
+                            <i
+                                style={{transform: 'rotate(135deg)', display: 'inline-block'}}
+                                className='icon icon-arrow-left'
+                                aria-label={text}
+                                title={text}
+                            />
+                        )}
+                    </FormattedMessage>
                 </a>
-                <i
-                    onClick={this.close}
-                    className='icon icon-close'
-                    aria-label={'Close'}
-                />
+                <FormattedMessage
+                    id='jitsi.close'
+                    defaultMessage='Close'
+                >
+                    {(text: string) => (
+                        <i
+                            onClick={this.close}
+                            className='icon icon-close'
+                            aria-label={text}
+                            title={text}
+                        />
+                    )}
+                </FormattedMessage>
             </div>);
     }
 

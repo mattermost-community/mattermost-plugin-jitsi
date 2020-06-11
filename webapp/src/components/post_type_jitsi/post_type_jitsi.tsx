@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {FormattedMessage} from 'react-intl';
 
 import {Post} from 'mattermost-redux/types/posts';
 
@@ -58,7 +59,15 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
             if (!isNaN(date.getTime())) {
                 dateStr = date.toString();
             }
-            return (<div style={style.validUntil}>{' Meeting link valid until: '} <b>{dateStr}</b></div>);
+            return (
+                <div style={style.validUntil}>
+                    <FormattedMessage
+                        id='jitsi.link-valid-until'
+                        defaultMessage=' Meeting link valid until: '
+                    />
+                    <b>{dateStr}</b>
+                </div>
+            );
         }
         return null;
     }
@@ -80,14 +89,35 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
         }
         meetingLink += `#config.callDisplayName="${props.meeting_topic}"`;
 
-        const preText = `${this.props.creatorName} has started a meeting`;
+        const preText = (
+            <FormattedMessage
+                id='jitsi.creator-has-started-a-meeting'
+                defaultMessage='{creator} has started a meeting'
+                values={{creator: this.props.creatorName}}
+            />
+        );
 
-        let subtitle = 'Meeting ID: ';
+        let subtitle = (
+            <FormattedMessage
+                id='jitsi.meeting-id'
+                defaultMessage='Meeting ID: '
+            />
+        );
         if (props.meeting_personal) {
-            subtitle = 'Personal Meeting ID (PMI): ';
+            subtitle = (
+                <FormattedMessage
+                    id='jitsi.personal-meeting-id'
+                    defaultMessage='Personal Meeting ID (PMI): '
+                />
+            );
         }
 
-        let title = 'Jitsi Meeting';
+        let title = (
+            <FormattedMessage
+                id='jitsi.default-title'
+                defaultMessage='Jitsi Meeting'
+            />
+        );
         if (props.meeting_topic) {
             title = props.meeting_topic;
         }
@@ -127,7 +157,10 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
                                                 style={style.buttonIcon}
                                                 dangerouslySetInnerHTML={{__html: Svgs.VIDEO_CAMERA_3}}
                                             />
-                                            {'JOIN MEETING'}
+                                            <FormattedMessage
+                                                id='jitsi.join-meeting'
+                                                defaultMessage='JOIN MEETING'
+                                            />
                                         </a>
                                     </div>
                                     {this.renderUntilDate(post, style)}
