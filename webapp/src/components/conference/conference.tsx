@@ -151,6 +151,9 @@ export default class Conference extends React.PureComponent<Props, State> {
                 wasFilmStrip: true,
                 isFilmStrip: true
             });
+            if (this.api) {
+                this.api.dispose();
+            }
         }, 200);
     }
 
