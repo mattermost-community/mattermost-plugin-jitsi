@@ -231,7 +231,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 
 		meetingURL = meetingURL + "?jwt=" + jwtToken
 	}
-	meetingURL = meetingURL + "#config.callDisplayName=\"" + meetingTopic + "\""
+	meetingURL = meetingURL + "#config.callDisplayName=" + url.PathEscape("\""+meetingTopic+"\"")
 
 	meetingUntil := ""
 	if JWTMeeting {
