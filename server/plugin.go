@@ -158,6 +158,10 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 	l := p.getServerLocalizer()
 	if meetingID == "" {
 		meetingID = encodeJitsiMeetingID(meetingTopic)
+		if meetingID != "" {
+			meetingID += "-"
+		}
+		meetingID += randomString(LETTERS, 20)
 	}
 	meetingPersonal := false
 
