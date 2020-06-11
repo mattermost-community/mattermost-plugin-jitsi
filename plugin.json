@@ -34,31 +34,6 @@
                 "help_text": "(Experimental) When true, Jitsi video is embedded as a floating window inside Mattermost."
             },
             {
-                "key": "JitsiJWT",
-                "display_name": "Use JWT Authentication for Jitsi",
-                "type": "bool",
-                "help_text": "(Optional) If your Jitsi server uses JSON Web Tokens (JWT) for authentication, set this value to true."
-            },
-            {
-                "key": "JitsiAppID",
-                "display_name": "App ID for JWT Authentication",
-                "type": "text",
-                "help_text": "(Optional) The App ID used for authentication by the Jitsi server and JWT token generator."
-            },
-            {
-                "key": "JitsiAppSecret",
-                "display_name": "App Secret for JWT Authentication",
-                "type": "text",
-                "help_text": "(Optional) The App Secret used for authentication by the Jitsi server and JWT token generator."
-            },
-            {
-                "key": "JitsiLinkValidTime",
-                "display_name": "Meeting Link Expiry Time (minutes)",
-                "type": "number",
-                "help_text": "(Optional) The number of minutes from when the meeting link is created to when it becomes invalid. Minimum is 1 minute. Only applies if using JWT authentication for your Jitsi server.",
-                "default": 30
-            },
-            {
                 "key": "JitsiNamingScheme",
                 "display_name": "Jitsi Meeting Names",
                 "type": "radio",
@@ -82,6 +57,31 @@
                         "value": "ask"
                     }
                 ]
+            },
+            {
+                "key": "JitsiJWT",
+                "display_name": "Use JWT Authentication for Jitsi",
+                "type": "bool",
+                "help_text": "(Optional) If your Jitsi server uses JSON Web Tokens (JWT) for authentication, set this value to true."
+            },
+            {
+                "key": "JitsiAppID",
+                "display_name": "App ID for JWT Authentication",
+                "type": "text",
+                "help_text": "(Optional) The App ID used for authentication by the Jitsi server and JWT token generator."
+            },
+            {
+                "key": "JitsiAppSecret",
+                "display_name": "App Secret for JWT Authentication",
+                "type": "text",
+                "help_text": "(Optional) The App Secret used for authentication by the Jitsi server and JWT token generator."
+            },
+            {
+                "key": "JitsiLinkValidTime",
+                "display_name": "Meeting Link Expiry Time (minutes)",
+                "type": "number",
+                "help_text": "(Optional) The number of minutes from when the meeting link is created to when it becomes invalid. Minimum is 1 minute. Only applies if using JWT authentication for your Jitsi server.",
+                "default": 30
             }
         ]
     }
