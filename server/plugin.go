@@ -240,7 +240,6 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 			"jwt_meeting_valid_until": meetingLinkValidUntil.Unix(),
 			"meeting_personal":        meetingPersonal,
 			"meeting_topic":           meetingTopic,
-			"from_webhook":            "true",
 		},
 	}
 
