@@ -1,0 +1,98 @@
+{
+  "jitsi.ask.channel_meeting": {
+    "hash": "sha1-c38fb5c89ece9869aa4b9b6d1d041ab64df1eb8f",
+    "other": "Reunion del canal"
+  },
+  "jitsi.ask.meeting_name_random_words": {
+    "hash": "sha1-ee8f64a8a20eb04fefde418d9dc55d409664a2fb",
+    "other": "Nombre de reunión con palabras aleatorias"
+  },
+  "jitsi.ask.personal_meeting": {
+    "hash": "sha1-9aa3e0500b4b0af16961174dcf792e9e11c5b220",
+    "other": "Reunión personal"
+  },
+  "jitsi.ask.select_meeting_type": {
+    "hash": "sha1-e3bb1fbe427d3433e652b343086fa94926b8760b",
+    "other": "Selecciona el tipo de reunión que quieres iniciar"
+  },
+  "jitsi.ask.title": {
+    "hash": "sha1-06bd54e7555f74e5c45f19f5d357cabf399226d8",
+    "other": "Iniciar reunión Jitsi"
+  },
+  "jitsi.ask.uuid_meeting": {
+    "hash": "sha1-573ba198f97f8c38ee986a2cad4068d0e54c9dbd",
+    "other": "Nombre de reunión con UUID"
+  },
+  "jitsi.command.help.text": {
+    "hash": "sha1-1f824ef11a618fe33af2eb86e672b29685e7ad52",
+    "other": "* |/jitsi| - Crear nueva reunión\n* |/jitsi [team]| - Crea una nueva reunión con un tema específico\n* |/jitsi help| - Muestra este texto de ayuda\n* |/jitsi settings| - Ver tu configuracion actual para el plugin de Jitsi\n* |/jitsi settings [setting] [value]| - Actualiza tu configuracion (ver opciones abajo)\n\n###### Configuracion de Jitsi:\n* |/jitsi settings embedded [true/false]|: Cuando es true, la reunión Jitsi está dentro de Mattermost como una ventana flotante. Cuando es false, la reunión de Jitsi se abre en una ventana nueva.\n* |/jitsi settings naming_scheme [words/uuid/mattermost/ask]|: Selecciona como se generan los nombres de las reuniones con una de estas opciones:\n    * |words|: Palabras aletorias en ingles en formato title case (e.g. PlayfulDragonsObserveCuriously)\n    * |uuid|: UUID (identificador único universal)\n    * |mattermost|: Nombres espeicifcos de Mattermost. Una combinación de nombre de equipo, nombre de canal y un texto aleagorio para canales públicos y privados; salas de reuniones personales en mensajes directos y de grupo.\n    * |ask|: La extensión te permitirá selecionar el tipo de nombre a usar cada vez que inicies una reunión."
+  },
+  "jitsi.command.help.title": {
+    "hash": "sha1-4323c51f8bbbb49db2a370dd496d29531a034b3c",
+    "other": "###### Extension de Mattermost Jitsi - Ayuda del comando de barra\n"
+  },
+  "jitsi.command.settings.current_values": {
+    "hash": "sha1-fe2a45638786b11d783dedacabad04227391973b",
+    "other": "###### Configuración de Jitsi:\n* Incrustado: `{{.Embedded}}`\n* Esquema de nombres: `{{.NamingScheme}}`"
+  },
+  "jitsi.command.settings.invalid_parameters": {
+    "hash": "sha1-f72c018607477396d845c7a3e11be73490b79a56",
+    "other": "Parametros de configuración invalidos"
+  },
+  "jitsi.command.settings.unable_to_get": {
+    "hash": "sha1-7e8adf669715dc73bf3f13568593cc30539af7ec",
+    "other": "No se ha podido obtener la configuración del usuario"
+  },
+  "jitsi.command.settings.unable_to_set": {
+    "hash": "sha1-3bab2d5cd97e52eb365ab5e25aa5c89bf2a78f31",
+    "other": "No se ha podido guardar la configuración del usuario"
+  },
+  "jitsi.command.settings.updated": {
+    "hash": "sha1-ea98a80baec114b32359809c03c7b11038b18eb6",
+    "other": "Configuración de Jitsi actualizada"
+  },
+  "jitsi.command.settings.wrong_embedded_value": {
+    "hash": "sha1-63273ba7ad2d4defa65c3c31765ed57668f157c3",
+    "other": "Valor invalido para la configuración `embedded`, use `true` o `false`."
+  },
+  "jitsi.command.settings.wrong_field": {
+    "hash": "sha1-75edec3f38b0abd2004b0d5cb5318462993f6a18",
+    "other": "Configuración no valida, use `embedded` o `naming_scheme`."
+  },
+  "jitsi.command.settings.wrong_naming_scheme_value": {
+    "hash": "sha1-86a17554abf585c80cf9876554a43d14e150f30c",
+    "other": "Valor invalido para la configuración `naming_scheme`, use `ask`, `english-titlecase`, `uuid` o `mattermost`."
+  },
+  "jitsi.start_meeting.channel_meeting_topic": {
+    "hash": "sha1-87eea3707ed3cad060b73cb43c0d4efe4ec8cc84",
+    "other": "Reunión del canal {{.ChannelName}}"
+  },
+  "jitsi.start_meeting.default_meeting_topic": {
+    "hash": "sha1-b057021a4c94f69bc1f90d9fa69a6165caeb4cce",
+    "other": "Reunión Jitsi"
+  },
+  "jitsi.start_meeting.fallback_text": {
+    "hash": "sha1-966e32415e15bfa55bd920874c5dec72fb10cc89",
+    "other": "Reunión de video iniciada en [{{.MeetingID}}]({{.MeetingURL}}).\n\n[Unirse a la reunión]({{.MeetingURL}})"
+  },
+  "jitsi.start_meeting.meeting_id": {
+    "hash": "sha1-8a1315eaeb59e44132aa5c27e4f53e7ba92359f7",
+    "other": "ID de Reunion"
+  },
+  "jitsi.start_meeting.meeting_link_valid_until": {
+    "hash": "sha1-2707cc0764b955fca772a7dd5337e4aaa6018fcc",
+    "other": "El enlace a la reunión es válido hasta: {{.Datetime}}"
+  },
+  "jitsi.start_meeting.personal_meeting_id": {
+    "hash": "sha1-ba2b43d1c43e28926cc42c26651693567363dd77",
+    "other": "ID de sala personal de rueniones (PMI)"
+  },
+  "jitsi.start_meeting.personal_meeting_topic": {
+    "hash": "sha1-22fab211c66c011f0e1f2ca6303443da6e20793e",
+    "other": "Sala de reuniones personal de {{.Name}}"
+  },
+  "jitsi.start_meeting.slack_attachment_text": {
+    "hash": "sha1-696bfd831ce1351f275652d581135165ecbd79e3",
+    "other": "{{.MeetingType}}: [{{.MeetingID}}]({{.MeetingURL}})\n\n[Unirse a la reunión]({{.MeetingURL}})"
+  }
+}
