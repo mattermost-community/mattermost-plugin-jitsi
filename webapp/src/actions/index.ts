@@ -1,13 +1,13 @@
 import {PostTypes} from 'mattermost-redux/action_types';
-import {DispatchFunc, GetStateFunc} from 'mattermost-redux/types/actions';
+import {DispatchFunc, GetStateFunc, ActionFunc, ActionResult} from 'mattermost-redux/types/actions';
 import {Post} from 'mattermost-redux/types/posts';
 
 import ActionTypes from '../action_types';
 
 import Client from '../client';
 
-export function startMeeting(channelId: string, personal: boolean = false, topic: string = '', meetingId: string = '') {
-    return async (dispatch: DispatchFunc, getState: GetStateFunc) => {
+export function startMeeting(channelId: string, personal: boolean = false, topic: string = '', meetingId: string = ''): ActionFunc {
+    return async (dispatch: DispatchFunc, getState: GetStateFunc): Promise<ActionResult> => {
         try {
             await Client.startMeeting(channelId, personal, topic, meetingId);
         } catch (error) {
@@ -56,8 +56,8 @@ export function startMeeting(channelId: string, personal: boolean = false, topic
     };
 }
 
-export function enrichMeetingJwt(meetingJwt: string) {
-    return async () => {
+export function enrichMeetingJwt(meetingJwt: string): ActionFunc {
+    return async (): Promise<ActionResult> => {
         try {
             const data = await Client.enrichMeetingJwt(meetingJwt);
             return {data};
@@ -67,8 +67,8 @@ export function enrichMeetingJwt(meetingJwt: string) {
     };
 }
 
-export function loadConfig() {
-    return async (dispatch: DispatchFunc) => {
+export function loadConfig(): ActionFunc {
+    return async (dispatch: DispatchFunc): Promise<ActionResult> => {
         try {
             const data = await Client.loadConfig();
             dispatch({
@@ -82,8 +82,8 @@ export function loadConfig() {
     };
 }
 
-export function openJitsiMeeting(post: Post | null, jwt: string | null) {
-    return (dispatch: DispatchFunc) => {
+export function openJitsiMeeting(post: Post | null, jwt: string | null): ActionFunc {
+    return (dispatch: DispatchFunc): ActionResult => {
         dispatch({
             type: ActionTypes.OPEN_MEETING,
             data: {
@@ -91,5 +91,6 @@ export function openJitsiMeeting(post: Post | null, jwt: string | null) {
                 jwt
             }
         });
+        return {data: null};
     };
 }

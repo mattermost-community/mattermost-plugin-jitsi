@@ -2,6 +2,8 @@ import * as React from 'react';
 import {FormattedMessage} from 'react-intl';
 
 import {Post} from 'mattermost-redux/types/posts';
+import {Theme} from 'mattermost-redux/types/preferences';
+import {ActionResult} from 'mattermost-redux/types/actions';
 
 import Svgs from '../../constants/svgs';
 
@@ -9,13 +11,13 @@ import {makeStyleFromTheme} from 'mattermost-redux/utils/theme_utils';
 
 export type Props = {
     post?: Post,
-    theme: any,
+    theme: Theme,
     creatorName: string,
     useMilitaryTime: boolean,
     meetingEmbedded: boolean,
     actions: {
-        enrichMeetingJwt: (jwt: string) => any,
-        openJitsiMeeting: (post: Post | null, jwt: string | null) => void
+        enrichMeetingJwt: (jwt: string) => Promise<ActionResult>,
+        openJitsiMeeting: (post: Post | null, jwt: string | null) => ActionResult,
     }
 }
 
