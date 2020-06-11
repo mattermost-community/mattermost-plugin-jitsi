@@ -307,9 +307,6 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 			"jwt_meeting_valid_until": meetingLinkValidUntil.Unix(),
 			"meeting_personal":        meetingPersonal,
 			"meeting_topic":           meetingTopic,
-			"from_webhook":            "true",
-			"override_username":       "Jitsi",
-			"override_icon_url":       "https://s3.amazonaws.com/mattermost-plugin-media/Zoom+App.png",
 		},
 	}
 
