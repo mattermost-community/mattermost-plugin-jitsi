@@ -82,7 +82,7 @@ func TestCommandSetings(t *testing.T) {
 		{
 			name:      "set valid setting with invalid value (naming_scheme)",
 			command:   "/jitsi settings naming_scheme yes",
-			output:    "Invalid `naming_scheme` value, use `ask`, `english-titlecase`, `uuid` or `mattermost`.",
+			output:    "Invalid `naming_scheme` value, use `ask`, `words`, `uuid` or `mattermost`.",
 			newConfig: nil,
 		},
 		{

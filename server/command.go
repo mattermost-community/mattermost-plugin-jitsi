@@ -77,7 +77,7 @@ func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.Comma
 		return startMeetingError(args.ChannelId, fmt.Sprintf("getChannel() threw error: %s", err))
 	}
 
-	if userConfig.NamingScheme == jitsiNameSchemaAsk && input == "" {
+	if userConfig.NamingScheme == jitsiNameSchemeAsk && input == "" {
 		if err := p.askMeetingType(user, channel); err != nil {
 			return startMeetingError(args.ChannelId, fmt.Sprintf("startMeeting() threw error: %s", appErr))
 		}
@@ -205,19 +205,19 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 		}
 	case "naming_scheme":
 		switch parameters[1] {
-		case jitsiNameSchemaAsk:
+		case jitsiNameSchemeAsk:
 			userConfig.NamingScheme = "ask"
-		case jitsiNameSchemaEnglish:
-			userConfig.NamingScheme = "english-titlecase"
-		case jitsiNameSchemaUUID:
+		case jitsiNameSchemeWords:
+			userConfig.NamingScheme = "words"
+		case jitsiNameSchemeUUID:
 			userConfig.NamingScheme = "uuid"
-		case jitsiNameSchemaMattermost:
+		case jitsiNameSchemeMattermost:
 			userConfig.NamingScheme = "mattermost"
 		default:
 			text = p.localize(l, &i18n.LocalizeConfig{
 				DefaultMessage: &i18n.Message{
 					ID:    "jitsi.command.settings.wrong_naming_scheme_value",
-					Other: "Invalid `naming_scheme` value, use `ask`, `english-titlecase`, `uuid` or `mattermost`.",
+					Other: "Invalid `naming_scheme` value, use `ask`, `words`, `uuid` or `mattermost`.",
 				},
 			})
 			userConfig = nil

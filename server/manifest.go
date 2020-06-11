@@ -90,11 +90,11 @@ const manifestStr = `
         "type": "radio",
         "help_text": "Select how meeting names are generated.",
         "placeholder": "",
-        "default": "english-titlecase",
+        "default": "words",
         "options": [
           {
             "display_name": "Random English words in title case (e.g. PlayfulDragonsObserveCuriously)",
-            "value": "english-titlecase"
+            "value": "words"
           },
           {
             "display_name": "UUID (universally unique identifier)",
