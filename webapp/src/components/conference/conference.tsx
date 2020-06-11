@@ -95,7 +95,7 @@ export default class Conference extends React.PureComponent<Props, State> {
             }
             this.setState({isFilmStrip: event.visible});
         });
-        this.api.executeCommand('subject', post.props.meeting_topic);
+        this.api.executeCommand('subject', post.props.meeting_topic || post.props.default_meeting_topic);
     }
 
     resizeIframe = () => {
@@ -189,7 +189,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         if (this.props.jwt) {
             meetingLink += `?jwt=${this.props.jwt}`;
         }
-        meetingLink += `#config.callDisplayName="${post.props.meeting_topic}"`;
+        meetingLink += `#config.callDisplayName="${post.props.meeting_topic || post.props.default_meeting_topic}"`;
 
         return (
             <div style={style.buttons}>

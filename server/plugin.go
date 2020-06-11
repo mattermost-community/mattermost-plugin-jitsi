@@ -164,6 +164,12 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 		meetingID += randomString(LETTERS, 20)
 	}
 	meetingPersonal := false
+	defaultMeetingTopic := p.localize(l, &i18n.LocalizeConfig{
+		DefaultMessage: &i18n.Message{
+			ID:    "jitsi.start_meeting.default_meeting_topic",
+			Other: "Jitsi Meeting",
+		},
+	})
 
 	if len(meetingTopic) < 1 {
 		userConfig, err := p.getUserConfig(user.Id)
@@ -235,7 +241,11 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 
 		meetingURL = meetingURL + "?jwt=" + jwtToken
 	}
-	meetingURL = meetingURL + "#config.callDisplayName=" + url.PathEscape("\""+meetingTopic+"\"")
+	if meetingTopic == "" {
+		meetingURL = meetingURL + "#config.callDisplayName=" + url.PathEscape("\""+defaultMeetingTopic+"\"")
+	} else {
+		meetingURL = meetingURL + "#config.callDisplayName=" + url.PathEscape("\""+meetingTopic+"\"")
+	}
 
 	meetingUntil := ""
 	if JWTMeeting {
@@ -265,12 +275,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 
 	slackMeetingTopic := meetingTopic
 	if slackMeetingTopic == "" {
-		slackMeetingTopic = p.localize(l, &i18n.LocalizeConfig{
-			DefaultMessage: &i18n.Message{
-				ID:    "jitsi.start_meeting.default_meeting_topic",
-				Other: "Jitsi Meeting",
-			},
-		})
+		slackMeetingTopic = defaultMeetingTopic
 	}
 
 	slackAttachment := model.SlackAttachment{
@@ -315,6 +320,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 			"jwt_meeting_valid_until": meetingLinkValidUntil.Unix(),
 			"meeting_personal":        meetingPersonal,
 			"meeting_topic":           meetingTopic,
+			"default_meeting_topic":   defaultMeetingTopic,
 		},
 	}
 

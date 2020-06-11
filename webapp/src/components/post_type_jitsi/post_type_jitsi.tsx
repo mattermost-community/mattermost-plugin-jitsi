@@ -89,7 +89,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
         } else if (props.jwt_meeting) {
             meetingLink += '?jwt=' + (props.meeting_jwt);
         }
-        meetingLink += `#config.callDisplayName="${props.meeting_topic}"`;
+        meetingLink += `#config.callDisplayName="${props.meeting_topic || props.default_meeting_topic}"`;
 
         const preText = (
             <FormattedMessage
