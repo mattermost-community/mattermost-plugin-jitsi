@@ -50,6 +50,9 @@ issues:
     - path: build/manifest/main.go
       linters:
         - gosec
+    - path: server/plugin_test.go
+      linters:
+        - gosec
     - path: server/manifest.go
       linters:
         - unused
