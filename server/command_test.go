@@ -20,10 +20,16 @@ func TestCommandHelp(t *testing.T) {
 	}
 	apiMock := plugintest.API{}
 	defer apiMock.AssertExpectations(t)
+	apiMock.On("GetUser", "test-user").Return(&model.User{Id: "test-user", Locale: "en"}, nil)
+	apiMock.On("GetBundlePath").Return("..", nil)
 
 	p.SetAPI(&apiMock)
 
-	helpText := strings.Replace(`###### Mattermost Jitsi Plugin - Slash Command Help
+	i18nBundle, err := p.initI18nBundle()
+	require.Nil(t, err)
+	p.i18nBundle = i18nBundle
+
+	helpText := strings.Replace(`###### Mattermost Jitsi Plugin - Slash Command help
 * |/jitsi| - Create a new meeting
 * |/jitsi [topic]| - Create a new meeting with specified topic
 * |/jitsi help| - Show this help text
@@ -57,10 +63,6 @@ func TestCommandSetings(t *testing.T) {
 		},
 	}
 
-	response, err := p.ExecuteCommand(&plugin.Context{}, &model.CommandArgs{UserId: "test-user", ChannelId: "test-channel", Command: "jitsi help"})
-	require.Equal(t, &model.CommandResponse{}, response)
-	require.Nil(t, err)
-
 	tests := []struct {
 		name      string
 		command   string
@@ -82,7 +84,7 @@ func TestCommandSetings(t *testing.T) {
 		{
 			name:      "set valid setting with invalid value (naming_scheme)",
 			command:   "/jitsi settings naming_scheme yes",
-			output:    "Invalid `naming_scheme` value, use `ask`, `english-titlecase`, `uuid` or `mattermost`.",
+			output:    "Invalid `naming_scheme` value, use `ask`, `words`, `uuid` or `mattermost`.",
 			newConfig: nil,
 		},
 		{
@@ -110,6 +112,14 @@ func TestCommandSetings(t *testing.T) {
 			apiMock := plugintest.API{}
 			defer apiMock.AssertExpectations(t)
 			p.SetAPI(&apiMock)
+
+			apiMock.On("GetUser", "test-user").Return(&model.User{Id: "test-user", Locale: "en"}, nil)
+			apiMock.On("GetBundlePath").Return("..", nil)
+
+			i18nBundle, err := p.initI18nBundle()
+			require.Nil(t, err)
+			p.i18nBundle = i18nBundle
+
 			apiMock.On("KVGet", "config_test-user", mock.Anything).Return(nil, nil)
 			apiMock.On("SendEphemeralPost", "test-user", &model.Post{
 				UserId:    "test-user",
@@ -141,6 +151,15 @@ func TestCommandStartMeeting(t *testing.T) {
 		defer apiMock.AssertExpectations(t)
 		p.SetAPI(&apiMock)
 
+		apiMock.On("GetBundlePath").Return("..", nil)
+		config := model.Config{}
+		config.SetDefaults()
+		apiMock.On("GetConfig").Return(&config, nil)
+
+		i18nBundle, err := p.initI18nBundle()
+		require.Nil(t, err)
+		p.i18nBundle = i18nBundle
+
 		apiMock.On("SendEphemeralPost", "test-user", mock.MatchedBy(func(post *model.Post) bool {
 			return post.Props["attachments"].([]*model.SlackAttachment)[0].Text == "Select type of meeting you want to start"
 		})).Return(nil)
@@ -149,9 +168,6 @@ func TestCommandStartMeeting(t *testing.T) {
 		apiMock.On("GetUser", "test-user").Return(&model.User{Id: "test-user"}, nil)
 		b, _ := json.Marshal(UserConfig{Embedded: false, NamingScheme: "ask"})
 		apiMock.On("KVGet", "config_test-user", mock.Anything).Return(b, nil)
-		config := model.Config{}
-		config.SetDefaults()
-		apiMock.On("GetConfig").Return(&config, nil)
 
 		response, err := p.ExecuteCommand(&plugin.Context{}, &model.CommandArgs{UserId: "test-user", ChannelId: "test-channel", Command: "/jitsi"})
 		require.Equal(t, &model.CommandResponse{}, response)
@@ -162,6 +178,15 @@ func TestCommandStartMeeting(t *testing.T) {
 		apiMock := plugintest.API{}
 		defer apiMock.AssertExpectations(t)
 		p.SetAPI(&apiMock)
+
+		apiMock.On("GetBundlePath").Return("..", nil)
+		config := model.Config{}
+		config.SetDefaults()
+		apiMock.On("GetConfig").Return(&config, nil)
+
+		i18nBundle, err := p.initI18nBundle()
+		require.Nil(t, err)
+		p.i18nBundle = i18nBundle
 
 		apiMock.On("CreatePost", mock.MatchedBy(func(post *model.Post) bool {
 			return strings.HasPrefix(post.Props["meeting_link"].(string), "http://test/")
@@ -181,7 +206,18 @@ func TestCommandStartMeeting(t *testing.T) {
 		defer apiMock.AssertExpectations(t)
 		p.SetAPI(&apiMock)
 
-		apiMock.On("CreatePost", mock.MatchedBy(func(post *model.Post) bool { return post.Props["meeting_link"] == "http://test/topic" })).Return(&model.Post{}, nil)
+		apiMock.On("GetBundlePath").Return("..", nil)
+		config := model.Config{}
+		config.SetDefaults()
+		apiMock.On("GetConfig").Return(&config, nil)
+
+		i18nBundle, err := p.initI18nBundle()
+		require.Nil(t, err)
+		p.i18nBundle = i18nBundle
+
+		apiMock.On("CreatePost", mock.MatchedBy(func(post *model.Post) bool {
+			return strings.HasPrefix(post.Props["meeting_link"].(string), "http://test/topic")
+		})).Return(&model.Post{}, nil)
 		apiMock.On("GetUser", "test-user").Return(&model.User{Id: "test-user"}, nil)
 		apiMock.On("GetChannel", "test-channel").Return(&model.Channel{Id: "test-channel"}, nil)
 		apiMock.On("GetUser", "test-user").Return(&model.User{Id: "test-user"}, nil)

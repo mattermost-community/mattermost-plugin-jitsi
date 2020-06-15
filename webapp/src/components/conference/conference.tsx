@@ -1,12 +1,16 @@
 import * as React from 'react';
+import {FormattedMessage} from 'react-intl';
 
 import {Post} from 'mattermost-redux/types/posts';
 
-const BORDER_SIZE = 40;
+const BORDER_SIZE = 20;
 const POSITION_TOP = 'top';
 const POSITION_BOTTOM = 'bottom';
+const BUTTONS_PADDING_TOP = 10;
+const BUTTONS_PADDING_RIGHT = 2;
 const MINIMIZED_WIDTH = 320;
 const MINIMIZED_HEIGHT = 240;
+const DEFAULT_VIDEO_QUALITY = 720;
 
 type Props = {
     post: Post | null,
@@ -18,7 +22,7 @@ type Props = {
 
 type State = {
     minimized: boolean,
-    position: 'top' | 'bottom',
+    position: typeof POSITION_TOP | typeof POSITION_BOTTOM,
     loading: boolean,
     wasTileView: boolean,
     isTileView: boolean,
@@ -32,7 +36,7 @@ export default class Conference extends React.PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            minimized: false,
+            minimized: true,
             position: POSITION_BOTTOM,
             loading: true,
             wasTileView: true,
@@ -43,11 +47,11 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 
     getViewportWidth(): number {
-        return Math.max(document.documentElement.clientWidth || 0, window?.innerWidth || 0) - BORDER_SIZE;
+        return Math.max(document.documentElement.clientWidth || 0, window?.innerWidth || 0) - (BORDER_SIZE * 2);
     }
 
     getViewportHeight(): number {
-        return Math.max(document.documentElement.clientHeight || 0, window?.innerHeight || 0) - BORDER_SIZE;
+        return Math.max(document.documentElement.clientHeight || 0, window?.innerHeight || 0) - (BORDER_SIZE * 2);
     }
 
     initJitsi = (post: Post) => {
@@ -92,7 +96,8 @@ export default class Conference extends React.PureComponent<Props, State> {
             }
             this.setState({isFilmStrip: event.visible});
         });
-        this.api.executeCommand('subject', post.props.meeting_topic);
+        this.api.executeCommand('subject', post.props.meeting_topic || post.props.default_meeting_topic);
+        this.api.executeCommand('setVideoQuality', DEFAULT_VIDEO_QUALITY);
     }
 
     resizeIframe = () => {
@@ -107,9 +112,11 @@ export default class Conference extends React.PureComponent<Props, State> {
 
     componentDidMount() {
         window.addEventListener('resize', this.resizeIframe);
-        if (this.props.post) {
-            this.initJitsi(this.props.post);
-        }
+        window.requestAnimationFrame(() => {
+            if (this.props.post) {
+                this.initJitsi(this.props.post);
+            }
+        });
     }
 
     componentWillUnmount() {
@@ -122,6 +129,9 @@ export default class Conference extends React.PureComponent<Props, State> {
     componentDidUpdate(prevProps: Props, prevState: State) {
         if (this.props.post) {
             if (prevProps.post !== this.props.post) {
+                if (this.api) {
+                    this.api.dispose();
+                }
                 this.initJitsi(this.props.post);
             }
             if (prevState.minimized !== this.state.minimized) {
@@ -135,7 +145,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         setTimeout(() => {
             this.props.actions.openJitsiMeeting(null, null);
             this.setState({
-                minimized: false,
+                minimized: true,
                 loading: true,
                 position: POSITION_BOTTOM,
                 wasTileView: true,
@@ -143,10 +153,14 @@ export default class Conference extends React.PureComponent<Props, State> {
                 wasFilmStrip: true,
                 isFilmStrip: true
             });
+            if (this.api) {
+                this.api.dispose();
+            }
         }, 200);
     }
 
     minimize = () => {
+        this.api.executeCommand('setVideoQuality', MINIMIZED_HEIGHT);
         this.setState({minimized: true});
         if (this.state.isTileView) {
             this.api.executeCommand('toggleTileView');
@@ -157,6 +171,7 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 
     maximize = () => {
+        this.api.executeCommand('setVideoQuality', DEFAULT_VIDEO_QUALITY);
         this.setState({minimized: false});
         if (this.state.isTileView !== this.state.wasTileView) {
             this.api.executeCommand('toggleTileView');
@@ -183,36 +198,68 @@ export default class Conference extends React.PureComponent<Props, State> {
         if (this.props.jwt) {
             meetingLink += `?jwt=${this.props.jwt}`;
         }
-        meetingLink += `#config.callDisplayName="${post.props.meeting_topic}"`;
+        meetingLink += `#config.callDisplayName="${post.props.meeting_topic || post.props.default_meeting_topic}"`;
 
         return (
             <div style={style.buttons}>
                 {this.state.minimized && this.state.position === POSITION_TOP &&
-                    <i
-                        onClick={this.togglePosition}
-                        style={{transform: 'rotate(270deg)', display: 'inline-block'}}
-                        className='icon icon-arrow-left'
-                        aria-label={'Move down'}
-                    />}
+                    <FormattedMessage
+                        id='jitsi.move-down'
+                        defaultMessage='Move down'
+                    >
+                        {(text: string) => (
+                            <i
+                                onClick={this.togglePosition}
+                                style={{transform: 'rotate(270deg)', display: 'inline-block'}}
+                                className='icon icon-arrow-left'
+                                aria-label={text}
+                                title={text}
+                            />
+                        )}
+                    </FormattedMessage>}
                 {this.state.minimized && this.state.position === POSITION_BOTTOM &&
-                    <i
-                        onClick={this.togglePosition}
-                        style={{transform: 'rotate(90deg)', display: 'inline-block'}}
-                        className='icon icon-arrow-left'
-                        aria-label={'Move up'}
-                    />}
+                    <FormattedMessage
+                        id='jitsi.move-up'
+                        defaultMessage='Move up'
+                    >
+                        {(text: string) => (
+                            <i
+                                onClick={this.togglePosition}
+                                style={{transform: 'rotate(90deg)', display: 'inline-block'}}
+                                className='icon icon-arrow-left'
+                                aria-label={text}
+                                title={text}
+                            />
+                        )}
+                    </FormattedMessage>}
                 {!this.state.minimized &&
-                    <i
-                        onClick={this.minimize}
-                        className='icon icon-arrow-collapse'
-                        aria-label={'Minimize'}
-                    />}
+                    <FormattedMessage
+                        id='jitsi.minimize'
+                        defaultMessage='Minimize'
+                    >
+                        {(text: string) => (
+                            <i
+                                onClick={this.minimize}
+                                className='icon icon-arrow-collapse'
+                                aria-label={text}
+                                title={text}
+                            />
+                        )}
+                    </FormattedMessage>}
                 {this.state.minimized &&
-                    <i
-                        onClick={this.maximize}
-                        className='icon icon-arrow-expand'
-                        aria-label={'Maximize'}
-                    />}
+                    <FormattedMessage
+                        id='jitsi.maximize'
+                        defaultMessage='Maximize'
+                    >
+                        {(text: string) => (
+                            <i
+                                onClick={this.maximize}
+                                className='icon icon-arrow-expand'
+                                aria-label={text}
+                                title={text}
+                            />
+                        )}
+                    </FormattedMessage>}
                 <a
                     style={{color: 'white'}}
                     onClick={this.close}
@@ -220,17 +267,33 @@ export default class Conference extends React.PureComponent<Props, State> {
                     rel='noopener noreferrer'
                     href={meetingLink}
                 >
-                    <i
-                        style={{transform: 'rotate(135deg)', display: 'inline-block'}}
-                        className='icon icon-arrow-left'
-                        aria-label={'Open in new tab'}
-                    />
+                    <FormattedMessage
+                        id='jitsi.open-in-new-tab'
+                        defaultMessage='Open in new tab'
+                    >
+                        {(text: string) => (
+                            <i
+                                style={{transform: 'rotate(135deg)', display: 'inline-block'}}
+                                className='icon icon-arrow-left'
+                                aria-label={text}
+                                title={text}
+                            />
+                        )}
+                    </FormattedMessage>
                 </a>
-                <i
-                    onClick={this.close}
-                    className='icon icon-close'
-                    aria-label={'Close'}
-                />
+                <FormattedMessage
+                    id='jitsi.close'
+                    defaultMessage='Close'
+                >
+                    {(text: string) => (
+                        <i
+                            onClick={this.close}
+                            className='icon icon-close'
+                            aria-label={text}
+                            title={text}
+                        />
+                    )}
+                </FormattedMessage>
             </div>);
     }
 
@@ -279,9 +342,9 @@ function getStyle(height: number, width: number, position: 'top' | 'bottom'): {[
             alignItems: 'center',
             justifyContent: 'center',
             background: '#474747',
-            bottom: position === POSITION_TOP ? '' : '20px',
-            top: position === POSITION_TOP ? '20px' : '',
-            right: '20px',
+            bottom: position === POSITION_BOTTOM ? `${BORDER_SIZE}px` : '',
+            top: position === POSITION_TOP ? `${BORDER_SIZE}px` : '',
+            right: `${BORDER_SIZE}px`,
             zIndex: jitsiZIndex
         },
         loading: {
@@ -289,9 +352,9 @@ function getStyle(height: number, width: number, position: 'top' | 'bottom'): {[
             height,
             width,
             background: '#00000077',
-            bottom: position === POSITION_TOP ? '' : '20px',
-            top: position === POSITION_TOP ? '20px' : '',
-            right: '20px',
+            bottom: position === POSITION_BOTTOM ? `${BORDER_SIZE}px` : '',
+            top: position === POSITION_TOP ? `${BORDER_SIZE}px` : '',
+            right: `${BORDER_SIZE}px`,
             alignItems: 'center',
             justifyContent: 'center',
             display: 'flex',
@@ -312,9 +375,9 @@ function getStyle(height: number, width: number, position: 'top' | 'bottom'): {[
         },
         buttons: {
             position: 'absolute',
-            bottom: position === POSITION_TOP ? '' : (height - 10) + 'px',
-            top: position === POSITION_TOP ? '20px' : '',
-            right: '22px',
+            bottom: position === POSITION_BOTTOM ? ((height - BORDER_SIZE) + BUTTONS_PADDING_TOP) + 'px' : '',
+            top: position === POSITION_TOP ? `${BORDER_SIZE}px` : '',
+            right: `${BORDER_SIZE + BUTTONS_PADDING_RIGHT}px`,
             color: 'white',
             fontSize: '18px',
             cursor: 'pointer',

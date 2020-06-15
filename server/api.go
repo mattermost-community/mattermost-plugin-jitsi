@@ -170,7 +170,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if userConfig.NamingScheme == jitsiNameSchemaAsk && action.PostId == "" {
+	if userConfig.NamingScheme == jitsiNameSchemeAsk && action.PostId == "" {
 		err = p.askMeetingType(user, channel)
 		if err != nil {
 			mlog.Error("Error asking the user for meeting name type", mlog.Err(err))
@@ -186,7 +186,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var meetingID string
-	if userConfig.NamingScheme == jitsiNameSchemaAsk && action.PostId != "" {
+	if userConfig.NamingScheme == jitsiNameSchemeAsk && action.PostId != "" {
 		meetingID, err = p.startMeeting(user, channel, action.Context.MeetingID, action.Context.MeetingTopic, action.Context.Personal)
 		if err != nil {
 			mlog.Error("Error starting a new meeting from ask response", mlog.Err(err))
