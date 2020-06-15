@@ -86,7 +86,7 @@ func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(externalAPICache)
 		return
 	}
-	resp, err := http.Get(p.getConfiguration().JitsiURL + "/external_api.js")
+	resp, err := http.Get(p.getConfiguration().GetJitsiURL() + "/external_api.js")
 	if err != nil {
 		mlog.Error("Error getting the external_api.js file from your Jitsi instance, please verify your JitsiURL setting", mlog.Err(err))
 		http.Error(w, "Internal error", http.StatusInternalServerError)
@@ -95,7 +95,7 @@ func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		mlog.Error("Error getting reading the content", mlog.String("url", p.getConfiguration().JitsiURL+"/external_api.js"), mlog.Err(err))
+		mlog.Error("Error getting reading the content", mlog.String("url", p.getConfiguration().GetJitsiURL()+"/external_api.js"), mlog.Err(err))
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
