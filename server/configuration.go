@@ -34,6 +34,17 @@ type configuration struct {
 	JitsiCompatibilityMode bool
 }
 
+const publicJitsiServerURL = "https://meet.jit.si"
+
+// GetJitsiURL return the currently configured JitsiURL or the URL from the
+// public servers provided by Jitsi.
+func (c *configuration) GetJitsiURL() string {
+	if len(c.JitsiURL) > 0 {
+		return c.JitsiURL
+	}
+	return publicJitsiServerURL
+}
+
 // Clone shallow copies the configuration. Your implementation may require a deep copy if
 // your configuration has reference types.
 func (c *configuration) Clone() *configuration {
@@ -43,13 +54,11 @@ func (c *configuration) Clone() *configuration {
 
 // IsValid checks if all needed fields are set.
 func (c *configuration) IsValid() error {
-	if len(c.JitsiURL) == 0 {
-		return fmt.Errorf("the JitsiUrl is not configured")
-	}
-
-	_, err := url.Parse(c.JitsiURL)
-	if err != nil {
-		return fmt.Errorf("error invalid jitsiURL")
+	if len(c.JitsiURL) > 0 {
+		_, err := url.Parse(c.JitsiURL)
+		if err != nil {
+			return fmt.Errorf("error invalid jitsiURL")
+		}
 	}
 
 	if c.JitsiJWT {
