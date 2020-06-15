@@ -69,6 +69,14 @@ const manifest = JSON.parse(`
                 ]
             },
             {
+                "key": "JitsiCompatibilityMode",
+                "display_name": "Enable compatibility mode",
+                "type": "bool",
+                "help_text": "(Insecure) This improve the compatibility with your jitsi instance using jitsi javascript code through a proxy build in the plugin. **WARNING:** This can compromise the security of your mattermost instance if the security of your Jitsi instance get compromised.",
+                "placeholder": "",
+                "default": false
+            },
+            {
                 "key": "JitsiJWT",
                 "display_name": "Use JWT Authentication for Jitsi",
                 "type": "bool",
