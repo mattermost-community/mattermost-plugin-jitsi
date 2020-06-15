@@ -33,7 +33,7 @@ type configuration struct {
 	JitsiNamingScheme  string
 }
 
-const publicJitsiServerUrl = "https://meet.jit.si"
+const publicJitsiServerURL = "https://meet.jit.si"
 
 // GetJitsiURL return the currently configured JitsiURL or the URL from the
 // public servers provided by Jitsi.
@@ -41,7 +41,7 @@ func (c *configuration) GetJitsiURL() string {
 	if len(c.JitsiURL) > 0 {
 		return c.JitsiURL
 	}
-	return publicJitsiServerUrl
+	return publicJitsiServerURL
 }
 
 // Clone shallow copies the configuration. Your implementation may require a deep copy if
