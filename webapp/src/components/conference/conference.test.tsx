@@ -204,7 +204,7 @@ describe('Conference', () => {
         );
         const instance = wrapper.instance() as Conference;
         instance.setState({
-            minimized: true,
+            minimized: false,
             loading: false,
             position: 'top',
             wasTileView: false,
@@ -224,7 +224,7 @@ describe('Conference', () => {
             expect(defaultProps.actions.openJitsiMeeting).toBeCalledWith(null, null);
             expect(instance.api.dispose).toBeCalled();
             expect(instance.state).toEqual({
-                minimized: false,
+                minimized: true,
                 loading: true,
                 position: 'bottom',
                 wasTileView: true,
