@@ -86,6 +86,11 @@ func (p *Plugin) handleExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	bundlePath, err := p.API.GetBundlePath()
+	if err != nil {
+		mlog.Error("Filed to get the bundle path")
+		http.Error(w, "Internal error", http.StatusInternalServerError)
+		return
+	}
 	externalAPIPath := filepath.Join(bundlePath, "assets", "external_api.js")
 	externalAPIFile, err := os.Open(externalAPIPath)
 	if err != nil {
