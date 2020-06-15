@@ -61,9 +61,9 @@
             },
             {
                 "key": "JitsiCompatibilityMode",
-                "display_name": "Enable compatibility mode",
+                "display_name": "Enable Compatibility Mode",
                 "type": "bool",
-                "help_text": "(Insecure) This improve the compatibility with your jitsi instance using jitsi javascript code through a proxy build in the plugin. **WARNING:** This can compromise the security of your mattermost instance if the security of your Jitsi instance get compromised.",
+                "help_text": "(Insecure) If your Jitsi server is not compatible with this plugin, include the JavaScript API hosted on your Jitsi server directly in Mattermost instead of the default API version provided by the plugin. **WARNING:** Enabling this setting can compromise the security of your Mattermost system, if your Jitsi server is not fully trusted and allows direct modification of program files. Use with caution.",
                 "default": false
             },
             {
