@@ -51,6 +51,7 @@ Mattermost Jitsi Plugin supports localization of user specify messages. You can 
 The currently supported languages are:
 - English
 - France
+- German
 - Spanish
 
 ### Manual Builds
