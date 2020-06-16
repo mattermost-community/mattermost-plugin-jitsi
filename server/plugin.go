@@ -65,7 +65,7 @@ func (p *Plugin) OnActivate() error {
 		Description: "A bot account created by the jitsi plugin",
 	}
 	options := []plugin.EnsureBotOption{
-		plugin.ProfileImagePath("assets/icon_square.png"),
+		plugin.ProfileImagePath("assets/icon.png"),
 	}
 
 	botID, ensureBotError := p.Helpers.EnsureBot(jitsiBot, options...)
