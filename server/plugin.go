@@ -39,6 +39,8 @@ type Plugin struct {
 	configuration *configuration
 
 	i18nBundle *i18n.Bundle
+
+	botID string
 }
 
 func (p *Plugin) OnActivate() error {
@@ -56,6 +58,17 @@ func (p *Plugin) OnActivate() error {
 		return err
 	}
 	p.i18nBundle = i18nBundle
+
+	botID, ensureBotError := p.Helpers.EnsureBot(&model.Bot{
+		Username:    "jitsi",
+		DisplayName: "Jitsi",
+		Description: "A bot account created by the jitsi plugin",
+	})
+	if ensureBotError != nil {
+		return errors.Wrap(ensureBotError, "failed to ensure jitsi bot user.")
+	}
+
+	p.botID = botID
 
 	return nil
 }
@@ -440,7 +453,7 @@ func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error 
 	}
 
 	post := &model.Post{
-		UserId:    user.Id,
+		UserId:    p.botID,
 		ChannelId: channel.Id,
 	}
 	post.SetProps(map[string]interface{}{

@@ -79,14 +79,6 @@ const manifestStr = `
         ]
       },
       {
-        "key": "JitsiCompatibilityMode",
-        "display_name": "Enable compatibility mode",
-        "type": "bool",
-        "help_text": "(Insecure) This improve the compatibility with your jitsi instance using jitsi javascript code through a proxy build in the plugin. **WARNING:** This can compromise the security of your mattermost instance if the security of your Jitsi instance get compromised.",
-        "placeholder": "",
-        "default": false
-      },
-      {
         "key": "JitsiJWT",
         "display_name": "Use JWT Authentication for Jitsi",
         "type": "bool",
@@ -117,6 +109,14 @@ const manifestStr = `
         "help_text": "(Optional) The number of minutes from when the meeting link is created to when it becomes invalid. Minimum is 1 minute. Only applies if using JWT authentication for your Jitsi server.",
         "placeholder": "",
         "default": 30
+      },
+      {
+        "key": "JitsiCompatibilityMode",
+        "display_name": "Enable Compatibility Mode",
+        "type": "bool",
+        "help_text": "(Insecure) If your Jitsi server is not compatible with this plugin, include the JavaScript API hosted on your Jitsi server directly in Mattermost instead of the default API version provided by the plugin. **WARNING:** Enabling this setting can compromise the security of your Mattermost system, if your Jitsi server is not fully trusted and allows direct modification of program files. Use with caution.",
+        "placeholder": "",
+        "default": false
       }
     ]
   }

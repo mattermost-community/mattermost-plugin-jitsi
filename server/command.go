@@ -120,7 +120,7 @@ func (p *Plugin) executeHelpCommand(c *plugin.Context, args *model.CommandArgs) 
 
 	text := helpTitle + strings.Replace(commandHelp, "|", "`", -1)
 	post := &model.Post{
-		UserId:    args.UserId,
+		UserId:    p.botID,
 		ChannelId: args.ChannelId,
 		Message:   text,
 	}
@@ -131,7 +131,7 @@ func (p *Plugin) executeHelpCommand(c *plugin.Context, args *model.CommandArgs) 
 
 func (p *Plugin) settingsError(userID string, channelID string, errorText string) (*model.CommandResponse, *model.AppError) {
 	post := &model.Post{
-		UserId:    userID,
+		UserId:    p.botID,
 		ChannelId: channelID,
 		Message:   errorText,
 	}
@@ -169,7 +169,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 			},
 		})
 		post := &model.Post{
-			UserId:    args.UserId,
+			UserId:    p.botID,
 			ChannelId: args.ChannelId,
 			Message:   strings.Replace(text, "|", "`", -1),
 		}
@@ -248,7 +248,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 	}
 
 	post := &model.Post{
-		UserId:    args.UserId,
+		UserId:    p.botID,
 		ChannelId: args.ChannelId,
 		Message: p.localize(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
