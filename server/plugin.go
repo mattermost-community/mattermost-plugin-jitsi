@@ -59,11 +59,16 @@ func (p *Plugin) OnActivate() error {
 	}
 	p.i18nBundle = i18nBundle
 
-	botID, ensureBotError := p.Helpers.EnsureBot(&model.Bot{
+	jitsiBot := &model.Bot{
 		Username:    "jitsi",
 		DisplayName: "Jitsi",
 		Description: "A bot account created by the jitsi plugin",
-	})
+	}
+	options := []plugin.EnsureBotOption{
+		plugin.ProfileImagePath("assets/icon_square.png"),
+	}
+
+	botID, ensureBotError := p.Helpers.EnsureBot(jitsiBot, options...)
 	if ensureBotError != nil {
 		return errors.Wrap(ensureBotError, "failed to ensure jitsi bot user.")
 	}
