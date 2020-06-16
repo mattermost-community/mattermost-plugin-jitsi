@@ -17,6 +17,7 @@ func TestCommandHelp(t *testing.T) {
 		configuration: &configuration{
 			JitsiURL: "http://test",
 		},
+		botID: "test-bot-id",
 	}
 	apiMock := plugintest.API{}
 	defer apiMock.AssertExpectations(t)
@@ -45,7 +46,7 @@ func TestCommandHelp(t *testing.T) {
     * |ask|: The plugin asks you to select the name every time you start a meeting`, "|", "`", -1)
 
 	apiMock.On("SendEphemeralPost", "test-user", &model.Post{
-		UserId:    "test-user",
+		UserId:    "test-bot-id",
 		ChannelId: "test-channel",
 		Message:   helpText,
 	}).Return(nil)
@@ -61,6 +62,7 @@ func TestCommandSetings(t *testing.T) {
 			JitsiEmbedded:     false,
 			JitsiNamingScheme: "mattermost",
 		},
+		botID: "test-bot-id",
 	}
 
 	tests := []struct {
@@ -122,7 +124,7 @@ func TestCommandSetings(t *testing.T) {
 
 			apiMock.On("KVGet", "config_test-user", mock.Anything).Return(nil, nil)
 			apiMock.On("SendEphemeralPost", "test-user", &model.Post{
-				UserId:    "test-user",
+				UserId:    "test-bot-id",
 				ChannelId: "test-channel",
 				Message:   tt.output,
 			}).Return(nil)
