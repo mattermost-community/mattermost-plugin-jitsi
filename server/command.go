@@ -36,14 +36,12 @@ func createJitsiCommand() *model.Command {
 func getAutocompleteData() *model.AutocompleteData {
 	jitsi := model.NewAutocompleteData("jitsi", "[topic] | [command]", "Create a new meeting with a specified [topic] or use a [command]. Available commands: settings, help")
 
-	jitsi.AddTextArgument("Topic off the meeting", "[topic]", "")
-
 	help := model.NewAutocompleteData("help", "", "Get slash command help")
 	jitsi.AddCommand(help)
 
 	settings := model.NewAutocompleteData("settings", "[setting] [value]", "Update your user settings (see /jitsi help for available options)")
 
-	embedded := model.NewAutocompleteData("embedded", "embedded", "Choose where the Jitsi meeting should open")
+	embedded := model.NewAutocompleteData("embedded", "[value]", "Choose where the Jitsi meeting should open")
 	items := []model.AutocompleteListItem{{
 		HelpText: "Jitsi meeting is embedded as a floating window inside Mattermost",
 		Item:     "true",
@@ -54,13 +52,13 @@ func getAutocompleteData() *model.AutocompleteData {
 	embedded.AddStaticListArgument("Choose where the Jitsi meeting should open", true, items)
 	settings.AddCommand(embedded)
 
-	namingScheme := model.NewAutocompleteData("naming_scheme", "naming_scheme", "Select how meeting names are generated ")
+	namingScheme := model.NewAutocompleteData("naming_scheme", "[value]", "Select how meeting names are generated")
 	items = []model.AutocompleteListItem{{
 		HelpText: "Random English words in title case (e.g. PlayfulDragonsObserveCuriously)",
 		Item:     "words",
 	}, {
 		HelpText: "UUID (universally unique identifier)",
-		Item:     "UUID",
+		Item:     "uuid",
 	}, {
 		HelpText: "Mattermost specific names. Combination of team name, channel name and random text in public and private channels; personal meeting name in direct and group messages channels",
 		Item:     "mattermost",
