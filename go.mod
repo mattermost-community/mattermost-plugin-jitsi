@@ -7,7 +7,7 @@ require (
 	github.com/google/uuid v1.1.1
 	github.com/hashicorp/go-hclog v0.14.0 // indirect
 	github.com/hashicorp/go-plugin v1.3.0 // indirect
-	github.com/mattermost/mattermost-server/v5 v5.24.0-rc3
+	github.com/mattermost/mattermost-server/v5 v5.24.0
 	github.com/mholt/archiver/v3 v3.3.0
 	github.com/nicksnyder/go-i18n/v2 v2.0.3
 	github.com/pelletier/go-toml v1.8.0 // indirect
