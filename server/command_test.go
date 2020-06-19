@@ -31,9 +31,9 @@ func TestCommandHelp(t *testing.T) {
 
 	helpText := strings.Replace(`###### Mattermost Jitsi Plugin - Slash Command help
 * |/jitsi| - Create a new meeting
-* |/jitsi [topic]| - Create a new meeting with specified topic
+* |/jitsi start [topic]| - Create a new meeting with specified topic
 * |/jitsi help| - Show this help text
-* |/jitsi settings| - View your current user settings for the Jitsi plugin
+* |/jitsi settings see| - View your current user settings for the Jitsi plugin
 * |/jitsi settings [setting] [value]| - Update your user settings (see below for options)
 
 ###### Jitsi Settings:
@@ -54,7 +54,7 @@ func TestCommandHelp(t *testing.T) {
 	require.Nil(t, err)
 }
 
-func TestCommandSetings(t *testing.T) {
+func TestCommandSettings(t *testing.T) {
 	p := Plugin{
 		configuration: &configuration{
 			JitsiURL:          "http://test",
@@ -101,7 +101,7 @@ func TestCommandSetings(t *testing.T) {
 		},
 		{
 			name:      "get current user settings",
-			command:   "/jitsi settings",
+			command:   "/jitsi settings see",
 			output:    "###### Jitsi Settings:\n* Embedded: `false`\n* Naming Scheme: `mattermost`",
 			newConfig: nil,
 		},
@@ -223,7 +223,7 @@ func TestCommandStartMeeting(t *testing.T) {
 		apiMock.On("GetUser", "test-user").Return(&model.User{Id: "test-user"}, nil)
 		apiMock.On("KVGet", "config_test-user", mock.Anything).Return(nil, nil)
 
-		response, err := p.ExecuteCommand(&plugin.Context{}, &model.CommandArgs{UserId: "test-user", ChannelId: "test-channel", Command: "/jitsi topic"})
+		response, err := p.ExecuteCommand(&plugin.Context{}, &model.CommandArgs{UserId: "test-user", ChannelId: "test-channel", Command: "/jitsi start topic"})
 		require.Equal(t, &model.CommandResponse{}, response)
 		require.Nil(t, err)
 	})
