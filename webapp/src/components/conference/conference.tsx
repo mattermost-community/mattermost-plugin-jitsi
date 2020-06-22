@@ -55,15 +55,16 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 
     preventMessages = (event: MessageEvent) => {
-        if (!this.props.post) {
-            event.stopImmediatePropagation();
-            event.preventDefault();
+        if (!this.props.post || !this.api) {
             return;
         }
         const meetingURL = new URL(this.props.post.props.meeting_link);
-        if (event.origin !== meetingURL.origin) {
-            event.stopImmediatePropagation();
-            event.preventDefault();
+        if (event.origin !== meetingURL.origin && event.data) {
+            const data = JSON.parse(event.data || '{}');
+            if (data.postis === true && data.scope.indexOf('jitsi_meet_external_api_') === 0) {
+                event.stopImmediatePropagation();
+                event.preventDefault();
+            }
         }
     }
 
