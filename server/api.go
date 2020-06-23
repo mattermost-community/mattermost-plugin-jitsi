@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/mattermost/mattermost-server/v5/mlog"
@@ -43,7 +45,7 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 	case "/api/v1/config":
 		p.handleConfig(w, r)
 	case "/jitsi_meet_external_api.js":
-		p.proxyExternalAPIjs(w, r)
+		p.handleExternalAPIjs(w, r)
 	default:
 		http.NotFound(w, r)
 	}
@@ -77,6 +79,38 @@ func (p *Plugin) handleConfig(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (p *Plugin) handleExternalAPIjs(w http.ResponseWriter, r *http.Request) {
+	if p.getConfiguration().JitsiCompatibilityMode {
+		p.proxyExternalAPIjs(w, r)
+		return
+	}
+
+	bundlePath, err := p.API.GetBundlePath()
+	if err != nil {
+		mlog.Error("Filed to get the bundle path")
+		http.Error(w, "Internal error", http.StatusInternalServerError)
+		return
+	}
+	externalAPIPath := filepath.Join(bundlePath, "assets", "external_api.js")
+	externalAPIFile, err := os.Open(externalAPIPath)
+	if err != nil {
+		mlog.Error("Error opening file", mlog.String("path", externalAPIPath), mlog.Err(err))
+		http.Error(w, "Internal error", http.StatusInternalServerError)
+		return
+	}
+	code, err := ioutil.ReadAll(externalAPIFile)
+	if err != nil {
+		mlog.Error("Error reading file content", mlog.String("path", externalAPIPath), mlog.Err(err))
+		http.Error(w, "Internal error", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/javascript")
+	_, err = w.Write(code)
+	if err != nil {
+		mlog.Warn("Unable to write response body", mlog.String("handler", "proxyExternalAPIjs"), mlog.Err(err))
+	}
+}
+
 func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 	externalAPICacheMutex.Lock()
 	defer externalAPICacheMutex.Unlock()
@@ -86,7 +120,7 @@ func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(externalAPICache)
 		return
 	}
-	resp, err := http.Get(p.getConfiguration().JitsiURL + "/external_api.js")
+	resp, err := http.Get(p.getConfiguration().GetJitsiURL() + "/external_api.js")
 	if err != nil {
 		mlog.Error("Error getting the external_api.js file from your Jitsi instance, please verify your JitsiURL setting", mlog.Err(err))
 		http.Error(w, "Internal error", http.StatusInternalServerError)
@@ -95,7 +129,7 @@ func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		mlog.Error("Error getting reading the content", mlog.String("url", p.getConfiguration().JitsiURL+"/external_api.js"), mlog.Err(err))
+		mlog.Error("Error getting reading the content", mlog.String("url", p.getConfiguration().GetJitsiURL()+"/external_api.js"), mlog.Err(err))
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}

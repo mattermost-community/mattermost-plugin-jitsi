@@ -1,0 +1,14 @@
+{
+  "jitsi.close": "Schließen",
+  "jitsi.creator-has-started-a-meeting": "{creator} hat ein Meeting gestartet",
+  "jitsi.default-title": "Jitsi Meeting",
+  "jitsi.join-meeting": "Tritt Meeting bei",
+  "jitsi.link-valid-until": "Meeting-Link gültig bis: ",
+  "jitsi.maximize": "Maximieren",
+  "jitsi.meeting-id": "Meeting ID: ",
+  "jitsi.minimize": "Minimieren",
+  "jitsi.move-down": "Nach unten verschieben",
+  "jitsi.move-up": "Nach oben verschieben",
+  "jitsi.open-in-new-tab": "In einem neuen Tab öffnen",
+  "jitsi.personal-meeting-id": "Persönliche Meeting ID: "
+}

@@ -39,6 +39,8 @@ type Plugin struct {
 	configuration *configuration
 
 	i18nBundle *i18n.Bundle
+
+	botID string
 }
 
 func (p *Plugin) OnActivate() error {
@@ -56,6 +58,22 @@ func (p *Plugin) OnActivate() error {
 		return err
 	}
 	p.i18nBundle = i18nBundle
+
+	jitsiBot := &model.Bot{
+		Username:    "jitsi",
+		DisplayName: "Jitsi",
+		Description: "A bot account created by the jitsi plugin",
+	}
+	options := []plugin.EnsureBotOption{
+		plugin.ProfileImagePath("assets/icon.png"),
+	}
+
+	botID, ensureBotError := p.Helpers.EnsureBot(jitsiBot, options...)
+	if ensureBotError != nil {
+		return errors.Wrap(ensureBotError, "failed to ensure jitsi bot user.")
+	}
+
+	p.botID = botID
 
 	return nil
 }
@@ -211,7 +229,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 			meetingID = generateEnglishTitleName()
 		}
 	}
-	jitsiURL := strings.TrimSpace(p.getConfiguration().JitsiURL)
+	jitsiURL := strings.TrimSpace(p.getConfiguration().GetJitsiURL())
 	jitsiURL = strings.TrimRight(jitsiURL, "/")
 	meetingURL := jitsiURL + "/" + meetingID
 	meetingLink := meetingURL
@@ -222,7 +240,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 
 	if JWTMeeting {
 		// Error check is done in configuration.IsValid()
-		jURL, _ := url.Parse(p.getConfiguration().JitsiURL)
+		jURL, _ := url.Parse(p.getConfiguration().GetJitsiURL())
 
 		meetingLinkValidUntil = time.Now().Add(time.Duration(p.getConfiguration().JitsiLinkValidTime) * time.Minute)
 
@@ -440,7 +458,7 @@ func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error 
 	}
 
 	post := &model.Post{
-		UserId:    user.Id,
+		UserId:    p.botID,
 		ChannelId: channel.Id,
 	}
 	post.SetProps(map[string]interface{}{

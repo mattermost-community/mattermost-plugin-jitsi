@@ -149,7 +149,7 @@ func applyManifest(manifest *model.Manifest) error {
 			[]byte(fmt.Sprintf(pluginIDJSFileTemplate, manifestStr)),
 			0644,
 		); err != nil {
-			return errors.Wrap(err, "failed to open webapp/src/manifest.js")
+			return errors.Wrap(err, "failed to open webapp/src/manifest.ts")
 		}
 	}
 

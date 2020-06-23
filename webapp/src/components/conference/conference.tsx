@@ -10,6 +10,7 @@ const BUTTONS_PADDING_TOP = 10;
 const BUTTONS_PADDING_RIGHT = 2;
 const MINIMIZED_WIDTH = 320;
 const MINIMIZED_HEIGHT = 240;
+const DEFAULT_VIDEO_QUALITY = 720;
 
 type Props = {
     post: Post | null,
@@ -35,7 +36,7 @@ export default class Conference extends React.PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            minimized: false,
+            minimized: true,
             position: POSITION_BOTTOM,
             loading: true,
             wasTileView: true,
@@ -51,6 +52,25 @@ export default class Conference extends React.PureComponent<Props, State> {
 
     getViewportHeight(): number {
         return Math.max(document.documentElement.clientHeight || 0, window?.innerHeight || 0) - (BORDER_SIZE * 2);
+    }
+
+    preventMessages = (event: MessageEvent) => {
+        if (!this.props.post || !this.api) {
+            return;
+        }
+        const meetingURL = new URL(this.props.post.props.meeting_link);
+        if (event.origin !== meetingURL.origin && event.data) {
+            let data;
+            try {
+                data = JSON.parse(event.data);
+            } catch (err) {
+                data = {};
+            }
+            if (data.postis && data.scope.indexOf('jitsi_meet_external_api_') === 0) {
+                event.stopImmediatePropagation();
+                event.preventDefault();
+            }
+        }
     }
 
     initJitsi = (post: Post) => {
@@ -96,6 +116,7 @@ export default class Conference extends React.PureComponent<Props, State> {
             this.setState({isFilmStrip: event.visible});
         });
         this.api.executeCommand('subject', post.props.meeting_topic || post.props.default_meeting_topic);
+        this.api.executeCommand('setVideoQuality', DEFAULT_VIDEO_QUALITY);
     }
 
     resizeIframe = () => {
@@ -110,13 +131,17 @@ export default class Conference extends React.PureComponent<Props, State> {
 
     componentDidMount() {
         window.addEventListener('resize', this.resizeIframe);
-        if (this.props.post) {
-            this.initJitsi(this.props.post);
-        }
+        window.addEventListener('message', this.preventMessages, false);
+        window.requestAnimationFrame(() => {
+            if (this.props.post) {
+                this.initJitsi(this.props.post);
+            }
+        });
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.resizeIframe);
+        window.removeEventListener('message', this.preventMessages, false);
         if (this.api) {
             this.api.dispose();
         }
@@ -141,7 +166,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         setTimeout(() => {
             this.props.actions.openJitsiMeeting(null, null);
             this.setState({
-                minimized: false,
+                minimized: true,
                 loading: true,
                 position: POSITION_BOTTOM,
                 wasTileView: true,
@@ -156,6 +181,7 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 
     minimize = () => {
+        this.api.executeCommand('setVideoQuality', MINIMIZED_HEIGHT);
         this.setState({minimized: true});
         if (this.state.isTileView) {
             this.api.executeCommand('toggleTileView');
@@ -166,6 +192,7 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 
     maximize = () => {
+        this.api.executeCommand('setVideoQuality', DEFAULT_VIDEO_QUALITY);
         this.setState({minimized: false});
         if (this.state.isTileView !== this.state.wasTileView) {
             this.api.executeCommand('toggleTileView');
@@ -292,17 +319,14 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 
     render() {
+        if (this.props.post === null) {
+            return null;
+        }
         const vw = this.getViewportWidth();
         const width = this.state.minimized ? MINIMIZED_WIDTH : vw;
         const vh = this.getViewportHeight();
         const height = this.state.minimized ? MINIMIZED_HEIGHT : vh;
         const style = getStyle(height, width, this.state.position);
-        if (this.props.post === null) {
-            style.jitsiMeetContainer.display = 'none';
-            style.background.display = 'none';
-            style.loading.display = 'none';
-            style.buttons.display = 'none';
-        }
         return (
             <React.Fragment>
                 <div

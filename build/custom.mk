@@ -1,5 +1,7 @@
 # Include custom targets and environment variables here
 
+default: all
+
 i18n-extract-server:
 	@goi18n extract -format json -outdir assets/i18n/ server/
 	@for x in assets/i18n/active.*.json; do echo $$x | sed 's/active/translate/' | sed 's/^/touch /' | bash; done

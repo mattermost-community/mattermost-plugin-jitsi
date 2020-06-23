@@ -40,9 +40,9 @@ const manifestStr = `
         "key": "JitsiURL",
         "display_name": "Jitsi Server URL",
         "type": "text",
-        "help_text": "The URL for your Jitsi server. For example, https://jitsi.example.com.",
-        "placeholder": "https://jitsi.example.com",
-        "default": null
+        "help_text": "The URL for your Jitsi server, for example https://jitsi.example.com. Defaults to https://meet.jit.si, which is the public server provided by Jitsi.",
+        "placeholder": "https://meet.jit.si",
+        "default": "https://meet.jit.si"
       },
       {
         "key": "JitsiEmbedded",
@@ -109,6 +109,14 @@ const manifestStr = `
         "help_text": "(Optional) The number of minutes from when the meeting link is created to when it becomes invalid. Minimum is 1 minute. Only applies if using JWT authentication for your Jitsi server.",
         "placeholder": "",
         "default": 30
+      },
+      {
+        "key": "JitsiCompatibilityMode",
+        "display_name": "Enable Compatibility Mode",
+        "type": "bool",
+        "help_text": "(Insecure) If your Jitsi server is not compatible with this plugin, include the JavaScript API hosted on your Jitsi server directly in Mattermost instead of the default API version provided by the plugin. **WARNING:** Enabling this setting can compromise the security of your Mattermost system, if your Jitsi server is not fully trusted and allows direct modification of program files. Use with caution.",
+        "placeholder": "",
+        "default": false
       }
     ]
   }
