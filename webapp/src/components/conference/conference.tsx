@@ -54,6 +54,25 @@ export default class Conference extends React.PureComponent<Props, State> {
         return Math.max(document.documentElement.clientHeight || 0, window?.innerHeight || 0) - (BORDER_SIZE * 2);
     }
 
+    preventMessages = (event: MessageEvent) => {
+        if (!this.props.post || !this.api) {
+            return;
+        }
+        const meetingURL = new URL(this.props.post.props.meeting_link);
+        if (event.origin !== meetingURL.origin && event.data) {
+            let data;
+            try {
+                data = JSON.parse(event.data);
+            } catch (err) {
+                data = {};
+            }
+            if (data.postis && data.scope.indexOf('jitsi_meet_external_api_') === 0) {
+                event.stopImmediatePropagation();
+                event.preventDefault();
+            }
+        }
+    }
+
     initJitsi = (post: Post) => {
         const vw = this.getViewportWidth();
         const vh = this.getViewportHeight();
@@ -112,6 +131,7 @@ export default class Conference extends React.PureComponent<Props, State> {
 
     componentDidMount() {
         window.addEventListener('resize', this.resizeIframe);
+        window.addEventListener('message', this.preventMessages, false);
         window.requestAnimationFrame(() => {
             if (this.props.post) {
                 this.initJitsi(this.props.post);
@@ -121,6 +141,7 @@ export default class Conference extends React.PureComponent<Props, State> {
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.resizeIframe);
+        window.removeEventListener('message', this.preventMessages, false);
         if (this.api) {
             this.api.dispose();
         }
