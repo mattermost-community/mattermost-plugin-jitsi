@@ -10,7 +10,6 @@ const BUTTONS_PADDING_TOP = 10;
 const BUTTONS_PADDING_RIGHT = 2;
 const MINIMIZED_WIDTH = 320;
 const MINIMIZED_HEIGHT = 240;
-const DEFAULT_VIDEO_QUALITY = 720;
 
 type Props = {
     post: Post | null,
@@ -116,7 +115,6 @@ export default class Conference extends React.PureComponent<Props, State> {
             this.setState({isFilmStrip: event.visible});
         });
         this.api.executeCommand('subject', post.props.meeting_topic || post.props.default_meeting_topic);
-        this.api.executeCommand('setVideoQuality', DEFAULT_VIDEO_QUALITY);
     }
 
     resizeIframe = () => {
@@ -181,7 +179,6 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 
     minimize = () => {
-        this.api.executeCommand('setVideoQuality', MINIMIZED_HEIGHT);
         this.setState({minimized: true});
         if (this.state.isTileView) {
             this.api.executeCommand('toggleTileView');
@@ -192,7 +189,6 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 
     maximize = () => {
-        this.api.executeCommand('setVideoQuality', DEFAULT_VIDEO_QUALITY);
         this.setState({minimized: false});
         if (this.state.isTileView !== this.state.wasTileView) {
             this.api.executeCommand('toggleTileView');
