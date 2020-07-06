@@ -3,13 +3,13 @@ import {FormattedMessage} from 'react-intl';
 
 import {Post} from 'mattermost-redux/types/posts';
 
-const BORDER_SIZE = 20;
+const BORDER_SIZE = 8;
 const POSITION_TOP = 'top';
 const POSITION_BOTTOM = 'bottom';
 const BUTTONS_PADDING_TOP = 10;
 const BUTTONS_PADDING_RIGHT = 2;
-const MINIMIZED_WIDTH = 320;
-const MINIMIZED_HEIGHT = 240;
+const MINIMIZED_WIDTH = 384;
+const MINIMIZED_HEIGHT = 288;
 
 type Props = {
     post: Post | null,
@@ -392,7 +392,7 @@ function getStyle(height: number, width: number, position: 'top' | 'bottom'): {[
         },
         buttons: {
             position: 'absolute',
-            bottom: position === POSITION_BOTTOM ? ((height - BORDER_SIZE) + BUTTONS_PADDING_TOP) + 'px' : '',
+            bottom: position === POSITION_BOTTOM ? ((height - BORDER_SIZE) - BUTTONS_PADDING_TOP) + 'px' : '',
             top: position === POSITION_TOP ? `${BORDER_SIZE}px` : '',
             right: `${BORDER_SIZE + BUTTONS_PADDING_RIGHT}px`,
             color: 'white',
