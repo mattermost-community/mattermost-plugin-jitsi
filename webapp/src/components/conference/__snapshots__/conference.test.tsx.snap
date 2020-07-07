@@ -8,14 +8,14 @@ exports[`Conference should render and initialize the conference interface 1`] = 
       Object {
         "alignItems": "center",
         "background": "#474747",
-        "bottom": "20px",
+        "bottom": "8px",
         "display": "flex",
-        "height": 240,
+        "height": 288,
         "justifyContent": "center",
         "position": "absolute",
-        "right": "20px",
+        "right": "8px",
         "top": "",
-        "width": 320,
+        "width": 384,
         "zIndex": 1100,
       }
     }
@@ -25,17 +25,17 @@ exports[`Conference should render and initialize the conference interface 1`] = 
       Object {
         "alignItems": "center",
         "background": "#00000077",
-        "bottom": "20px",
+        "bottom": "8px",
         "color": "white",
         "display": "flex",
         "fontSize": "48px",
-        "height": 240,
+        "height": 288,
         "justifyContent": "center",
         "opacity": 0.85,
         "position": "absolute",
-        "right": "20px",
+        "right": "8px",
         "top": "",
-        "width": 320,
+        "width": 384,
         "zIndex": 1200,
       }
     }
@@ -47,13 +47,13 @@ exports[`Conference should render and initialize the conference interface 1`] = 
   <div
     style={
       Object {
-        "bottom": "230px",
+        "bottom": "270px",
         "color": "white",
         "cursor": "pointer",
         "fontSize": "18px",
         "opacity": 0.85,
         "position": "absolute",
-        "right": "22px",
+        "right": "10px",
         "top": "",
         "zIndex": 1200,
       }
@@ -115,12 +115,12 @@ exports[`Conference should show the correct buttons depending on the state shoul
         "background": "#474747",
         "bottom": "",
         "display": "flex",
-        "height": 240,
+        "height": 288,
         "justifyContent": "center",
         "position": "absolute",
-        "right": "20px",
-        "top": "20px",
-        "width": 320,
+        "right": "8px",
+        "top": "8px",
+        "width": 384,
         "zIndex": 1100,
       }
     }
@@ -134,13 +134,13 @@ exports[`Conference should show the correct buttons depending on the state shoul
         "color": "white",
         "display": "flex",
         "fontSize": "48px",
-        "height": 240,
+        "height": 288,
         "justifyContent": "center",
         "opacity": 0.85,
         "position": "absolute",
-        "right": "20px",
-        "top": "20px",
-        "width": 320,
+        "right": "8px",
+        "top": "8px",
+        "width": 384,
         "zIndex": 1200,
       }
     }
@@ -158,8 +158,8 @@ exports[`Conference should show the correct buttons depending on the state shoul
         "fontSize": "18px",
         "opacity": 0.85,
         "position": "absolute",
-        "right": "22px",
-        "top": "20px",
+        "right": "10px",
+        "top": "8px",
         "zIndex": 1200,
       }
     }
@@ -216,12 +216,12 @@ exports[`Conference should show the correct buttons depending on the state shoul
       Object {
         "alignItems": "center",
         "background": "#474747",
-        "bottom": "20px",
+        "bottom": "8px",
         "display": "flex",
         "height": 10,
         "justifyContent": "center",
         "position": "absolute",
-        "right": "20px",
+        "right": "8px",
         "top": "",
         "width": 10,
         "zIndex": 1100,
@@ -247,7 +247,7 @@ exports[`Conference should show the correct buttons depending on the state shoul
       Object {
         "alignItems": "center",
         "background": "#00000077",
-        "bottom": "20px",
+        "bottom": "8px",
         "color": "white",
         "display": "flex",
         "fontSize": "48px",
@@ -255,7 +255,7 @@ exports[`Conference should show the correct buttons depending on the state shoul
         "justifyContent": "center",
         "opacity": 0.85,
         "position": "absolute",
-        "right": "20px",
+        "right": "8px",
         "top": "",
         "width": 10,
         "zIndex": 1200,
@@ -269,13 +269,13 @@ exports[`Conference should show the correct buttons depending on the state shoul
   <div
     style={
       Object {
-        "bottom": "0px",
+        "bottom": "-8px",
         "color": "white",
         "cursor": "pointer",
         "fontSize": "18px",
         "opacity": 0.85,
         "position": "absolute",
-        "right": "22px",
+        "right": "10px",
         "top": "",
         "zIndex": 1200,
       }
@@ -326,14 +326,14 @@ exports[`Conference should show the correct buttons depending on the state shoul
       Object {
         "alignItems": "center",
         "background": "#474747",
-        "bottom": "20px",
+        "bottom": "8px",
         "display": "flex",
-        "height": 240,
+        "height": 288,
         "justifyContent": "center",
         "position": "absolute",
-        "right": "20px",
+        "right": "8px",
         "top": "",
-        "width": 320,
+        "width": 384,
         "zIndex": 1100,
       }
     }
@@ -343,17 +343,17 @@ exports[`Conference should show the correct buttons depending on the state shoul
       Object {
         "alignItems": "center",
         "background": "#00000077",
-        "bottom": "20px",
+        "bottom": "8px",
         "color": "white",
         "display": "flex",
         "fontSize": "48px",
-        "height": 240,
+        "height": 288,
         "justifyContent": "center",
         "opacity": 0.85,
         "position": "absolute",
-        "right": "20px",
+        "right": "8px",
         "top": "",
-        "width": 320,
+        "width": 384,
         "zIndex": 1200,
       }
     }
@@ -365,13 +365,13 @@ exports[`Conference should show the correct buttons depending on the state shoul
   <div
     style={
       Object {
-        "bottom": "230px",
+        "bottom": "270px",
         "color": "white",
         "cursor": "pointer",
         "fontSize": "18px",
         "opacity": 0.85,
         "position": "absolute",
-        "right": "22px",
+        "right": "10px",
         "top": "",
         "zIndex": 1200,
       }
@@ -429,14 +429,14 @@ exports[`Conference should show the the loading spinner depending on the state s
       Object {
         "alignItems": "center",
         "background": "#474747",
-        "bottom": "20px",
+        "bottom": "8px",
         "display": "flex",
-        "height": 240,
+        "height": 288,
         "justifyContent": "center",
         "position": "absolute",
-        "right": "20px",
+        "right": "8px",
         "top": "",
-        "width": 320,
+        "width": 384,
         "zIndex": 1100,
       }
     }
@@ -444,13 +444,13 @@ exports[`Conference should show the the loading spinner depending on the state s
   <div
     style={
       Object {
-        "bottom": "230px",
+        "bottom": "270px",
         "color": "white",
         "cursor": "pointer",
         "fontSize": "18px",
         "opacity": 0.85,
         "position": "absolute",
-        "right": "22px",
+        "right": "10px",
         "top": "",
         "zIndex": 1200,
       }
@@ -508,14 +508,14 @@ exports[`Conference should show the the loading spinner depending on the state s
       Object {
         "alignItems": "center",
         "background": "#474747",
-        "bottom": "20px",
+        "bottom": "8px",
         "display": "flex",
-        "height": 240,
+        "height": 288,
         "justifyContent": "center",
         "position": "absolute",
-        "right": "20px",
+        "right": "8px",
         "top": "",
-        "width": 320,
+        "width": 384,
         "zIndex": 1100,
       }
     }
@@ -525,17 +525,17 @@ exports[`Conference should show the the loading spinner depending on the state s
       Object {
         "alignItems": "center",
         "background": "#00000077",
-        "bottom": "20px",
+        "bottom": "8px",
         "color": "white",
         "display": "flex",
         "fontSize": "48px",
-        "height": 240,
+        "height": 288,
         "justifyContent": "center",
         "opacity": 0.85,
         "position": "absolute",
-        "right": "20px",
+        "right": "8px",
         "top": "",
-        "width": 320,
+        "width": 384,
         "zIndex": 1200,
       }
     }
@@ -547,13 +547,13 @@ exports[`Conference should show the the loading spinner depending on the state s
   <div
     style={
       Object {
-        "bottom": "230px",
+        "bottom": "270px",
         "color": "white",
         "cursor": "pointer",
         "fontSize": "18px",
         "opacity": 0.85,
         "position": "absolute",
-        "right": "22px",
+        "right": "10px",
         "top": "",
         "zIndex": 1200,
       }
