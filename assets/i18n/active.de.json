@@ -93,6 +93,6 @@
   },
   "jitsi.start_meeting.slack_attachment_text": {
     "hash": "sha1-7726587ccfee9bb7539aad458c154f8be3d95dcd",
-    "other": "{{.MeetingType}}: [{{.MeetingID}}]({{.MeetingURL}})\n\n[Tritt Meeting bei({{.MeetingURL}})"
+    "other": "{{.MeetingType}}: [{{.MeetingID}}]({{.MeetingURL}})\n\n[Tritt Meeting bei]({{.MeetingURL}})"
   }
 }
