@@ -27,8 +27,7 @@ The plugin has been tested on Chrome, Firefox and the Mattermost Desktop Apps.
 
 ## Installation
 
-1. Go to https://github.com/mattermost/mattermost-plugin-jitsi/releases to download the latest release file in tar.gz format.
-2. Upload the file through **System Console > Plugins > Management**, or manually upload it to the Mattermost server under plugin directory. See [documentation](https://docs.mattermost.com/administration/plugins.html#set-up-guide) for more details.
+Go to the **Mattermost Main Menu > Plugin Marketplace** to install and configure the Jitsi plugin.
 
 ## Configuration
 
