@@ -91,15 +91,15 @@ func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.Comma
 }
 
 func (p *Plugin) executeHelpCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
-	l := p.getUserLocalizer(args.UserId)
-	helpTitle := p.localize(l, &i18n.LocalizeConfig{
+	l := p.b.GetUserLocalizer(args.UserId)
+	helpTitle := p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 		DefaultMessage: &i18n.Message{
 			ID: "jitsi.command.help.title",
 			Other: `###### Mattermost Jitsi Plugin - Slash Command help
 `,
 		},
 	})
-	commandHelp := p.localize(l, &i18n.LocalizeConfig{
+	commandHelp := p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 		DefaultMessage: &i18n.Message{
 			ID: "jitsi.command.help.text",
 			Other: `* |/jitsi| - Create a new meeting
@@ -141,13 +141,13 @@ func (p *Plugin) settingsError(userID string, channelID string, errorText string
 }
 
 func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandArgs, parameters []string) (*model.CommandResponse, *model.AppError) {
-	l := p.getUserLocalizer(args.UserId)
+	l := p.b.GetUserLocalizer(args.UserId)
 	text := ""
 
 	userConfig, err := p.getUserConfig(args.UserId)
 	if err != nil {
 		mlog.Debug("Unable to get user config", mlog.Err(err))
-		return p.settingsError(args.UserId, args.ChannelId, p.localize(l, &i18n.LocalizeConfig{
+		return p.settingsError(args.UserId, args.ChannelId, p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID:    "jitsi.command.settings.unable_to_get",
 				Other: "Unable to get user settings",
@@ -156,7 +156,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 	}
 
 	if len(parameters) == 0 {
-		text = p.localize(l, &i18n.LocalizeConfig{
+		text = p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID: "jitsi.command.settings.current_values",
 				Other: `###### Jitsi Settings:
@@ -179,7 +179,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 	}
 
 	if len(parameters) != 2 {
-		return p.settingsError(args.UserId, args.ChannelId, p.localize(l, &i18n.LocalizeConfig{
+		return p.settingsError(args.UserId, args.ChannelId, p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID:    "jitsi.command.settings.invalid_parameters",
 				Other: "Invalid settings parameters",
@@ -195,7 +195,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 		case "false":
 			userConfig.Embedded = false
 		default:
-			text = p.localize(l, &i18n.LocalizeConfig{
+			text = p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 				DefaultMessage: &i18n.Message{
 					ID:    "jitsi.command.settings.wrong_embedded_value",
 					Other: "Invalid `embedded` value, use `true` or `false`.",
@@ -214,7 +214,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 		case jitsiNameSchemeMattermost:
 			userConfig.NamingScheme = "mattermost"
 		default:
-			text = p.localize(l, &i18n.LocalizeConfig{
+			text = p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 				DefaultMessage: &i18n.Message{
 					ID:    "jitsi.command.settings.wrong_naming_scheme_value",
 					Other: "Invalid `naming_scheme` value, use `ask`, `words`, `uuid` or `mattermost`.",
@@ -223,7 +223,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 			userConfig = nil
 		}
 	default:
-		text = p.localize(l, &i18n.LocalizeConfig{
+		text = p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID:    "jitsi.command.settings.wrong_field",
 				Other: "Invalid config field, use `embedded` or `naming_scheme`.",
@@ -239,7 +239,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 	err = p.setUserConfig(args.UserId, userConfig)
 	if err != nil {
 		mlog.Debug("Unable to set user settings", mlog.Err(err))
-		return p.settingsError(args.UserId, args.ChannelId, p.localize(l, &i18n.LocalizeConfig{
+		return p.settingsError(args.UserId, args.ChannelId, p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID:    "jitsi.command.settings.unable_to_set",
 				Other: "Unable to set user settings",
@@ -250,7 +250,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 	post := &model.Post{
 		UserId:    p.botID,
 		ChannelId: args.ChannelId,
-		Message: p.localize(l, &i18n.LocalizeConfig{
+		Message: p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID:    "jitsi.command.settings.updated",
 				Other: "Jitsi settings updated",
