@@ -2,9 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"path/filepath"
 	"strings"
 	"testing"
 
+	"github.com/mattermost/mattermost-plugin-api/i18n"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
 	"github.com/mattermost/mattermost-server/v5/plugin/plugintest"
@@ -26,9 +28,9 @@ func TestCommandHelp(t *testing.T) {
 
 	p.SetAPI(&apiMock)
 
-	i18nBundle, err := p.initI18nBundle()
+	i18nBundle, err := i18n.InitBundle(p.API, filepath.Join("assets", "i18n"))
 	require.Nil(t, err)
-	p.i18nBundle = i18nBundle
+	p.b = i18nBundle
 
 	helpText := strings.Replace(`###### Mattermost Jitsi Plugin - Slash Command help
 * |/jitsi| - Create a new meeting
@@ -118,9 +120,9 @@ func TestCommandSetings(t *testing.T) {
 			apiMock.On("GetUser", "test-user").Return(&model.User{Id: "test-user", Locale: "en"}, nil)
 			apiMock.On("GetBundlePath").Return("..", nil)
 
-			i18nBundle, err := p.initI18nBundle()
+			i18nBundle, err := i18n.InitBundle(p.API, filepath.Join("assets", "i18n"))
 			require.Nil(t, err)
-			p.i18nBundle = i18nBundle
+			p.b = i18nBundle
 
 			apiMock.On("KVGet", "config_test-user", mock.Anything).Return(nil, nil)
 			apiMock.On("SendEphemeralPost", "test-user", &model.Post{
@@ -158,9 +160,9 @@ func TestCommandStartMeeting(t *testing.T) {
 		config.SetDefaults()
 		apiMock.On("GetConfig").Return(&config, nil)
 
-		i18nBundle, err := p.initI18nBundle()
+		i18nBundle, err := i18n.InitBundle(p.API, filepath.Join("assets", "i18n"))
 		require.Nil(t, err)
-		p.i18nBundle = i18nBundle
+		p.b = i18nBundle
 
 		apiMock.On("SendEphemeralPost", "test-user", mock.MatchedBy(func(post *model.Post) bool {
 			return post.Props["attachments"].([]*model.SlackAttachment)[0].Text == "Select type of meeting you want to start"
@@ -186,9 +188,9 @@ func TestCommandStartMeeting(t *testing.T) {
 		config.SetDefaults()
 		apiMock.On("GetConfig").Return(&config, nil)
 
-		i18nBundle, err := p.initI18nBundle()
+		i18nBundle, err := i18n.InitBundle(p.API, filepath.Join("assets", "i18n"))
 		require.Nil(t, err)
-		p.i18nBundle = i18nBundle
+		p.b = i18nBundle
 
 		apiMock.On("CreatePost", mock.MatchedBy(func(post *model.Post) bool {
 			return strings.HasPrefix(post.Props["meeting_link"].(string), "http://test/")
@@ -213,9 +215,9 @@ func TestCommandStartMeeting(t *testing.T) {
 		config.SetDefaults()
 		apiMock.On("GetConfig").Return(&config, nil)
 
-		i18nBundle, err := p.initI18nBundle()
+		i18nBundle, err := i18n.InitBundle(p.API, filepath.Join("assets", "i18n"))
 		require.Nil(t, err)
-		p.i18nBundle = i18nBundle
+		p.b = i18nBundle
 
 		apiMock.On("CreatePost", mock.MatchedBy(func(post *model.Post) bool {
 			return strings.HasPrefix(post.Props["meeting_link"].(string), "http://test/topic")
