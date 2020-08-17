@@ -7,13 +7,13 @@ import * as ja from './ja.json';
 import * as ko from './ko.json';
 import * as nl from './nl.json';
 import * as pl from './pl.json';
-import * as pt_BR from './pt_BR.json';
+import * as ptBR from './pt_BR.json';
 import * as ro from './ro.json';
 import * as ru from './ru.json';
 import * as tr from './tr.json';
 import * as uk from './uk.json';
-import * as zh_Hans from './zh_Hans.json';
-import * as zh_Hant from './zh_Hant.json';
+import * as zhHans from './zh_Hans.json';
+import * as zhHant from './zh_Hant.json';
 
 export function getTranslations(locale: string): {[key: string]: string} {
     switch (locale) {
@@ -36,7 +36,7 @@ export function getTranslations(locale: string): {[key: string]: string} {
     case 'pl':
         return pl;
     case 'pt-BR':
-        return pt_BR;
+        return ptBR;
     case 'ro':
         return ro;
     case 'ru':
@@ -46,9 +46,9 @@ export function getTranslations(locale: string): {[key: string]: string} {
     case 'uk':
         return uk;
     case 'zh-CN':
-        return zh_Hans;
+        return zhHans;
     case 'zh-TW':
-        return zh_Hant;
+        return zhHant;
     }
     return {};
 }
