@@ -1,1 +1,14 @@
-{}
+{
+    "jitsi.personal-meeting-id": "Personligt mötes-ID (PMI): ",
+    "jitsi.open-in-new-tab": "Öppna i ny flik",
+    "jitsi.move-up": "Flytta upp",
+    "jitsi.move-down": "Flytta ner",
+    "jitsi.minimize": "Minimera",
+    "jitsi.meeting-id": "Mötes-ID: ",
+    "jitsi.maximize": "Maximera",
+    "jitsi.link-valid-until": "Möteslänken giltig till: ",
+    "jitsi.join-meeting": "ANSLUT TILL MÖTET",
+    "jitsi.default-title": "Jitsi Meeting",
+    "jitsi.creator-has-started-a-meeting": "{creator} har startat ett möte",
+    "jitsi.close": "Stäng"
+}
