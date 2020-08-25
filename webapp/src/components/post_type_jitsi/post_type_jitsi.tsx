@@ -49,6 +49,14 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
             if (this.props.post) {
                 this.props.actions.openJitsiMeeting(this.props.post, this.state.meetingJwt || this.props.post.props.meeting_jwt || null);
             }
+        } else if (this.state.meetingJwt) {
+            e.preventDefault();
+            if (this.props.post) {
+                const props = this.props.post.props;
+                let meetingLink = props.meeting_link + '?jwt=' + (this.state.meetingJwt);
+                meetingLink += `#config.callDisplayName="${props.meeting_topic || props.default_meeting_topic}"`;
+                window.open(meetingLink, '_blank');
+            }
         }
     }
 
@@ -84,9 +92,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
         const props = post.props;
 
         let meetingLink = props.meeting_link;
-        if (this.state.meetingJwt) {
-            meetingLink += '?jwt=' + this.state.meetingJwt;
-        } else if (props.jwt_meeting) {
+        if (props.jwt_meeting) {
             meetingLink += '?jwt=' + (props.meeting_jwt);
         }
         meetingLink += `#config.callDisplayName="${props.meeting_topic || props.default_meeting_topic}"`;

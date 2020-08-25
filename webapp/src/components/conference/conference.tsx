@@ -3,14 +3,13 @@ import {FormattedMessage} from 'react-intl';
 
 import {Post} from 'mattermost-redux/types/posts';
 
-const BORDER_SIZE = 20;
+const BORDER_SIZE = 8;
 const POSITION_TOP = 'top';
 const POSITION_BOTTOM = 'bottom';
 const BUTTONS_PADDING_TOP = 10;
 const BUTTONS_PADDING_RIGHT = 2;
-const MINIMIZED_WIDTH = 320;
-const MINIMIZED_HEIGHT = 240;
-const DEFAULT_VIDEO_QUALITY = 720;
+const MINIMIZED_WIDTH = 384;
+const MINIMIZED_HEIGHT = 288;
 
 type Props = {
     post: Post | null,
@@ -52,6 +51,25 @@ export default class Conference extends React.PureComponent<Props, State> {
 
     getViewportHeight(): number {
         return Math.max(document.documentElement.clientHeight || 0, window?.innerHeight || 0) - (BORDER_SIZE * 2);
+    }
+
+    preventMessages = (event: MessageEvent) => {
+        if (!this.props.post || !this.api) {
+            return;
+        }
+        const meetingURL = new URL(this.props.post.props.meeting_link);
+        if (event.origin !== meetingURL.origin && event.data) {
+            let data;
+            try {
+                data = JSON.parse(event.data);
+            } catch (err) {
+                data = {};
+            }
+            if (data.postis && data.scope.indexOf('jitsi_meet_external_api_') === 0) {
+                event.stopImmediatePropagation();
+                event.preventDefault();
+            }
+        }
     }
 
     initJitsi = (post: Post) => {
@@ -97,7 +115,6 @@ export default class Conference extends React.PureComponent<Props, State> {
             this.setState({isFilmStrip: event.visible});
         });
         this.api.executeCommand('subject', post.props.meeting_topic || post.props.default_meeting_topic);
-        this.api.executeCommand('setVideoQuality', DEFAULT_VIDEO_QUALITY);
     }
 
     resizeIframe = () => {
@@ -112,6 +129,7 @@ export default class Conference extends React.PureComponent<Props, State> {
 
     componentDidMount() {
         window.addEventListener('resize', this.resizeIframe);
+        window.addEventListener('message', this.preventMessages, false);
         window.requestAnimationFrame(() => {
             if (this.props.post) {
                 this.initJitsi(this.props.post);
@@ -121,6 +139,7 @@ export default class Conference extends React.PureComponent<Props, State> {
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.resizeIframe);
+        window.removeEventListener('message', this.preventMessages, false);
         if (this.api) {
             this.api.dispose();
         }
@@ -160,7 +179,6 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 
     minimize = () => {
-        this.api.executeCommand('setVideoQuality', MINIMIZED_HEIGHT);
         this.setState({minimized: true});
         if (this.state.isTileView) {
             this.api.executeCommand('toggleTileView');
@@ -171,7 +189,6 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 
     maximize = () => {
-        this.api.executeCommand('setVideoQuality', DEFAULT_VIDEO_QUALITY);
         this.setState({minimized: false});
         if (this.state.isTileView !== this.state.wasTileView) {
             this.api.executeCommand('toggleTileView');
@@ -375,7 +392,7 @@ function getStyle(height: number, width: number, position: 'top' | 'bottom'): {[
         },
         buttons: {
             position: 'absolute',
-            bottom: position === POSITION_BOTTOM ? ((height - BORDER_SIZE) + BUTTONS_PADDING_TOP) + 'px' : '',
+            bottom: position === POSITION_BOTTOM ? ((height - BORDER_SIZE) - BUTTONS_PADDING_TOP) + 'px' : '',
             top: position === POSITION_TOP ? `${BORDER_SIZE}px` : '',
             right: `${BORDER_SIZE + BUTTONS_PADDING_RIGHT}px`,
             color: 'white',

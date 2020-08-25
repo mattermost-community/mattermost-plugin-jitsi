@@ -1,13 +1,18 @@
 # Mattermost Jitsi Plugin (Beta)
 
-**Maintainer:** [Jesús Espino](https://github.com/jespino)
+[![Build Status](https://img.shields.io/circleci/project/github/mattermost/mattermost-plugin-jitsi/master)](https://circleci.com/gh/mattermost/mattermost-plugin-jitsi)
+[![Code Coverage](https://img.shields.io/codecov/c/github/mattermost/mattermost-plugin-jitsi/master)](https://codecov.io/gh/mattermost/mattermost-plugin-jitsi)
+[![Release](https://img.shields.io/github/v/release/mattermost/mattermost-plugin-jitsi)](https://github.com/mattermost/mattermost-plugin-jitsi/releases/latest)
+[![HW](https://img.shields.io/github/issues/mattermost/mattermost-plugin-jitsi/Up%20For%20Grabs?color=dark%20green&label=Help%20Wanted)](https://github.com/mattermost/mattermost-plugin-jitsi/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A%22Up+For+Grabs%22+label%3A%22Help+Wanted%22)
+
+**Maintainer:** [Daniel Espino García](https://github.com/larkox)
 **Originally developed by:** [Sean Sackowitz](https://github.com/seansackowitz).
 
 Start and join voice calls, video calls and use screen sharing with your team members with a Jitsi plugin for Mattermost.
 
 Clicking a video icon in a Mattermost channel posts a message that invites team members to join a Jitsi meetings call.
 
-![image](https://user-images.githubusercontent.com/13119842/82381170-ba500680-99f7-11ea-8254-d4503999783e.png)
+![image](https://user-images.githubusercontent.com/13119842/86600303-e145a600-bf6d-11ea-8562-775869064af0.png)
 
 ## Features
 

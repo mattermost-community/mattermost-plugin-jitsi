@@ -4,16 +4,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/cristalhq/jwt/v2"
+	"github.com/mattermost/mattermost-plugin-api/i18n"
 	"github.com/mattermost/mattermost-server/v5/mlog"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
-	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"github.com/pkg/errors"
 )
 
@@ -38,7 +39,9 @@ type Plugin struct {
 	// setConfiguration for usage.
 	configuration *configuration
 
-	i18nBundle *i18n.Bundle
+	b *i18n.Bundle
+
+	botID string
 }
 
 func (p *Plugin) OnActivate() error {
@@ -51,11 +54,27 @@ func (p *Plugin) OnActivate() error {
 		return err
 	}
 
-	i18nBundle, err := p.initI18nBundle()
+	i18nBundle, err := i18n.InitBundle(p.API, filepath.Join("assets", "i18n"))
 	if err != nil {
 		return err
 	}
-	p.i18nBundle = i18nBundle
+	p.b = i18nBundle
+
+	jitsiBot := &model.Bot{
+		Username:    "jitsi",
+		DisplayName: "Jitsi",
+		Description: "A bot account created by the jitsi plugin",
+	}
+	options := []plugin.EnsureBotOption{
+		plugin.ProfileImagePath("assets/icon.png"),
+	}
+
+	botID, ensureBotError := p.Helpers.EnsureBot(jitsiBot, options...)
+	if ensureBotError != nil {
+		return errors.Wrap(ensureBotError, "failed to ensure jitsi bot user.")
+	}
+
+	p.botID = botID
 
 	return nil
 }
@@ -155,7 +174,7 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 }
 
 func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingID string, meetingTopic string, personal bool) (string, error) {
-	l := p.getServerLocalizer()
+	l := p.b.GetServerLocalizer()
 	if meetingID == "" {
 		meetingID = encodeJitsiMeetingID(meetingTopic)
 		if meetingID != "" {
@@ -164,11 +183,9 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 		meetingID += randomString(LETTERS, 20)
 	}
 	meetingPersonal := false
-	defaultMeetingTopic := p.localize(l, &i18n.LocalizeConfig{
-		DefaultMessage: &i18n.Message{
-			ID:    "jitsi.start_meeting.default_meeting_topic",
-			Other: "Jitsi Meeting",
-		},
+	defaultMeetingTopic := p.b.LocalizeDefaultMessage(l, &i18n.Message{
+		ID:    "jitsi.start_meeting.default_meeting_topic",
+		Other: "Jitsi Meeting",
 	})
 
 	if len(meetingTopic) < 1 {
@@ -185,7 +202,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 		case jitsiNameSchemeMattermost:
 			if channel.Type == model.CHANNEL_DIRECT || channel.Type == model.CHANNEL_GROUP {
 				meetingID = generatePersonalMeetingName(user.Username)
-				meetingTopic = p.localize(l, &i18n.LocalizeConfig{
+				meetingTopic = p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 					DefaultMessage: &i18n.Message{
 						ID:    "jitsi.start_meeting.personal_meeting_topic",
 						Other: "{{.Name}}'s Personal Meeting",
@@ -198,7 +215,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 				if teamErr != nil {
 					return "", teamErr
 				}
-				meetingTopic = p.localize(l, &i18n.LocalizeConfig{
+				meetingTopic = p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 					DefaultMessage: &i18n.Message{
 						ID:    "jitsi.start_meeting.channel_meeting_topic",
 						Other: "{{.ChannelName}} Channel Meeting",
@@ -249,7 +266,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 
 	meetingUntil := ""
 	if JWTMeeting {
-		meetingUntil = p.localize(l, &i18n.LocalizeConfig{
+		meetingUntil = p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID:    "jitsi.start_meeting.meeting_link_valid_until",
 				Other: "Meeting link valid until: {{.Datetime}}",
@@ -258,14 +275,14 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 		})
 	}
 
-	meetingTypeString := p.localize(l, &i18n.LocalizeConfig{
+	meetingTypeString := p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 		DefaultMessage: &i18n.Message{
 			ID:    "jitsi.start_meeting.meeting_id",
 			Other: "Meeting ID",
 		},
 	})
 	if meetingPersonal {
-		meetingTypeString = p.localize(l, &i18n.LocalizeConfig{
+		meetingTypeString = p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID:    "jitsi.start_meeting.personal_meeting_id",
 				Other: "Personal Meeting ID (PMI)",
@@ -279,7 +296,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 	}
 
 	slackAttachment := model.SlackAttachment{
-		Fallback: p.localize(l, &i18n.LocalizeConfig{
+		Fallback: p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID: "jitsi.start_meeting.fallback_text",
 				Other: `Video Meeting started at [{{.MeetingID}}]({{.MeetingURL}}).
@@ -292,7 +309,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 			},
 		}) + "\n\n" + meetingUntil,
 		Title: slackMeetingTopic,
-		Text: p.localize(l, &i18n.LocalizeConfig{
+		Text: p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID: "jitsi.start_meeting.slack_attachment_text",
 				Other: `{{.MeetingType}}: [{{.MeetingID}}]({{.MeetingURL}})
@@ -343,7 +360,7 @@ func encodeJitsiMeetingID(meeting string) string {
 }
 
 func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error {
-	l := p.getUserLocalizer(user.Id)
+	l := p.b.GetUserLocalizer(user.Id)
 	apiURL := *p.API.GetConfig().ServiceSettings.SiteURL + "/plugins/jitsi/api/v1/meetings"
 
 	actions := []*model.PostAction{}
@@ -354,7 +371,7 @@ func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error 
 	}
 
 	actions = append(actions, &model.PostAction{
-		Name: p.localize(l, &i18n.LocalizeConfig{
+		Name: p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID:    "jitsi.ask.meeting_name_random_words",
 				Other: "Meeting name with random words",
@@ -371,7 +388,7 @@ func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error 
 	})
 
 	actions = append(actions, &model.PostAction{
-		Name: p.localize(l, &i18n.LocalizeConfig{
+		Name: p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID:    "jitsi.ask.personal_meeting",
 				Other: "Personal meeting",
@@ -389,7 +406,7 @@ func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error 
 
 	if channel.Type == model.CHANNEL_OPEN || channel.Type == model.CHANNEL_PRIVATE {
 		actions = append(actions, &model.PostAction{
-			Name: p.localize(l, &i18n.LocalizeConfig{
+			Name: p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 				DefaultMessage: &i18n.Message{
 					ID:    "jitsi.ask.channel_meeting",
 					Other: "Channel meeting",
@@ -407,7 +424,7 @@ func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error 
 	}
 
 	actions = append(actions, &model.PostAction{
-		Name: p.localize(l, &i18n.LocalizeConfig{
+		Name: p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID:    "jitsi.ask.uuid_meeting",
 				Other: "Meeting name with UUID",
@@ -424,13 +441,13 @@ func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error 
 	})
 
 	sa := model.SlackAttachment{
-		Title: p.localize(l, &i18n.LocalizeConfig{
+		Title: p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID:    "jitsi.ask.title",
 				Other: "Jitsi Meeting Start",
 			},
 		}),
-		Text: p.localize(l, &i18n.LocalizeConfig{
+		Text: p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID:    "jitsi.ask.select_meeting_type",
 				Other: "Select type of meeting you want to start",
@@ -440,7 +457,7 @@ func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error 
 	}
 
 	post := &model.Post{
-		UserId:    user.Id,
+		UserId:    p.botID,
 		ChannelId: channel.Id,
 	}
 	post.SetProps(map[string]interface{}{

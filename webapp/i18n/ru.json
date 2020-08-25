@@ -1,0 +1,14 @@
+{
+  "jitsi.close": "Закрыть",
+  "jitsi.creator-has-started-a-meeting": "{creator} начал совещание",
+  "jitsi.default-title": "Совещание Jitsi",
+  "jitsi.join-meeting": "ПРИСОЕДИНИТЬСЯ",
+  "jitsi.link-valid-until": "Ссылка на совещание действительна до: ",
+  "jitsi.maximize": "Развернуть",
+  "jitsi.meeting-id": "Идентификатор совещания: ",
+  "jitsi.minimize": "Свернуть",
+  "jitsi.move-down": "Переместить вниз",
+  "jitsi.move-up": "Переместить вверх",
+  "jitsi.open-in-new-tab": "Открыть в новой вкладке",
+  "jitsi.personal-meeting-id": "Идентификатор личной встречи (PMI): "
+}

@@ -2,9 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"path/filepath"
 	"strings"
 	"testing"
 
+	"github.com/mattermost/mattermost-plugin-api/i18n"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
 	"github.com/mattermost/mattermost-server/v5/plugin/plugintest"
@@ -17,6 +19,7 @@ func TestCommandHelp(t *testing.T) {
 		configuration: &configuration{
 			JitsiURL: "http://test",
 		},
+		botID: "test-bot-id",
 	}
 	apiMock := plugintest.API{}
 	defer apiMock.AssertExpectations(t)
@@ -25,9 +28,9 @@ func TestCommandHelp(t *testing.T) {
 
 	p.SetAPI(&apiMock)
 
-	i18nBundle, err := p.initI18nBundle()
+	i18nBundle, err := i18n.InitBundle(p.API, filepath.Join("assets", "i18n"))
 	require.Nil(t, err)
-	p.i18nBundle = i18nBundle
+	p.b = i18nBundle
 
 	helpText := strings.Replace(`###### Mattermost Jitsi Plugin - Slash Command help
 * |/jitsi| - Create a new meeting
@@ -37,7 +40,7 @@ func TestCommandHelp(t *testing.T) {
 * |/jitsi settings [setting] [value]| - Update your user settings (see below for options)
 
 ###### Jitsi Settings:
-* |/jitsi settings embedded [true/false]|: When true, Jitsi meeting is embedded as a floating window inside Mattermost. When false, Jitsi meeting opens in a new window.
+* |/jitsi settings embedded [true/false]|: (Experimental) When true, Jitsi meeting is embedded as a floating window inside Mattermost. When false, Jitsi meeting opens in a new window.
 * |/jitsi settings naming_scheme [words/uuid/mattermost/ask]|: Select how meeting names are generated with one of these options:
     * |words|: Random English words in title case (e.g. PlayfulDragonsObserveCuriously)
     * |uuid|: UUID (universally unique identifier)
@@ -45,7 +48,7 @@ func TestCommandHelp(t *testing.T) {
     * |ask|: The plugin asks you to select the name every time you start a meeting`, "|", "`", -1)
 
 	apiMock.On("SendEphemeralPost", "test-user", &model.Post{
-		UserId:    "test-user",
+		UserId:    "test-bot-id",
 		ChannelId: "test-channel",
 		Message:   helpText,
 	}).Return(nil)
@@ -61,6 +64,7 @@ func TestCommandSettings(t *testing.T) {
 			JitsiEmbedded:     false,
 			JitsiNamingScheme: "mattermost",
 		},
+		botID: "test-bot-id",
 	}
 
 	tests := []struct {
@@ -116,13 +120,13 @@ func TestCommandSettings(t *testing.T) {
 			apiMock.On("GetUser", "test-user").Return(&model.User{Id: "test-user", Locale: "en"}, nil)
 			apiMock.On("GetBundlePath").Return("..", nil)
 
-			i18nBundle, err := p.initI18nBundle()
+			i18nBundle, err := i18n.InitBundle(p.API, filepath.Join("assets", "i18n"))
 			require.Nil(t, err)
-			p.i18nBundle = i18nBundle
+			p.b = i18nBundle
 
 			apiMock.On("KVGet", "config_test-user", mock.Anything).Return(nil, nil)
 			apiMock.On("SendEphemeralPost", "test-user", &model.Post{
-				UserId:    "test-user",
+				UserId:    "test-bot-id",
 				ChannelId: "test-channel",
 				Message:   tt.output,
 			}).Return(nil)
@@ -156,9 +160,9 @@ func TestCommandStartMeeting(t *testing.T) {
 		config.SetDefaults()
 		apiMock.On("GetConfig").Return(&config, nil)
 
-		i18nBundle, err := p.initI18nBundle()
+		i18nBundle, err := i18n.InitBundle(p.API, filepath.Join("assets", "i18n"))
 		require.Nil(t, err)
-		p.i18nBundle = i18nBundle
+		p.b = i18nBundle
 
 		apiMock.On("SendEphemeralPost", "test-user", mock.MatchedBy(func(post *model.Post) bool {
 			return post.Props["attachments"].([]*model.SlackAttachment)[0].Text == "Select type of meeting you want to start"
@@ -184,9 +188,9 @@ func TestCommandStartMeeting(t *testing.T) {
 		config.SetDefaults()
 		apiMock.On("GetConfig").Return(&config, nil)
 
-		i18nBundle, err := p.initI18nBundle()
+		i18nBundle, err := i18n.InitBundle(p.API, filepath.Join("assets", "i18n"))
 		require.Nil(t, err)
-		p.i18nBundle = i18nBundle
+		p.b = i18nBundle
 
 		apiMock.On("CreatePost", mock.MatchedBy(func(post *model.Post) bool {
 			return strings.HasPrefix(post.Props["meeting_link"].(string), "http://test/")
@@ -211,9 +215,9 @@ func TestCommandStartMeeting(t *testing.T) {
 		config.SetDefaults()
 		apiMock.On("GetConfig").Return(&config, nil)
 
-		i18nBundle, err := p.initI18nBundle()
+		i18nBundle, err := i18n.InitBundle(p.API, filepath.Join("assets", "i18n"))
 		require.Nil(t, err)
-		p.i18nBundle = i18nBundle
+		p.b = i18nBundle
 
 		apiMock.On("CreatePost", mock.MatchedBy(func(post *model.Post) bool {
 			return strings.HasPrefix(post.Props["meeting_link"].(string), "http://test/topic")
