@@ -12,6 +12,9 @@ import (
 
 const jitsiCommand = "jitsi"
 
+const jitsiSettingsSeeCommand = "see"
+const jitsiStartCommand = "start"
+
 func startMeetingError(channelID string, detailedError string) (*model.CommandResponse, *model.AppError) {
 	return &model.CommandResponse{
 			ResponseType: model.COMMAND_RESPONSE_TYPE_EPHEMERAL,
@@ -27,9 +30,57 @@ func createJitsiCommand() *model.Command {
 	return &model.Command{
 		Trigger:          jitsiCommand,
 		AutoComplete:     true,
-		AutoCompleteDesc: "Start a Jitsi meeting in current channel. Other available commands: help, settings",
+		AutoCompleteDesc: "Start a Jitsi meeting in current channel. Other available commands: start, help, settings",
 		AutoCompleteHint: "[command]",
+		AutocompleteData: getAutocompleteData(),
 	}
+}
+
+func getAutocompleteData() *model.AutocompleteData {
+	jitsi := model.NewAutocompleteData("jitsi", "[command]", "Start a Jitsi meeting in current channel. Other available commands: start, help, settings")
+
+	start := model.NewAutocompleteData(jitsiStartCommand, "[topic]", "Start a new meeting in the current channel")
+	start.AddTextArgument("(optional) The topic of the new meeting", "[topic]", "")
+	jitsi.AddCommand(start)
+
+	help := model.NewAutocompleteData("help", "", "Get slash command help")
+	jitsi.AddCommand(help)
+
+	settings := model.NewAutocompleteData("settings", "[setting] [value]", "Update your user settings (see /jitsi help for available options)")
+
+	see := model.NewAutocompleteData(jitsiSettingsSeeCommand, "", "See your current settings")
+	settings.AddCommand(see)
+
+	embedded := model.NewAutocompleteData("embedded", "[value]", "Choose where the Jitsi meeting should open")
+	items := []model.AutocompleteListItem{{
+		HelpText: "Jitsi meeting is embedded as a floating window inside Mattermost",
+		Item:     "true",
+	}, {
+		HelpText: "Jitsi meeting opens in a new window",
+		Item:     "false",
+	}}
+	embedded.AddStaticListArgument("Choose where the Jitsi meeting should open", true, items)
+	settings.AddCommand(embedded)
+
+	namingScheme := model.NewAutocompleteData("naming_scheme", "[value]", "Select how meeting names are generated")
+	items = []model.AutocompleteListItem{{
+		HelpText: "Random English words in title case (e.g. PlayfulDragonsObserveCuriously)",
+		Item:     "words",
+	}, {
+		HelpText: "UUID (universally unique identifier)",
+		Item:     "uuid",
+	}, {
+		HelpText: "Mattermost specific names. Combination of team name, channel name and random text in public and private channels; personal meeting name in direct and group messages channels",
+		Item:     "mattermost",
+	}, {
+		HelpText: "The plugin asks you to select the name every time you start a meeting",
+		Item:     "ask",
+	}}
+	namingScheme.AddStaticListArgument("Choose where the Jitsi meeting should open", true, items)
+	settings.AddCommand(namingScheme)
+	jitsi.AddCommand(settings)
+
+	return jitsi
 }
 
 func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
@@ -48,19 +99,23 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 		return &model.CommandResponse{}, nil
 	}
 
-	if action == "help" {
+	switch action {
+	case "help":
 		return p.executeHelpCommand(c, args)
-	}
 
-	if action == "settings" {
+	case "settings":
 		return p.executeSettingsCommand(c, args, parameters)
-	}
 
-	return p.executeStartMeetingCommand(c, args)
+	case jitsiStartCommand:
+		fallthrough
+	default:
+		return p.executeStartMeetingCommand(c, args)
+	}
 }
 
 func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 	input := strings.TrimSpace(strings.TrimPrefix(args.Command, "/"+jitsiCommand))
+	input = strings.TrimSpace(strings.TrimPrefix(input, jitsiStartCommand))
 
 	user, appErr := p.API.GetUser(args.UserId)
 	if appErr != nil {
@@ -103,9 +158,9 @@ func (p *Plugin) executeHelpCommand(c *plugin.Context, args *model.CommandArgs) 
 		DefaultMessage: &i18n.Message{
 			ID: "jitsi.command.help.text",
 			Other: `* |/jitsi| - Create a new meeting
-* |/jitsi [topic]| - Create a new meeting with specified topic
+* |/jitsi start [topic]| - Create a new meeting with specified topic
 * |/jitsi help| - Show this help text
-* |/jitsi settings| - View your current user settings for the Jitsi plugin
+* |/jitsi settings see| - View your current user settings for the Jitsi plugin
 * |/jitsi settings [setting] [value]| - Update your user settings (see below for options)
 
 ###### Jitsi Settings:
@@ -155,7 +210,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 		}))
 	}
 
-	if len(parameters) == 0 {
+	if len(parameters) == 0 || parameters[0] == jitsiSettingsSeeCommand {
 		text = p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID: "jitsi.command.settings.current_values",
