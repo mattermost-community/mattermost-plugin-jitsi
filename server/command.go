@@ -173,7 +173,7 @@ func (p *Plugin) executeHelpCommand(c *plugin.Context, args *model.CommandArgs) 
 		},
 	})
 
-	text := helpTitle + strings.Replace(commandHelp, "|", "`", -1)
+	text := helpTitle + strings.ReplaceAll(commandHelp, "|", "`")
 	post := &model.Post{
 		UserId:    p.botID,
 		ChannelId: args.ChannelId,
@@ -226,7 +226,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 		post := &model.Post{
 			UserId:    p.botID,
 			ChannelId: args.ChannelId,
-			Message:   strings.Replace(text, "|", "`", -1),
+			Message:   strings.ReplaceAll(text, "|", "`"),
 		}
 		_ = p.API.SendEphemeralPost(args.UserId, post)
 
