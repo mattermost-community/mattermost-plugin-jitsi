@@ -229,7 +229,6 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 			ChannelId: args.ChannelId,
 			Message:   strings.ReplaceAll(text, "|", "`"),
 			RootId:    args.RootId,
-
 		}
 		_ = p.API.SendEphemeralPost(args.UserId, post)
 
