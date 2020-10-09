@@ -133,11 +133,11 @@ func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.Comma
 	}
 
 	if userConfig.NamingScheme == jitsiNameSchemeAsk && input == "" {
-		if err := p.askMeetingType(user, channel); err != nil {
+		if err := p.askMeetingType(user, channel, args.RootId); err != nil {
 			return startMeetingError(args.ChannelId, fmt.Sprintf("startMeeting() threw error: %s", appErr))
 		}
 	} else {
-		if _, err := p.startMeeting(user, channel, "", input, false); err != nil {
+		if _, err := p.startMeeting(user, channel, "", input, false, args.RootId); err != nil {
 			return startMeetingError(args.ChannelId, fmt.Sprintf("startMeeting() threw error: %s", appErr))
 		}
 	}
