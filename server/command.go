@@ -314,6 +314,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 				Other: "Jitsi settings updated",
 			},
 		}),
+		RootId: args.RootId,
 	}
 	_ = p.API.SendEphemeralPost(args.UserId, post)
 
