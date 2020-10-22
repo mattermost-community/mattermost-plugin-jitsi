@@ -4,12 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/mattermost/mattermost-plugin-api/experimental/command"
 	"github.com/mattermost/mattermost-server/v5/mlog"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
-	"github.com/pkg/errors"
 )
 
 const jitsiCommand = "jitsi"
@@ -28,19 +26,14 @@ func startMeetingError(channelID string, detailedError string) (*model.CommandRe
 		}
 }
 
-func (p *Plugin) createJitsiCommand() (*model.Command, error) {
-	iconData, err := command.GetIconData(p.API, "assets/icon.svg")
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get icon data")
-	}
+func createJitsiCommand() *model.Command {
 	return &model.Command{
-		Trigger:              jitsiCommand,
-		AutoComplete:         true,
-		AutoCompleteDesc:     "Start a Jitsi meeting in current channel. Other available commands: start, help, settings",
-		AutoCompleteHint:     "[command]",
-		AutocompleteData:     getAutocompleteData(),
-		AutocompleteIconData: iconData,
-	}, nil
+		Trigger:          jitsiCommand,
+		AutoComplete:     true,
+		AutoCompleteDesc: "Start a Jitsi meeting in current channel. Other available commands: start, help, settings",
+		AutoCompleteHint: "[command]",
+		AutocompleteData: getAutocompleteData(),
+	}
 }
 
 func getAutocompleteData() *model.AutocompleteData {
