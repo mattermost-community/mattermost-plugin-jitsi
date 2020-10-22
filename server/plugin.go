@@ -50,7 +50,12 @@ func (p *Plugin) OnActivate() error {
 		return err
 	}
 
-	if err := p.API.RegisterCommand(createJitsiCommand()); err != nil {
+	command, err := p.createJitsiCommand()
+	if err != nil {
+		return err
+	}
+
+	if err = p.API.RegisterCommand(command); err != nil {
 		return err
 	}
 
