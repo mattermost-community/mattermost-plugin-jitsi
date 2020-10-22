@@ -185,7 +185,6 @@ func (p *Plugin) executeHelpCommand(c *plugin.Context, args *model.CommandArgs) 
 		UserId:    p.botID,
 		ChannelId: args.ChannelId,
 		Message:   text,
-		RootId:    args.RootId,
 	}
 	_ = p.API.SendEphemeralPost(args.UserId, post)
 
