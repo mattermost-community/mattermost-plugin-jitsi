@@ -178,7 +178,7 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 	return signClaims(secret, claims)
 }
 
-func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingID string, meetingTopic string, personal bool, rootID string) (string, error) {
+func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingID string, meetingTopic string, personal bool) (string, error) {
 	l := p.b.GetServerLocalizer()
 	if meetingID == "" {
 		meetingID = encodeJitsiMeetingID(meetingTopic)
@@ -344,7 +344,6 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 			"meeting_topic":           meetingTopic,
 			"default_meeting_topic":   defaultMeetingTopic,
 		},
-		RootId: rootID,
 	}
 
 	if _, err := p.API.CreatePost(post); err != nil {
@@ -365,7 +364,7 @@ func encodeJitsiMeetingID(meeting string) string {
 	return reg.ReplaceAllString(meeting, "")
 }
 
-func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel, rootID string) error {
+func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel) error {
 	l := p.b.GetUserLocalizer(user.Id)
 	apiURL := *p.API.GetConfig().ServiceSettings.SiteURL + "/plugins/jitsi/api/v1/meetings"
 
@@ -465,7 +464,6 @@ func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel, rootID
 	post := &model.Post{
 		UserId:    p.botID,
 		ChannelId: channel.Id,
-		RootId:    rootID,
 	}
 	post.SetProps(map[string]interface{}{
 		"attachments": []*model.SlackAttachment{&sa},
