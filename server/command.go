@@ -140,11 +140,11 @@ func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.Comma
 	}
 
 	if userConfig.NamingScheme == jitsiNameSchemeAsk && input == "" {
-		if err := p.askMeetingType(user, channel); err != nil {
+		if err := p.askMeetingType(user, channel, args.RootId); err != nil {
 			return startMeetingError(args.ChannelId, fmt.Sprintf("startMeeting() threw error: %s", appErr))
 		}
 	} else {
-		if _, err := p.startMeeting(user, channel, "", input, false); err != nil {
+		if _, err := p.startMeeting(user, channel, "", input, false, args.RootId); err != nil {
 			return startMeetingError(args.ChannelId, fmt.Sprintf("startMeeting() threw error: %s", appErr))
 		}
 	}
@@ -185,17 +185,19 @@ func (p *Plugin) executeHelpCommand(c *plugin.Context, args *model.CommandArgs) 
 		UserId:    p.botID,
 		ChannelId: args.ChannelId,
 		Message:   text,
+		RootId:    args.RootId,
 	}
 	_ = p.API.SendEphemeralPost(args.UserId, post)
 
 	return &model.CommandResponse{}, nil
 }
 
-func (p *Plugin) settingsError(userID string, channelID string, errorText string) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) settingsError(userID string, channelID string, errorText string, rootID string) (*model.CommandResponse, *model.AppError) {
 	post := &model.Post{
 		UserId:    p.botID,
 		ChannelId: channelID,
 		Message:   errorText,
+		RootId:    rootID,
 	}
 	_ = p.API.SendEphemeralPost(userID, post)
 
@@ -214,7 +216,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 				ID:    "jitsi.command.settings.unable_to_get",
 				Other: "Unable to get user settings",
 			},
-		}))
+		}), args.RootId)
 	}
 
 	if len(parameters) == 0 || parameters[0] == jitsiSettingsSeeCommand {
@@ -247,7 +249,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 				ID:    "jitsi.command.settings.invalid_parameters",
 				Other: "Invalid settings parameters",
 			},
-		}))
+		}), args.RootId)
 	}
 
 	switch parameters[0] {
@@ -296,7 +298,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 	}
 
 	if userConfig == nil {
-		return p.settingsError(args.UserId, args.ChannelId, text)
+		return p.settingsError(args.UserId, args.ChannelId, text, args.RootId)
 	}
 
 	err = p.setUserConfig(args.UserId, userConfig)
@@ -307,7 +309,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 				ID:    "jitsi.command.settings.unable_to_set",
 				Other: "Unable to set user settings",
 			},
-		}))
+		}), args.RootId)
 	}
 
 	post := &model.Post{
@@ -319,6 +321,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 				Other: "Jitsi settings updated",
 			},
 		}),
+		RootId: args.RootId,
 	}
 	_ = p.API.SendEphemeralPost(args.UserId, post)
 
