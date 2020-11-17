@@ -27,7 +27,7 @@ The plugin has been tested on Chrome, Firefox and the Mattermost Desktop Apps.
 
 ## Installation
 
-Go to the **Mattermost Main Menu > Plugin Marketplace** to install and configure the Jitsi plugin.
+In Mattermost, open **Main Menu > Plugin Marketplace** to install and configure the Jitsi plugin.
 
 ## Configuration
 
