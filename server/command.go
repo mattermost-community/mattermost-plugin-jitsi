@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/mattermost/mattermost-plugin-api/experimental/command"
-	"github.com/pkg/errors"
 	"strings"
 
+	"github.com/mattermost/mattermost-plugin-api/experimental/command"
 	"github.com/mattermost/mattermost-server/v5/mlog"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
+	"github.com/pkg/errors"
 )
 
 const jitsiCommand = "jitsi"
