@@ -221,7 +221,8 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 
 	var meetingID string
 	if userConfig.NamingScheme == jitsiNameSchemeAsk && action.PostId != "" {
-		meetingID, err = p.startMeeting(user, channel, action.Context.MeetingID, action.Context.MeetingTopic, action.Context.Personal, "")
+		meetingID, err = p.startMeeting(user, channel, action.Context.MeetingID,
+			action.Context.MeetingTopic, action.Context.Personal, "")
 		if err != nil {
 			mlog.Error("Error starting a new meeting from ask response", mlog.Err(err))
 			http.Error(w, err.Error(), http.StatusInternalServerError)
