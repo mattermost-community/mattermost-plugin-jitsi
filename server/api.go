@@ -229,7 +229,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		}
 		p.deleteEphemeralPost(action.UserId, action.PostId)
 	} else {
-		meetingID, err = p.startMeeting(user, channel, action.Context.MeetingID, req.Topic, req.Personal, "")
+		meetingID, err = p.startMeeting(user, channel, "", req.Topic, req.Personal, "")
 		if err != nil {
 			mlog.Error("Error starting a new meeting", mlog.Err(err))
 			http.Error(w, err.Error(), http.StatusInternalServerError)
