@@ -2,11 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/cristalhq/jwt/v2"
+	"github.com/mattermost/mattermost-plugin-api/i18n"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin/plugintest"
 	"github.com/stretchr/testify/mock"
@@ -61,9 +63,9 @@ func TestStartMeeting(t *testing.T) {
 
 	p.SetAPI(&apiMock)
 
-	i18nBundle, err := p.initI18nBundle()
+	i18nBundle, err := i18n.InitBundle(p.API, filepath.Join("assets", "i18n"))
 	require.Nil(t, err)
-	p.i18nBundle = i18nBundle
+	p.b = i18nBundle
 
 	testUser := model.User{Id: "test-id", Username: "test-username", FirstName: "test-first-name", LastName: "test-last-name", Nickname: "test-nickname"}
 	testChannel := model.Channel{Id: "test-id", Type: model.CHANNEL_DIRECT, Name: "test-name", DisplayName: "test-display-name"}
@@ -75,7 +77,7 @@ func TestStartMeeting(t *testing.T) {
 		b, _ := json.Marshal(UserConfig{Embedded: false, NamingScheme: "mattermost"})
 		apiMock.On("KVGet", "config_test-id", mock.Anything).Return(b, nil)
 
-		meetingID, err := p.startMeeting(&testUser, &testChannel, "", "", false)
+		meetingID, err := p.startMeeting(&testUser, &testChannel, "", "", false, "")
 		require.Nil(t, err)
 		require.Regexp(t, "^test-username-", meetingID)
 	})
@@ -87,7 +89,7 @@ func TestStartMeeting(t *testing.T) {
 		b, _ := json.Marshal(UserConfig{Embedded: false, NamingScheme: "mattermost"})
 		apiMock.On("KVGet", "config_test-id", mock.Anything).Return(b, nil)
 
-		meetingID, err := p.startMeeting(&testUser, &testChannel, "", "Test topic", false)
+		meetingID, err := p.startMeeting(&testUser, &testChannel, "", "Test topic", false, "")
 		require.Nil(t, err)
 		require.Regexp(t, "^Test-topic-", meetingID)
 	})
@@ -99,7 +101,7 @@ func TestStartMeeting(t *testing.T) {
 		b, _ := json.Marshal(UserConfig{Embedded: false, NamingScheme: "mattermost"})
 		apiMock.On("KVGet", "config_test-id", mock.Anything).Return(b, nil)
 
-		meetingID, err := p.startMeeting(&testUser, &testChannel, "test-id", "", false)
+		meetingID, err := p.startMeeting(&testUser, &testChannel, "test-id", "", false, "")
 		require.Nil(t, err)
 		require.Regexp(t, "^test-username-", meetingID)
 	})
@@ -114,7 +116,7 @@ func TestStartMeeting(t *testing.T) {
 		b, _ := json.Marshal(UserConfig{Embedded: false, NamingScheme: "mattermost"})
 		apiMock.On("KVGet", "config_test-id", mock.Anything).Return(b, nil)
 
-		meetingID, err := p.startMeeting(&testUser, &testChannel, "test-id", "Test topic", false)
+		meetingID, err := p.startMeeting(&testUser, &testChannel, "test-id", "Test topic", false, "")
 		require.Nil(t, err)
 		require.Equal(t, "test-id", meetingID)
 	})
