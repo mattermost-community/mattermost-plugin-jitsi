@@ -1,6 +1,6 @@
 # Contributing to Mattermost Jitsi Plugin
 
-Thank you for your interest in contributing! Join the [**Plugin: Jitsi**](https://community-daily.mattermost.com/core/channels/plugin-jitsi) channel on the Mattermost community server for discussion about this plugin.
+Thank you for your interest in contributing! Join the [Plugin: Jitsi](https://community-daily.mattermost.com/core/channels/plugin-jitsi) channel on the Mattermost community server for discussion about this plugin.
 
 ## Reporting issues
 
