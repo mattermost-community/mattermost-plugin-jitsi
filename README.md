@@ -49,7 +49,21 @@ Go to **System Console > Plugins > Jitsi** and set the following values:
 
 You're all set! To test it, go to any Mattermost channel and click the video icon in the channel header to start a new Jitsi meeting.
 
-### Manual Builds
+## Localization
+
+### Localization
+
+Mattermost Jitsi Plugin supports localization in multiple languages:
+- English
+- French
+- German
+- Spanish
+
+The plugin automatically displays languages based on the following:
+- For system messages, the locale set in **System Console > General > Localization > Default Server Language** is used.
+- For user messages, such as help text and error messages, the locale set set in **Account Settings > Display > Language** is used.
+
+### Manual builds
 
 You can use Docker to compile the binaries yourself. Run `./docker-make` shell script which builds a Docker image with necessary build dependencies and runs `make all` afterwards.
 
@@ -68,3 +82,9 @@ Inside the `/server` directory, you will find the Go files that make up the serv
 ### Web App
 
 Inside the `/webapp` directory, you will find the JS and React files that make up the client-side of the plugin. Within there, modify files and components as necessary. Test your syntax by running `npm run build`.
+
+## Contributing
+
+We welcome contributions for bug reports, issues, feature requests, feature implementations, and pull requests. Feel free to [file a new issue](https://github.com/mattermost/mattermost-plugin-jitsi/issues/new/choose) or join the [Plugin: Jitsi channel](https://community.mattermost.com/core/channels/plugin-jitsi) on the Mattermost community server.
+
+For a complete guide on contributing to the plugin, see the [Contribution Guidelines](CONTRIBUTING.md).
