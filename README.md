@@ -55,7 +55,7 @@ You're all set! To test it, go to any Mattermost channel and click the video ico
 
 Mattermost Jitsi Plugin supports localization in multiple languages:
 - English
-- France
+- French
 - German
 - Spanish
 
@@ -63,7 +63,7 @@ The plugin automatically displays languages based on the following:
 - For system messages, the locale set in **System Console > General > Localization > Default Server Language** is used.
 - For user messages, such as help text and error messages, the locale set set in **Account Settings > Display > Language** is used.
 
-### Manual Builds
+### Manual builds
 
 You can use Docker to compile the binaries yourself. Run `./docker-make` shell script which builds a Docker image with necessary build dependencies and runs `make all` afterwards.
 
@@ -85,6 +85,6 @@ Inside the `/webapp` directory, you will find the JS and React files that make u
 
 ## Contributing
 
-We welcome contributions for bug reports, issues, feature requests, feature implementations and pull requests. Feel free to [**file a new issue**](https://github.com/mattermost/mattermost-plugin-jitsi/issues/new/choose) or join the [**Plugin: Jitsi channel**](https://community.mattermost.com/core/channels/plugin-jitsi) on the Mattermost community server.
+We welcome contributions for bug reports, issues, feature requests, feature implementations, and pull requests. Feel free to [file a new issue](https://github.com/mattermost/mattermost-plugin-jitsi/issues/new/choose) or join the [Plugin: Jitsi channel](https://community.mattermost.com/core/channels/plugin-jitsi) on the Mattermost community server.
 
 For a complete guide on contributing to the plugin, see the [Contribution Guidelines](CONTRIBUTING.md).

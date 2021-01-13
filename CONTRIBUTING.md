@@ -4,11 +4,11 @@ Thank you for your interest in contributing! Join the [Plugin: Jitsi](https://co
 
 ## Reporting issues
 
-If you think you found a bug, [please use the GitHub issue tracker](https://github.com/mattermost/mattermost-plugin-jitsi/issues/new?template=issue.md) to open an issue. To help us troubleshoot the issue, please provide the required information in the issue template.
+If you think you've found a bug, [please use the GitHub issue tracker](https://github.com/mattermost/mattermost-plugin-jitsi/issues/new?template=issue.md) to open an issue. To help us troubleshoot the issue, please provide the required information in the issue template.
 
 ## Translating strings
 
-Mattermost Jitsi Plugin supports localization to various languages. We as maintainers rely on contributors to help with the translations.
+The Mattermost Jitsi plugin supports localization to various languages. We as maintainers rely on contributors to help with the translations.
 
 The plugin uses [go-i18n](https://github.com/nicksnyder/go-i18n) as library and tool to manage translation. The CLI tool `goi18n` is required to manage translation. You can install it by running `env GO111MODULE=off go get -u github.com/nicksnyder/go-i18n/v2/goi18n`.
 
