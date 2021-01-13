@@ -13,10 +13,11 @@ The Mattermost Jitsi plugin supports localization to various languages. We as ma
 The plugin uses [go-i18n](https://github.com/nicksnyder/go-i18n) as library and tool to manage translation. The CLI tool `goi18n` is required to manage translation. You can install it by running `env GO111MODULE=off go get -u github.com/nicksnyder/go-i18n/v2/goi18n`.
 
 The localization process is defined below:
-- During development, new translation strings may be added or existing ones updated.
-- When a new version is planned to release soon, a repository maintainer opens an issue informing about the new release and mentions all translation maintainers in the issue.
-- Translation maintainers submit PRs with new translations, which may get reviewed by other translators.
-- After all translation PRs are merged, the new version is released. If a translation PR is not submitted within a week, the release is cut without it.
+
+1. During development, new translation strings may be added or existing ones updated.
+2. When a new version is planned to release soon, a repository maintainer opens an issue informing about the new release and mentions all translation maintainers in the issue.
+3. Translation maintainers submit PRs with new translations, which may get reviewed by other translators.
+4. After all translation PRs are merged, the new version is released. If a translation PR is not submitted within a week, the release is cut without it.
 
 ### Translation maintainers
 
@@ -28,7 +29,7 @@ The localization process is defined below:
 
 Note: We use the German locale (`de`) in this example. When translating to a new language, replace `de` in the following commands with the locale you want to translate. [See available locales](https://github.com/mattermost/mattermost-server/tree/master/i18n).
 
-1. Create a translation file:
+1. Open your teminal window and create a translation file:
 
    `touch asserts/i18n/translate.de.json`
 
@@ -64,25 +65,14 @@ Once you've submitted a PR, your changes will be reviewed. Big thank you for you
 
 ## Submitting bug fixes or features
 
-We have [open help wanted issues](https://github.com/mattermost/mattermost-plugin-jitsi/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A%22Help+Wanted%22) we are looking for help.
-
-If you are contributing a feature, [please open a feature request](https://github.com/mattermost/mattermost-plugin-jitsi/issues/new?template=issue.md) first. This enables the feature to be discussed and fully specified before you start working on it. Small code changes can be submitted without opening an issue.
+If you're contributing a feature, [please open a feature request](https://github.com/mattermost/mattermost-plugin-jitsi/issues/new?template=issue.md) first. This enables the feature to be discussed and fully specified before you start working on it. Small code changes can be submitted without opening an issue.
 
 Note that this project uses [Go modules](https://github.com/golang/go/wiki/Modules). Be sure to locate the project outside of `$GOPATH`, or allow the use of Go modules within your `$GOPATH` with an `export GO111MODULE=on`.
 
+### Help wanted
+
+You can view [open help wanted issues](https://github.com/mattermost/mattermost-plugin-jitsi/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A%22Help+Wanted%22) to get started with contributing to the plugin.
+
 ## Development
 
-This plugin contains both a server and webapp portion.
-
-* Use `make dist` to build distributions of the plugin that you can upload to a Mattermost server.
-* Use `make test` to run tests of the plugin.
-* Use `make check-style` to check the style.
-* Use `make deploy` to deploy the plugin to your Mattermost server. Before running make deploy you need to set a few environment variables:
-
-```sh
-export MM_SERVICESETTINGS_SITEURL=http://localhost:8065
-export MM_ADMIN_USERNAME=admin
-export MM_ADMIN_PASSWORD=password
-```
-
-* Use `make help` to know all useful targets for devleopment
+This plugin contains both a server and web app portion. Read our documentation about the [Developer Workflow](https://developers.mattermost.com/extend/plugins/developer-workflow/) and [Developer Setup](https://developers.mattermost.com/extend/plugins/developer-setup/) for more information about developing and extending plugins.
