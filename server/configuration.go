@@ -63,10 +63,10 @@ func (c *configuration) IsValid() error {
 
 	if c.JitsiJWT {
 		if len(c.JitsiAppID) == 0 {
-			return fmt.Errorf("error no Jitsi app ID was provided")
+			return fmt.Errorf("error no Jitsi app ID was provided to use with JWT")
 		}
 		if len(c.JitsiAppSecret) == 0 {
-			return fmt.Errorf("error no Jitsi app secter provided")
+			return fmt.Errorf("error no Jitsi app secret provided to use with JWT")
 		}
 		if c.JitsiLinkValidTime < 1 {
 			c.JitsiLinkValidTime = 30
