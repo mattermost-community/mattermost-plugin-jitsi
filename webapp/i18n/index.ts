@@ -1,3 +1,4 @@
+import * as cs from './cs.json';
 import * as de from './de.json';
 import * as en from './en.json';
 import * as es from './es.json';
@@ -17,6 +18,8 @@ import * as zhHant from './zh_Hant.json';
 
 export function getTranslations(locale: string): {[key: string]: string} {
     switch (locale) {
+    case 'cs':
+        return cs;
     case 'de':
         return de;
     case 'en':

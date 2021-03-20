@@ -1,0 +1,14 @@
+{
+  "jitsi.close": "Zavřít",
+  "jitsi.creator-has-started-a-meeting": "{creator} zahájil schůzku",
+  "jitsi.default-title": "Jitsi Meeting",
+  "jitsi.join-meeting": "PŘIPOJIT SE KE SCHŮZCE",
+  "jitsi.link-valid-until": "Odkaz na schůzku platný do: ",
+  "jitsi.maximize": "Maximalizovat",
+  "jitsi.meeting-id": "ID schůzky: ",
+  "jitsi.minimize": "Minimalizovat",
+  "jitsi.move-down": "Posunout dolů",
+  "jitsi.move-up": "Posunout nahoru",
+  "jitsi.open-in-new-tab": "Otevřít v novém tabu",
+  "jitsi.personal-meeting-id": "ID osobní schůzky (PMI): "
+}
