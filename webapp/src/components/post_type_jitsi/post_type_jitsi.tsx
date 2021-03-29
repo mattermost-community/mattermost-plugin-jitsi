@@ -123,7 +123,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
                 />
             );
         }
-        // TODO title for JaaS
+
         let title = (
             <FormattedMessage
                 id='jitsi.default-title'
