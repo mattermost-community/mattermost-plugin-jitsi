@@ -9,6 +9,7 @@ import (
 	"reflect"
 
 	"github.com/mattermost/mattermost-plugin-api/experimental/telemetry"
+	"github.com/mattermost/mattermost-server/v5/mlog"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/pkg/errors"
 )
@@ -141,15 +142,15 @@ func (c *jitsisettings) IsValid() error {
 
 	if c.UseJaaS {
 		if len(c.JaaSApiKey) == 0 {
-			return fmt.Errorf("error no JaaS Api Key was provided for JaaS")
+			mlog.Error("error no JaaS Api Key was provided for JaaS")
 		}
 
 		if len(c.JaaSAppID) == 0 {
-			return fmt.Errorf("error no JaaS AppID was provided for JaaS")
+			mlog.Error("error no JaaS AppID was provided for JaaS")
 		}
 
 		if len(c.JaaSPrivateKey) == 0 {
-			return fmt.Errorf("error no JaaS Private KEy was provided for JaaS")
+			mlog.Error("error no JaaS Private KEy was provided for JaaS")
 		}
 	}
 
