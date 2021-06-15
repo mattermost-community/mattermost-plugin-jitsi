@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { IntlProvider, FormattedMessage } from 'react-intl';
 import Svgs from '../constants/svgs';
 
 export default class Icon extends React.PureComponent {
@@ -10,7 +9,7 @@ export default class Icon extends React.PureComponent {
                 style={style.iconStyle}
                 className='icon'
                 aria-hidden='true'
-                dangerouslySetInnerHTML={{ __html: Svgs.VIDEO_CAMERA }}
+                dangerouslySetInnerHTML={{__html: Svgs.VIDEO_CAMERA}}
             />
         );
     }
