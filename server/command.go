@@ -133,7 +133,6 @@ func (p *Plugin) trackEvent(args *model.CommandArgs, key string, value string) {
 	if err != nil {
 		p.API.LogError("error while posting telemetry: %s", err)
 	}
-	p.API.LogInfo("event tracked and sent to telemetry")
 }
 
 func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
