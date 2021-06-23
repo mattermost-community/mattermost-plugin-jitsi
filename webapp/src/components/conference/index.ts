@@ -5,7 +5,7 @@ import {GenericAction} from 'mattermost-redux/types/actions';
 
 import {GlobalState} from '../../types';
 import Conference from './conference';
-import {openJitsiMeeting} from '../../actions';
+import {openJitsiMeeting, setUserStatus} from '../../actions';
 
 function mapStateToProps(state: GlobalState) {
     return {
@@ -17,7 +17,8 @@ function mapStateToProps(state: GlobalState) {
 function mapDispatchToProps(dispatch: Dispatch<GenericAction>) {
     return {
         actions: bindActionCreators({
-            openJitsiMeeting
+            openJitsiMeeting,
+            setUserStatus
         }, dispatch)
     };
 }

@@ -94,3 +94,21 @@ export function openJitsiMeeting(post: Post | null, jwt: string | null): ActionF
         return {data: null};
     };
 }
+
+export function setUserStatus(userId: string | null, status: string): ActionFunc {
+    return async (dispatch: DispatchFunc, getState: GetStateFunc): Promise<ActionResult> => {
+        try {
+            if (userId == null) {
+                userId = getState().entities.users.currentUserId;
+            }
+            const data = await Client.setUserStatus(userId, status);
+            dispatch({
+                type: ActionTypes.USER_STATUS_CHANGED,
+                data
+            });
+            return {data};
+        } catch (error) {
+            return {error};
+        }
+    };
+}

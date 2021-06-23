@@ -5,12 +5,14 @@ import {id} from '../manifest';
 
 export default class Client {
     url: string;
+    baseUrl: string = '';
 
     constructor() {
         this.url = '/plugins/' + id;
         if ((window as any).basename) {
-            this.url = (window as any).basename + '/plugins/' + id;
+            this.baseUrl = (window as any).basename;
         }
+        this.url = this.baseUrl + '/plugins/' + id;
     }
 
     startMeeting = async (channelId: string, personal: boolean = false, topic: string = '', meetingId: string = '') => {
@@ -19,6 +21,10 @@ export default class Client {
 
     enrichMeetingJwt = async (meetingJwt: string) => {
         return this.doPost(`${this.url}/api/v1/meetings/enrich`, {jwt: meetingJwt});
+    }
+
+    setUserStatus = async (userId: string, status: string) => {
+        return this.doPut(`${this.baseUrl}/api/v4/users/${userId}/status`, {user_id: userId, status});
     }
 
     loadConfig = async () => {
@@ -31,6 +37,30 @@ export default class Client {
             body: JSON.stringify(body),
             headers
         };
+
+        const response = await fetch(url, Client4.getOptions(options));
+
+        if (response.ok) {
+            return response.json();
+        }
+
+        const text = await response.text();
+
+        throw new ClientError(Client4.url, {
+            message: text || '',
+            status_code: response.status,
+            url
+        });
+    }
+
+    doPut = async (url: string, body: any, headers: any = {}) => {
+        const options = {
+            method: 'put',
+            body: JSON.stringify(body),
+            headers
+        };
+
+        options.headers['X-Requested-With'] = 'XMLHttpRequest';
 
         const response = await fetch(url, Client4.getOptions(options));
 

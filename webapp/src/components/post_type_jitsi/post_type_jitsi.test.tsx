@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {describe, expect, it} from '@jest/globals';
+import {jest, describe, expect, it} from '@jest/globals';
 import {shallow} from 'enzyme';
 
 import {Post} from 'mattermost-redux/types/posts';
@@ -35,7 +35,8 @@ describe('PostTypeJitsi', () => {
 
     const actions = {
         enrichMeetingJwt: jest.fn().mockImplementation(() => Promise.resolve({data: {jwt: 'test-enriched-jwt'}})),
-        openJitsiMeeting: jest.fn()
+        openJitsiMeeting: jest.fn(),
+        setUserStatus: jest.fn().mockImplementation(() => Promise.resolve({data: {user_id: 'test-user-id', status: 'dnd'}}))
     };
 
     const theme = {

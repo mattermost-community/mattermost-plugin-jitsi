@@ -8,7 +8,7 @@ import {Post} from 'mattermost-redux/types/posts';
 
 import {GlobalState} from '../../types';
 import {displayUsernameForUser} from '../../utils/user_utils';
-import {enrichMeetingJwt, openJitsiMeeting} from '../../actions';
+import {enrichMeetingJwt, openJitsiMeeting, setUserStatus} from '../../actions';
 
 import {PostTypeJitsi} from './post_type_jitsi';
 
@@ -33,13 +33,15 @@ function mapStateToProps(state: GlobalState, ownProps: OwnProps) {
 type Actions = {
     enrichMeetingJwt: (jwt: string) => Promise<ActionResult>,
     openJitsiMeeting: (post: Post | null, jwt: string | null) => ActionResult,
+    setUserStatus: (userId: string, status: string) => Promise<ActionResult>,
 }
 
 function mapDispatchToProps(dispatch: Dispatch<GenericAction>) {
     return {
         actions: bindActionCreators<ActionCreatorsMapObject<ActionFunc>, Actions>({
             enrichMeetingJwt,
-            openJitsiMeeting
+            openJitsiMeeting,
+            setUserStatus
         }, dispatch)
     };
 }

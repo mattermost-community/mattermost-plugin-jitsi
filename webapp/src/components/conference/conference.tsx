@@ -16,6 +16,7 @@ type Props = {
     jwt: string | null,
     actions: {
         openJitsiMeeting: (post: Post | null, jwt: string | null) => void
+        setUserStatus: (userId: string | null, status: string) => void
     }
 }
 
@@ -163,6 +164,11 @@ export default class Conference extends React.PureComponent<Props, State> {
         this.api.executeCommand('hangup');
         setTimeout(() => {
             this.props.actions.openJitsiMeeting(null, null);
+            var user_id = null;
+            if (this.props.post) {
+                user_id = this.props.post.user_id;
+            }
+            this.props.actions.setUserStatus(user_id, 'online');
             this.setState({
                 minimized: true,
                 loading: true,

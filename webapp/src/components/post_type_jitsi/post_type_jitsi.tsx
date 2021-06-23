@@ -18,6 +18,7 @@ export type Props = {
     actions: {
         enrichMeetingJwt: (jwt: string) => Promise<ActionResult>,
         openJitsiMeeting: (post: Post | null, jwt: string | null) => ActionResult,
+        setUserStatus: (userId: string, status: string) => Promise<ActionResult>,
     }
 }
 
@@ -47,6 +48,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
         if (this.props.meetingEmbedded) {
             e.preventDefault();
             if (this.props.post) {
+                this.props.actions.setUserStatus(this.props.post.user_id, 'dnd');
                 this.props.actions.openJitsiMeeting(this.props.post, this.state.meetingJwt || this.props.post.props.meeting_jwt || null);
             }
         } else if (this.state.meetingJwt) {
