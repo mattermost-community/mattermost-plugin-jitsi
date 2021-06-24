@@ -172,7 +172,7 @@ func TestCommandStartMeeting(t *testing.T) {
 		apiMock.On("GetUser", "test-user").Return(&model.User{Id: "test-user"}, nil)
 		b, _ := json.Marshal(UserConfig{Embedded: false, NamingScheme: "ask"})
 		apiMock.On("KVGet", "config_test-user", mock.Anything).Return(b, nil)
-		apiMock.On("GetServerVersion").Return("test-version")
+
 		response, err := p.ExecuteCommand(&plugin.Context{}, &model.CommandArgs{UserId: "test-user", ChannelId: "test-channel", Command: "/jitsi"})
 		require.Equal(t, &model.CommandResponse{}, response)
 		require.Nil(t, err)
@@ -199,7 +199,6 @@ func TestCommandStartMeeting(t *testing.T) {
 		apiMock.On("GetChannel", "test-channel").Return(&model.Channel{Id: "test-channel"}, nil)
 		apiMock.On("GetUser", "test-user").Return(&model.User{Id: "test-user"}, nil)
 		apiMock.On("KVGet", "config_test-user", mock.Anything).Return(nil, nil)
-		apiMock.On("GetServerVersion").Return("test-version")
 
 		response, err := p.ExecuteCommand(&plugin.Context{}, &model.CommandArgs{UserId: "test-user", ChannelId: "test-channel", Command: "/jitsi"})
 		require.Equal(t, &model.CommandResponse{}, response)
@@ -227,7 +226,6 @@ func TestCommandStartMeeting(t *testing.T) {
 		apiMock.On("GetChannel", "test-channel").Return(&model.Channel{Id: "test-channel"}, nil)
 		apiMock.On("GetUser", "test-user").Return(&model.User{Id: "test-user"}, nil)
 		apiMock.On("KVGet", "config_test-user", mock.Anything).Return(nil, nil)
-		apiMock.On("GetServerVersion").Return("test-version")
 
 		response, err := p.ExecuteCommand(&plugin.Context{}, &model.CommandArgs{UserId: "test-user", ChannelId: "test-channel", Command: "/jitsi start topic"})
 		require.Equal(t, &model.CommandResponse{}, response)

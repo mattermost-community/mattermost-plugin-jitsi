@@ -15,3 +15,8 @@ i18n-merge-server:
 	@rm -f assets/i18n/translate.*.json
 	@echo "Translations merged, please verify your "git diff" before you submit the changes"
 
+ifndef MM_RUDDER_WRITE_KEY
+    MM_RUDDER_WRITE_KEY = 1d5bMvdrfWClLxgK1FvV3s4U1tg
+endif
+
+GO_BUILD_FLAGS += -ldflags '-X "github.com/mattermost/mattermost-plugin-api/experimental/telemetry.rudderWriteKey=$(MM_RUDDER_WRITE_KEY)"'

@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/mattermost/mattermost-plugin-api/experimental/command"
-	"github.com/mattermost/mattermost-plugin-api/experimental/telemetry"
 	"github.com/mattermost/mattermost-server/v5/mlog"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
@@ -121,20 +120,6 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 	}
 }
 
-func (p *Plugin) trackEvent(args *model.CommandArgs, key string, value string) {
-	client, _ := telemetry.NewRudderClient()
-	serverVersion := p.API.GetServerVersion()
-	tracker := telemetry.NewTracker(client, key, serverVersion, manifest.Id, manifest.Version, "mm-plugin-jitsi", true)
-	var event = map[string]interface{}{
-		key: value,
-	}
-	err := tracker.TrackEvent(key, event)
-
-	if err != nil {
-		p.API.LogError("error while posting telemetry: %s", err)
-	}
-}
-
 func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 	input := strings.TrimSpace(strings.TrimPrefix(args.Command, "/"+jitsiCommand))
 	input = strings.TrimSpace(strings.TrimPrefix(input, jitsiStartCommand))
@@ -164,7 +149,7 @@ func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.Comma
 		}
 	}
 
-	p.trackEvent(args, "meeting-link", p.configuration.JitsiURL)
+	p.trackMeeting(args)
 
 	return &model.CommandResponse{}, nil
 }

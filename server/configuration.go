@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"reflect"
 
+	"github.com/mattermost/mattermost-plugin-api/experimental/telemetry"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/pkg/errors"
 )
@@ -32,6 +33,7 @@ type configuration struct {
 	JitsiLinkValidTime     int
 	JitsiNamingScheme      string
 	JitsiCompatibilityMode bool
+	EnableDiagnostics      bool
 }
 
 const publicJitsiServerURL = "https://meet.jit.si"
@@ -42,6 +44,10 @@ func (c *configuration) GetJitsiURL() string {
 	if len(c.JitsiURL) > 0 {
 		return c.JitsiURL
 	}
+	return publicJitsiServerURL
+}
+
+func (c *configuration) GetDefaultJitsiURL() string {
 	return publicJitsiServerURL
 }
 
@@ -127,7 +133,28 @@ func (p *Plugin) OnConfigurationChange() error {
 		return errors.Wrap(err, "failed to load plugin configuration")
 	}
 
+	enableDiagnostics := false
+	if config := p.API.GetConfig(); config != nil {
+		if configValue := config.LogSettings.EnableDiagnostics; configValue != nil {
+			enableDiagnostics = *configValue
+		}
+	}
+
+	p.tracker = telemetry.NewTracker(p.telemetryClient, p.API.GetDiagnosticId(), p.API.GetServerVersion(), manifest.Id, manifest.Version, "mm-jitsi", enableDiagnostics)
+
 	p.setConfiguration(configuration)
+
+	return nil
+}
+
+// OnDeactivate is invoked once the user disables the plugin
+func (p *Plugin) OnDeactivate() error {
+	if p.telemetryClient != nil {
+		err := p.telemetryClient.Close()
+		if err != nil {
+			p.API.LogWarn("OnDeactivate: failed to close telemetryClient", "error", err.Error())
+		}
+	}
 
 	return nil
 }
