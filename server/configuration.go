@@ -33,7 +33,6 @@ type configuration struct {
 	JitsiLinkValidTime     int
 	JitsiNamingScheme      string
 	JitsiCompatibilityMode bool
-	EnableDiagnostics      bool
 }
 
 const publicJitsiServerURL = "https://meet.jit.si"
