@@ -22,6 +22,15 @@ describe('PostTypeJitsi', () => {
         original_id: '',
         type: 'custom_jitsi',
         hashtags: '',
+        pending_post_id: '',
+        reply_count: 0,
+        metadata: {
+            embeds: [],
+            emojis: [],
+            files: [],
+            images: {},
+            reactions: []
+        },
         props: {
             jwt_meeting_valid_until: 123,
             meeting_link: 'http://test-meeting-link/test',

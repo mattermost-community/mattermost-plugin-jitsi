@@ -18,7 +18,7 @@ export type Props = {
     actions: {
         enrichMeetingJwt: (jwt: string) => Promise<ActionResult>,
         openJitsiMeeting: (post: Post | null, jwt: string | null) => ActionResult,
-        setUserStatus: (userId: string, status: string) => Promise<ActionResult>,
+        setUserStatus: (userId: string | null, status: string) => Promise<ActionResult>,
     }
 }
 

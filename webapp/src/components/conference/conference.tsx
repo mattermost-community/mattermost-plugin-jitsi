@@ -164,11 +164,11 @@ export default class Conference extends React.PureComponent<Props, State> {
         this.api.executeCommand('hangup');
         setTimeout(() => {
             this.props.actions.openJitsiMeeting(null, null);
-            var user_id = null;
+            var userId = null;
             if (this.props.post) {
-                user_id = this.props.post.user_id;
+                userId = this.props.post.user_id;
             }
-            this.props.actions.setUserStatus(user_id, 'online');
+            this.props.actions.setUserStatus(userId, 'online');
             this.setState({
                 minimized: true,
                 loading: true,

@@ -98,10 +98,11 @@ export function openJitsiMeeting(post: Post | null, jwt: string | null): ActionF
 export function setUserStatus(userId: string | null, status: string): ActionFunc {
     return async (dispatch: DispatchFunc, getState: GetStateFunc): Promise<ActionResult> => {
         try {
-            if (userId == null) {
-                userId = getState().entities.users.currentUserId;
+            var id = userId;
+            if (id == null) {
+                id = getState().entities.users.currentUserId;
             }
-            const data = await Client.setUserStatus(userId, status);
+            const data = await Client.setUserStatus(id, status);
             dispatch({
                 type: ActionTypes.USER_STATUS_CHANGED,
                 data

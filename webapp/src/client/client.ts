@@ -23,7 +23,7 @@ export default class Client {
         return this.doPost(`${this.url}/api/v1/meetings/enrich`, {jwt: meetingJwt});
     }
 
-    setUserStatus = async (userId: string, status: string) => {
+    setUserStatus = async (userId: string | null, status: string) => {
         return this.doPut(`${this.baseUrl}/api/v4/users/${userId}/status`, {user_id: userId, status});
     }
 
