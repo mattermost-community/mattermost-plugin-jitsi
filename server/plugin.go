@@ -154,8 +154,8 @@ func signClaims(secret string, claims *Claims) (string, error) {
 
 func (p *Plugin) trackMeeting(args *model.CommandArgs) {
 	// disables tracking if the user is not using the default jitsi url
-	isDefaultUrl := p.isDefaultJitsiUrl()
-	if !isDefaultUrl {
+	isDefaultURL := p.isDefaultJitsiURL()
+	if !isDefaultURL {
 		return
 	}
 
@@ -170,7 +170,7 @@ func (p *Plugin) trackMeeting(args *model.CommandArgs) {
 	}
 }
 
-func (p *Plugin) isDefaultJitsiUrl() bool {
+func (p *Plugin) isDefaultJitsiURL() bool {
 	currentURL := p.configuration.GetJitsiURL()
 	defaultURL := p.configuration.GetDefaultJitsiURL()
 	return currentURL == defaultURL
