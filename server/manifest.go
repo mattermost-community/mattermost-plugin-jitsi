@@ -117,14 +117,6 @@ const manifestStr = `
         "help_text": "(Insecure) If your Jitsi server is not compatible with this plugin, include the JavaScript API hosted on your Jitsi server directly in Mattermost instead of the default API version provided by the plugin. **WARNING:** Enabling this setting can compromise the security of your Mattermost system, if your Jitsi server is not fully trusted and allows direct modification of program files. Use with caution.",
         "placeholder": "",
         "default": false
-      },
-      {
-        "key": "EnableDiagnostics",
-        "display_name": "Enable Tracking to help us diagnose bugs and measure metrics",
-        "type": "bool",
-        "help_text": "(Optional) We don't track your meetings.",
-        "placeholder": "",
-        "default": null
       }
     ]
   }
