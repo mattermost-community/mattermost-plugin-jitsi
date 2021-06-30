@@ -139,7 +139,7 @@ func (p *Plugin) OnConfigurationChange() error {
 		}
 	}
 
-	p.tracker = telemetry.NewTracker(p.telemetryClient, p.API.GetDiagnosticId(), p.API.GetServerVersion(), manifest.Id, manifest.Version, "mm-jitsi", enableDiagnostics)
+	p.tracker = telemetry.NewTracker(p.telemetryClient, p.API.GetDiagnosticId(), p.API.GetServerVersion(), manifest.Id, manifest.Version, "jitsi", enableDiagnostics)
 
 	p.setConfiguration(configuration)
 

@@ -34,8 +34,7 @@ type Plugin struct {
 	plugin.MattermostPlugin
 
 	telemetryClient telemetry.Client
-
-	tracker telemetry.Tracker
+	tracker         telemetry.Tracker
 
 	// configurationLock synchronizes access to the configuration.
 	configurationLock sync.RWMutex
@@ -154,28 +153,19 @@ func signClaims(secret string, claims *Claims) (string, error) {
 
 func (p *Plugin) trackMeeting(args *model.CommandArgs) {
 	// disables tracking if the user is not using the default jitsi url
-	isDefaultURL := p.isDefaultJitsiURL()
+	isNotDefaultJitsiURL := p.isNotDefaultJitsiURL()
 	// enables tracking based on the users configuration
 	var event = map[string]interface{}{
-		"external-meeting-link": false,
+		"external-meeting-link-enabled": isNotDefaultJitsiURL,
 	}
-	if !isDefaultURL {
-		// sets the flag to true
-		event = map[string]interface{}{
-			"external-meeting-link": true,
-		}
-	}
-	err := p.tracker.TrackEvent("meeting-link", event)
 
-	if err != nil {
-		p.API.LogError("error while posting telemetry: %s", err)
-	}
+	_ = p.tracker.TrackEvent("meeting-link", event)
 }
 
-func (p *Plugin) isDefaultJitsiURL() bool {
+func (p *Plugin) isNotDefaultJitsiURL() bool {
 	currentURL := p.configuration.GetJitsiURL()
 	defaultURL := p.configuration.GetDefaultJitsiURL()
-	return currentURL == defaultURL
+	return currentURL != defaultURL
 }
 
 func (p *Plugin) deleteEphemeralPost(userID, postID string) {
