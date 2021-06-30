@@ -156,13 +156,17 @@ func (p *Plugin) trackMeeting(args *model.CommandArgs) {
 	// disables tracking if the user is not using the default jitsi url
 	isDefaultURL := p.isDefaultJitsiURL()
 	if !isDefaultURL {
-		return
+		// sets the flag to true 
+		var event = map[string]interface{}{
+			"external-meeting-link": true,
+		}
+	} else {
+		// enables tracking based on the users configuration
+		var event = map[string]interface{}{
+			"external-meeting-link": false,
+		}
 	}
 
-	// enables tracking based on the users configuration
-	var event = map[string]interface{}{
-		"meeting-link": p.configuration.GetJitsiURL(),
-	}
 	err := p.tracker.TrackEvent("meeting-link", event)
 
 	if err != nil {
