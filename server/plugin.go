@@ -161,7 +161,7 @@ func (p *Plugin) trackMeeting(args *model.CommandArgs) {
 	}
 	if !isDefaultURL {
 		// sets the flag to true 
-		var event = map[string]interface{}{
+		event = map[string]interface{}{
 			"external-meeting-link": true,
 		}
 	}
