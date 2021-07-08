@@ -72,7 +72,6 @@ github.com/blevesearch/zap/v12 v12.0.7/go.mod h1:70DNK4ZN4tb42LubeDbfpp6xnm8g3RO
 github.com/blevesearch/zap/v12 v12.0.9/go.mod h1:paQuvxy7yXor+0Mx8p2KNmJgygQbQNN+W6HRfL5Hvwc=
 github.com/blevesearch/zap/v13 v13.0.1/go.mod h1:XmyNLMvMf8Z5FjLANXwUeDW3e1+o77TTGUWrth7T9WI=
 github.com/blevesearch/zap/v14 v14.0.0/go.mod h1:sUc/gPGJlFbSQ2ZUh/wGRYwkKx+Dg/5p+dd+eq6QMXk=
-github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 h1:DDGfHa7BWjL4YnC6+E63dPcxHo2sUxDIu8g3QgEJdRY=
 github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869/go.mod h1:Ekp36dRnpXw/yCqJaO+ZrUyxD+3VXMFFr56k5XYrpB4=
 github.com/bradfitz/go-smtpd v0.0.0-20170404230938-deb6d6237625/go.mod h1:HYsPBTaaSFSlLx/70C2HPIMNZpVV8+vt/A+FMnYP11g=
 github.com/buger/jsonparser v0.0.0-20181115193947-bf1c66bbce23/go.mod h1:bbYlZJ7hK1yFx9hf58LP0zeX7UjIGs20ufpu3evjr+s=

@@ -159,7 +159,7 @@ func (p *Plugin) trackMeeting(args *model.CommandArgs) {
 		"external-meeting-link-enabled": isNotDefaultJitsiURL,
 	}
 
-	_ = p.tracker.TrackEvent("meeting-link", event)
+	_ = p.tracker.TrackEvent("meeting-link-type", event)
 }
 
 func (p *Plugin) isNotDefaultJitsiURL() bool {
