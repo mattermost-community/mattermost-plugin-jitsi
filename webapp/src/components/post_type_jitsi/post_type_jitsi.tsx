@@ -3,7 +3,7 @@ import {FormattedMessage} from 'react-intl';
 import {Post} from 'mattermost-redux/types/posts';
 import {Theme} from 'mattermost-redux/types/preferences';
 import {ActionResult} from 'mattermost-redux/types/actions';
-import * as Constants from 'mattermost-redux/constants/general';
+import Constants from 'mattermost-redux/constants/general';
 
 import Svgs from '../../constants/svgs';
 

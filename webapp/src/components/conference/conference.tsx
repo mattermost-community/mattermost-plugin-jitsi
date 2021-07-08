@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {FormattedMessage} from 'react-intl';
 import {Post} from 'mattermost-redux/types/posts';
-import * as Constants from 'mattermost-redux/constants/general';
+import Constants from 'mattermost-redux/constants/general';
 
 const BORDER_SIZE = 8;
 const POSITION_TOP = 'top';

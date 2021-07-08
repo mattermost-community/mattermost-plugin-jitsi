@@ -5,6 +5,7 @@ import {shallow} from 'enzyme';
 import {Post} from 'mattermost-redux/types/posts';
 
 import {PostTypeJitsi} from './post_type_jitsi';
+import Constants from 'mattermost-redux/constants/general';
 
 describe('PostTypeJitsi', () => {
     const basePost: Post = {
@@ -45,7 +46,7 @@ describe('PostTypeJitsi', () => {
     const actions = {
         enrichMeetingJwt: jest.fn().mockImplementation(() => Promise.resolve({data: {jwt: 'test-enriched-jwt'}})),
         openJitsiMeeting: jest.fn(),
-        setUserStatus: jest.fn().mockImplementation(() => Promise.resolve({data: {user_id: 'test-user-id', status: 'dnd'}}))
+        setUserStatus: jest.fn().mockImplementation(() => Promise.resolve({data: {user_id: 'test-user-id', status: Constants.DND}}))
     };
 
     const theme = {
