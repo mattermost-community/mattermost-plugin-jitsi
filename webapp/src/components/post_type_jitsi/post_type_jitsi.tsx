@@ -3,6 +3,7 @@ import {FormattedMessage} from 'react-intl';
 import {Post} from 'mattermost-redux/types/posts';
 import {Theme} from 'mattermost-redux/types/preferences';
 import {ActionResult} from 'mattermost-redux/types/actions';
+import * as Constants from 'mattermost-redux/constants/general';
 
 import Svgs from '../../constants/svgs';
 
@@ -49,7 +50,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
             e.preventDefault();
             if (this.props.post) {
                 // could be improved by using an enum in the future for the status
-                this.props.actions.setUserStatus(this.props.currentUserId, 'dnd');
+                this.props.actions.setUserStatus(this.props.currentUserId, Constants.DND);
                 this.props.actions.openJitsiMeeting(this.props.post, this.state.meetingJwt || this.props.post.props.meeting_jwt || null);
             }
         } else if (this.state.meetingJwt) {

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {FormattedMessage} from 'react-intl';
 import {Post} from 'mattermost-redux/types/posts';
+import * as Constants from 'mattermost-redux/constants/general';
 
 const BORDER_SIZE = 8;
 const POSITION_TOP = 'top';
@@ -164,7 +165,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         this.api.executeCommand('hangup');
         setTimeout(() => {
             this.props.actions.openJitsiMeeting(null, null);
-            this.props.actions.setUserStatus(this.props.currentUserId, 'online');
+            this.props.actions.setUserStatus(this.props.currentUserId, Constants.ONLINE);
             this.setState({
                 minimized: true,
                 loading: true,
