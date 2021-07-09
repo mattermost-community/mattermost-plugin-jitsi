@@ -1,7 +1,6 @@
 import {PostTypes} from 'mattermost-redux/action_types';
 import {DispatchFunc, GetStateFunc, ActionFunc, ActionResult} from 'mattermost-redux/types/actions';
 import {Post} from 'mattermost-redux/types/posts';
-
 import ActionTypes from '../action_types';
 
 import Client from '../client';
@@ -92,5 +91,20 @@ export function openJitsiMeeting(post: Post | null, jwt: string | null): ActionF
             }
         });
         return {data: null};
+    };
+}
+
+export function setUserStatus(userId: string, status: string): ActionFunc {
+    return async (dispatch: DispatchFunc): Promise<ActionResult> => {
+        try {
+            const data = await Client.setUserStatus(userId, status);
+            dispatch({
+                type: ActionTypes.USER_STATUS_CHANGED,
+                data
+            });
+            return {data};
+        } catch (error) {
+            return {error};
+        }
     };
 }

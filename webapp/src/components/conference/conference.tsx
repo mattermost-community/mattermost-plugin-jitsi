@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {FormattedMessage} from 'react-intl';
-
 import {Post} from 'mattermost-redux/types/posts';
+import Constants from 'mattermost-redux/constants/general';
 
 const BORDER_SIZE = 8;
 const POSITION_TOP = 'top';
@@ -12,10 +12,12 @@ const MINIMIZED_WIDTH = 384;
 const MINIMIZED_HEIGHT = 288;
 
 type Props = {
+    currentUserId: string,
     post: Post | null,
     jwt: string | null,
     actions: {
         openJitsiMeeting: (post: Post | null, jwt: string | null) => void
+        setUserStatus: (userId: string, status: string) => void
     }
 }
 
@@ -102,13 +104,13 @@ export default class Conference extends React.PureComponent<Props, State> {
         this.api.on('readyToClose', () => {
             this.close();
         });
-        this.api.on('tileViewChanged', (event: {enabled: boolean}) => {
+        this.api.on('tileViewChanged', (event: { enabled: boolean }) => {
             if (!this.state.minimized) {
                 this.setState({wasTileView: event.enabled});
             }
             this.setState({isTileView: event.enabled});
         });
-        this.api.on('filmstripDisplayChanged', (event: {visible: boolean}) => {
+        this.api.on('filmstripDisplayChanged', (event: { visible: boolean }) => {
             if (!this.state.minimized) {
                 this.setState({wasFilmStrip: event.visible});
             }
@@ -163,6 +165,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         this.api.executeCommand('hangup');
         setTimeout(() => {
             this.props.actions.openJitsiMeeting(null, null);
+            this.props.actions.setUserStatus(this.props.currentUserId, Constants.ONLINE);
             this.setState({
                 minimized: true,
                 loading: true,
@@ -198,7 +201,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         }
     }
 
-    togglePosition= () => {
+    togglePosition = () => {
         if (this.state.position === POSITION_TOP) {
             this.setState({position: POSITION_BOTTOM});
         } else {
@@ -206,7 +209,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         }
     }
 
-    renderButtons = (style: {[key: string]: React.CSSProperties}): React.ReactNode => {
+    renderButtons = (style: { [key: string]: React.CSSProperties }): React.ReactNode => {
         const {post} = this.props;
         if (post === null) {
             return null;
@@ -344,7 +347,7 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 }
 
-function getStyle(height: number, width: number, position: 'top' | 'bottom'): {[key: string]: React.CSSProperties} {
+function getStyle(height: number, width: number, position: 'top' | 'bottom'): { [key: string]: React.CSSProperties } {
     const backgroundZIndex = 1000;
     const jitsiZIndex = 1100;
     const buttonsZIndex = 1200;
