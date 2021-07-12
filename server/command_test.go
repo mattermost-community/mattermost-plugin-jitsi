@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/mattermost/mattermost-plugin-api/experimental/telemetry"
 	"github.com/mattermost/mattermost-plugin-api/i18n"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
@@ -154,7 +155,7 @@ func TestCommandStartMeeting(t *testing.T) {
 		apiMock := plugintest.API{}
 		defer apiMock.AssertExpectations(t)
 		p.SetAPI(&apiMock)
-
+		p.tracker = telemetry.NewTracker(nil, "", "", "", "", "", false)
 		apiMock.On("GetBundlePath").Return("..", nil)
 		config := model.Config{}
 		config.SetDefaults()
