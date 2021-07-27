@@ -215,6 +215,7 @@ func (p *Plugin) OnConfigurationChange() error {
 		}
 	}
 
+	// nolint
 	p.tracker = telemetry.NewTracker(p.telemetryClient, p.API.GetDiagnosticId(), p.API.GetServerVersion(), manifest.Id, manifest.Version, "jitsi", enableDiagnostics)
 
 	p.setConfiguration(configuration)

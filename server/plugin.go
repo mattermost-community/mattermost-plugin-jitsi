@@ -14,8 +14,8 @@ import (
 	"time"
 
 	"github.com/cristalhq/jwt/v3"
-	"github.com/mattermost/mattermost-plugin-api/experimental/telemetry"
 	"github.com/google/uuid"
+	"github.com/mattermost/mattermost-plugin-api/experimental/telemetry"
 	"github.com/mattermost/mattermost-plugin-api/i18n"
 	"github.com/mattermost/mattermost-server/v5/mlog"
 	"github.com/mattermost/mattermost-server/v5/model"
