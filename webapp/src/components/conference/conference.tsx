@@ -146,6 +146,7 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 
     componentWillUnmount() {
+        document.removeEventListener('keydown', this.escFunction, false);
         window.removeEventListener('resize', this.resizeIframe);
         window.removeEventListener('message', this.preventMessages, false);
         if (this.api) {
@@ -334,9 +335,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         return (
             <React.Fragment>
                 <div
-                    onChange={this.escFunction}
                     id='jitsiMeet'
-
                     style={style.jitsiMeetContainer}
                 />
 
@@ -411,6 +410,5 @@ function getStyle(height: number, width: number, position: 'top' | 'bottom'): {[
             opacity: 0.85,
             zIndex: buttonsZIndex
         }
-
     };
 }
