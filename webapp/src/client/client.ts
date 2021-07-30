@@ -29,6 +29,10 @@ export default class Client {
         return this.doPut(`${await this.getBaseURL()}${this.baseUrl}/api/v4/users/${userId}/status`, {user_id: userId, status});
     }
 
+    setUserStatus = async (userId: string | null, status: string) => {
+        return this.doPut(`${this.baseUrl}/api/v4/users/${userId}/status`, {user_id: userId, status});
+    }
+
     loadConfig = async () => {
         return this.doPost(`${await this.getBaseURL()}${this.url}/api/v1/config`, {});
     }

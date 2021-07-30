@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/cristalhq/jwt/v2"
+	"github.com/mattermost/mattermost-plugin-api/experimental/telemetry"
 	"github.com/mattermost/mattermost-plugin-api/i18n"
 	"github.com/mattermost/mattermost-server/v5/mlog"
 	"github.com/mattermost/mattermost-server/v5/model"
@@ -31,6 +32,9 @@ type UserConfig struct {
 
 type Plugin struct {
 	plugin.MattermostPlugin
+
+	telemetryClient telemetry.Client
+	tracker         telemetry.Tracker
 
 	// configurationLock synchronizes access to the configuration.
 	configurationLock sync.RWMutex
@@ -80,6 +84,11 @@ func (p *Plugin) OnActivate() error {
 	}
 
 	p.botID = botID
+
+	p.telemetryClient, err = telemetry.NewRudderClient()
+	if err != nil {
+		p.API.LogWarn("telemetry client not started", "error", err.Error())
+	}
 
 	return nil
 }
@@ -140,6 +149,23 @@ func signClaims(secret string, claims *Claims) (string, error) {
 		return "", err
 	}
 	return string(token.Raw()), nil
+}
+
+func (p *Plugin) trackMeeting(args *model.CommandArgs) {
+	// disables tracking if the user is not using the default jitsi url
+	isNotDefaultJitsiURL := p.isNotDefaultJitsiURL()
+	// enables tracking based on the users configuration
+	var event = map[string]interface{}{
+		"external-meeting-link-enabled": isNotDefaultJitsiURL,
+	}
+
+	_ = p.tracker.TrackEvent("start_meeting", event)
+}
+
+func (p *Plugin) isNotDefaultJitsiURL() bool {
+	currentURL := p.configuration.GetJitsiURL()
+	defaultURL := p.configuration.GetDefaultJitsiURL()
+	return currentURL != defaultURL
 }
 
 func (p *Plugin) deleteEphemeralPost(userID, postID string) {

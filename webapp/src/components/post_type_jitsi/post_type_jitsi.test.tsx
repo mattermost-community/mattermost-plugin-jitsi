@@ -1,10 +1,11 @@
 import * as React from 'react';
-import {describe, expect, it} from '@jest/globals';
+import {jest, describe, expect, it} from '@jest/globals';
 import {shallow} from 'enzyme';
 
 import {Post} from 'mattermost-redux/types/posts';
 
 import {PostTypeJitsi} from './post_type_jitsi';
+import Constants from 'mattermost-redux/constants/general';
 
 describe('PostTypeJitsi', () => {
     const basePost: Post = {
@@ -22,6 +23,15 @@ describe('PostTypeJitsi', () => {
         original_id: '',
         type: 'custom_jitsi',
         hashtags: '',
+        pending_post_id: '',
+        reply_count: 0,
+        metadata: {
+            embeds: [],
+            emojis: [],
+            files: [],
+            images: {},
+            reactions: []
+        },
         props: {
             jwt_meeting_valid_until: 123,
             meeting_link: 'http://test-meeting-link/test',
@@ -35,7 +45,8 @@ describe('PostTypeJitsi', () => {
 
     const actions = {
         enrichMeetingJwt: jest.fn().mockImplementation(() => Promise.resolve({data: {jwt: 'test-enriched-jwt'}})),
-        openJitsiMeeting: jest.fn()
+        openJitsiMeeting: jest.fn(),
+        setUserStatus: jest.fn().mockImplementation(() => Promise.resolve({data: {user_id: 'test-user-id', status: Constants.DND}}))
     };
 
     const theme = {

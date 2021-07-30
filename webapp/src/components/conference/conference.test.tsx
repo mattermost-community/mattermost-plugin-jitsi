@@ -34,7 +34,8 @@ describe('Conference', () => {
     };
 
     const actions = {
-        openJitsiMeeting: jest.fn()
+        openJitsiMeeting: jest.fn(),
+        setUserStatus: jest.fn()
     };
 
     const defaultProps = {

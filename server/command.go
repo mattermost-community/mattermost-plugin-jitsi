@@ -149,6 +149,8 @@ func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.Comma
 		}
 	}
 
+	p.trackMeeting(args)
+
 	return &model.CommandResponse{}, nil
 }
 
