@@ -4,7 +4,6 @@ exports[`Conference should render and initialize the conference interface 1`] = 
 <Fragment>
   <div
     id="jitsiMeet"
-    onChange={[Function]}
     style={
       Object {
         "alignItems": "center",
@@ -110,7 +109,6 @@ exports[`Conference should show the correct buttons depending on the state shoul
 <Fragment>
   <div
     id="jitsiMeet"
-    onChange={[Function]}
     style={
       Object {
         "alignItems": "center",
@@ -214,7 +212,6 @@ exports[`Conference should show the correct buttons depending on the state shoul
 <Fragment>
   <div
     id="jitsiMeet"
-    onChange={[Function]}
     style={
       Object {
         "alignItems": "center",
@@ -325,7 +322,6 @@ exports[`Conference should show the correct buttons depending on the state shoul
 <Fragment>
   <div
     id="jitsiMeet"
-    onChange={[Function]}
     style={
       Object {
         "alignItems": "center",
@@ -429,7 +425,6 @@ exports[`Conference should show the the loading spinner depending on the state s
 <Fragment>
   <div
     id="jitsiMeet"
-    onChange={[Function]}
     style={
       Object {
         "alignItems": "center",
@@ -509,7 +504,6 @@ exports[`Conference should show the the loading spinner depending on the state s
 <Fragment>
   <div
     id="jitsiMeet"
-    onChange={[Function]}
     style={
       Object {
         "alignItems": "center",
