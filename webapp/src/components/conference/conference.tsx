@@ -56,12 +56,12 @@ export default class Conference extends React.PureComponent<Props, State> {
         return Math.max(document.documentElement.clientHeight || 0, window?.innerHeight || 0) - (BORDER_SIZE * 2);
     }
 
-  escFunction = (event: any) => {
-      // '27' == escape key
-      if (event.keyCode === 27) {
-          this.close();
-      }
-  }
+    escFunction = (event: any) => {
+        // '27' == escape key
+        if (event.keyCode === 27) {
+            this.close();
+        }
+    }
 
     preventMessages = (event: MessageEvent) => {
         if (!this.props.post || !this.api) {
