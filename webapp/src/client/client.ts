@@ -4,33 +4,26 @@ import {ClientError} from 'mattermost-redux/client/client4';
 import {id} from '../manifest';
 
 export default class Client {
-    url: string;
-    baseUrl: Promise<any> | string = '';
+    private url: string | undefined;
 
-    constructor() {
-        this.url = '/plugins/' + id;
-        this.getBaseURL();
-    }
-
-    getBaseURL = async () => {
-        this.baseUrl = this.baseUrl === '' ? Client4.getConfig().then((config) => config.ServiceSettings.SiteURL) : this.baseUrl;
-        return this.baseUrl;
+    setServerRoute(url: string) {
+        this.url = url + '/plugins/' + id;
     }
 
     startMeeting = async (channelId: string, personal: boolean = false, topic: string = '', meetingId: string = '') => {
-        return this.doPost(`${await this.getBaseURL()}${this.url}/api/v1/meetings`, {channel_id: channelId, personal, topic, meeting_id: meetingId});
+        return this.doPost(`${this.url}/api/v1/meetings`, {channel_id: channelId, personal, topic, meeting_id: meetingId});
     }
 
     enrichMeetingJwt = async (meetingJwt: string) => {
-        return this.doPost(`${await this.getBaseURL()}${this.url}/api/v1/meetings/enrich`, {jwt: meetingJwt});
+        return this.doPost(`${this.url}/api/v1/meetings/enrich`, {jwt: meetingJwt});
     }
 
     setUserStatus = async (userId: string | null, status: string) => {
-        return this.doPut(`${await this.getBaseURL()}${this.baseUrl}/api/v4/users/${userId}/status`, {user_id: userId, status});
+        return this.doPut(`${this.url}/api/v4/users/${userId}/status`, {user_id: userId, status});
     }
 
     loadConfig = async () => {
-        return this.doPost(`${await this.getBaseURL()}${this.url}/api/v1/config`, {});
+        return this.doPost(`${this.url}/api/v1/config`, {});
     }
 
     doPost = async (url: string, body: any, headers: any = {}) => {
