@@ -1,1 +1,13 @@
-{}
+{
+    "jitsi.command.settings.unable_to_get": "Kan gebruikersinstellingen niet ophalen",
+    "jitsi.command.settings.invalid_parameters": "Ongeldige instellingsparameters",
+    "jitsi.command.settings.current_values": "###### Jitsi Instellingen:\n* Embedded: |{{.Embedded}}|\n* Naamgevingsschema: |{{.NamingScheme}}|",
+    "jitsi.command.help.title": "###### Mattermost Jitsi Plugin - Slash Commando help\n",
+    "jitsi.command.help.text": "* |/jitsi| - Creëer een nieuwe vergadering\n* |/jitsi [onderwerp]| - Creëer een nieuwe vergadering met het opgegeven onderwerp\n* |/jitsi help| - Toon deze help tekst\n* |/jitsi settings| - Bekijk jouw huidige gebruikersinstellingen voor de Jitsi plugin\n* |/jitsi settings [setting] [value]| - Update jouuw gebruikersinstellingen (zie hieronder voor opties)\n\n###### Jitsi instellingen:\n* |/jitsi settings embedded [true/false]|: (Experimenteel) Indien true, wordt Jitsi Meeting ingebed als een zwevend venster binnen Mattermost. Indien false, wordt Jitsi Meeting geopend in een nieuw venster.\n|/jitsi settings naming_scheme [words/uuid/mattermost/ask]|: Selecteer hoe vergaderingsnamen worden gegenereerd met een van deze opties:\n    * |words|: Willekeurige Engelse woorden in hoofdletters (b.v. PlayfulDragonsObserveCuriously)\n    * |uuid|: UUID (universeel uniek identificatienummer)\n    * |mattermost|: Mattermost specifieke namen. Combinatie van teamnaam, kanaalnaam en willekeurige tekst in openbare en privékanalen; persoonlijke vergadernaam in kanalen voor directe en groepsberichten.\n    * |ask|: De plugin vraagt je om de naam te selecteren elke keer dat je een vergadering start",
+    "jitsi.ask.uuid_meeting": "Naam vergadering met UUID",
+    "jitsi.ask.title": "Start Jitsi Vergadering",
+    "jitsi.ask.select_meeting_type": "Selecteer het type vergadering dat je wil beginnen",
+    "jitsi.ask.personal_meeting": "Persoonlijke vergadering",
+    "jitsi.ask.meeting_name_random_words": "Vergadernaam met willekeurige woorden",
+    "jitsi.ask.channel_meeting": "Kanaal vergadering"
+}
