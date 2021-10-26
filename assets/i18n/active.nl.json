@@ -9,5 +9,18 @@
     "jitsi.ask.select_meeting_type": "Selecteer het type vergadering dat je wil beginnen",
     "jitsi.ask.personal_meeting": "Persoonlijke vergadering",
     "jitsi.ask.meeting_name_random_words": "Vergadernaam met willekeurige woorden",
-    "jitsi.ask.channel_meeting": "Kanaal vergadering"
+    "jitsi.ask.channel_meeting": "Kanaal vergadering",
+    "jitsi.start_meeting.slack_attachment_text": "{{.MeetingType}}: [{{.MeetingID}}]({{.MeetingURL}})\n\n[Neem deel aan de vergadering]({{.MeetingURL}})",
+    "jitsi.start_meeting.personal_meeting_topic": "{{.Name}}'s Persoonlijke vergadering",
+    "jitsi.start_meeting.personal_meeting_id": "Persoonlijke vergadering ID (PMI)",
+    "jitsi.start_meeting.meeting_link_valid_until": "Vergaderinglink geldig tot: {{.Datetime}}",
+    "jitsi.start_meeting.meeting_id": "Vergadering ID",
+    "jitsi.start_meeting.fallback_text": "Videovergadering begonnen op [{{.MeetingID}}]({{.MeetingURL}}).\n\n[Neem deel aan de vergadering]({{.MeetingURL}})",
+    "jitsi.start_meeting.default_meeting_topic": "Jitsi vergadering",
+    "jitsi.start_meeting.channel_meeting_topic": "{{.ChannelName}} Kanaalvergadering",
+    "jitsi.command.settings.wrong_naming_scheme_value": "Ongeldige `naming_scheme` waarde, gebruik `ask`, `words`, `uuid` of `mattermost`.",
+    "jitsi.command.settings.wrong_field": "Ongeldig config veld, gebruik `embedded` of `naming_scheme`.",
+    "jitsi.command.settings.wrong_embedded_value": "Ongeldige `embedded` waarde, gebruik `true` of `false`.",
+    "jitsi.command.settings.updated": "Jitsi instellingen bijgewerkt",
+    "jitsi.command.settings.unable_to_set": "Kan gebruikersinstellingenen niet ophalen"
 }
