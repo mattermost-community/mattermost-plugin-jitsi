@@ -6,6 +6,7 @@ import * as React from 'react';
 import {Channel} from 'mattermost-redux/types/channels';
 import {Post} from 'mattermost-redux/types/posts';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
+
 import Icon from './components/icon';
 import PostTypeJitsi from './components/post_type_jitsi';
 import I18nProvider from './components/i18n_provider';
