@@ -6,6 +6,7 @@ import * as React from 'react';
 import {Channel} from 'mattermost-redux/types/channels';
 import {Post} from 'mattermost-redux/types/posts';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
+import {GlobalState} from 'mattermost-redux/types/store';
 
 import Icon from './components/icon';
 import PostTypeJitsi from './components/post_type_jitsi';
@@ -15,7 +16,6 @@ import reducer from './reducers';
 import {startMeeting, loadConfig} from './actions';
 import {id as pluginId} from './manifest';
 import Client from './client';
-import {GlobalState} from 'mattermost-redux/types/store';
 
 class PluginClass {
     rootPortal?: RootPortal
