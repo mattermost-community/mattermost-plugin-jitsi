@@ -4,15 +4,10 @@ import {ClientError} from 'mattermost-redux/client/client4';
 import {id} from '../manifest';
 
 export default class Client {
-    url: string;
-    baseUrl: string = '';
+    private url: string | undefined;
 
-    constructor() {
-        this.url = '/plugins/' + id;
-        if ((window as any).basename) {
-            this.baseUrl = (window as any).basename;
-        }
-        this.url = this.baseUrl + '/plugins/' + id;
+    setServerRoute(url: string) {
+        this.url = url + '/plugins/' + id;
     }
 
     startMeeting = async (channelId: string, personal: boolean = false, topic: string = '', meetingId: string = '') => {
@@ -24,7 +19,7 @@ export default class Client {
     }
 
     setUserStatus = async (userId: string | null, status: string) => {
-        return this.doPut(`${this.baseUrl}/api/v4/users/${userId}/status`, {user_id: userId, status});
+        return this.doPut(`${this.url}/api/v4/users/${userId}/status`, {user_id: userId, status});
     }
 
     loadConfig = async () => {
