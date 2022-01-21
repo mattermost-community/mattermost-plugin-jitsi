@@ -4,10 +4,8 @@ import {bindActionCreators, Dispatch, ActionCreatorsMapObject} from 'redux';
 import {getBool, getTheme} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 import {GenericAction, ActionFunc, ActionResult} from 'mattermost-redux/types/actions';
-
 import {Post} from 'mattermost-redux/types/posts';
 
-import {getCurrentUserId} from 'mattermost-redux/selectors/entities/common';
 import {GlobalState} from '../../types';
 import {displayUsernameForUser} from '../../utils/user_utils';
 import {enrichMeetingJwt, openJitsiMeeting, setUserStatus} from '../../actions';
@@ -20,15 +18,13 @@ type OwnProps = {
 function mapStateToProps(state: GlobalState, ownProps: OwnProps) {
     const post = ownProps.post;
     const creator = state.entities.users.profiles[post.user_id];
-    const currentUser = getCurrentUser(state);
     const config = state['plugins-jitsi'].config;
 
     return {
         ...ownProps,
-        currentUserId: getCurrentUserId(state),
+        currentUser: getCurrentUser(state),
         theme: getTheme(state),
         creatorName: displayUsernameForUser(creator, state.entities.general.config),
-        currentUser,
         useMilitaryTime: getBool(state, 'display_settings', 'use_military_time', false),
         meetingEmbedded: Boolean(config.embedded)
     };
