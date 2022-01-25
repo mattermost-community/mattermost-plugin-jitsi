@@ -23,14 +23,22 @@ workflows:
           filters:
             tags:
               only: /^v.*/
+      - plugin-ci/test:
+          filters:
+            tags:
+              only: /^v.*/
       - plugin-ci/coverage:
           filters:
             tags:
               only: /^v.*/
+          requires:
+            - plugin-ci/test
       - plugin-ci/build:
           filters:
             tags:
               only: /^v.*/
+          requires:
+            - plugin-ci/test
       - plugin-ci/deploy-ci:
           filters:
             branches:
@@ -40,6 +48,7 @@ workflows:
             - plugin-ci/lint
             - plugin-ci/coverage
             - plugin-ci/build
+            - plugin-ci/test
       - plugin-ci/deploy-release-github:
           filters:
             tags:
@@ -51,3 +60,4 @@ workflows:
             - plugin-ci/lint
             - plugin-ci/coverage
             - plugin-ci/build
+            - plugin-ci/test

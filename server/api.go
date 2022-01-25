@@ -33,6 +33,7 @@ type StartMeetingFromAction struct {
 		MeetingID    string `json:"meeting_id"`
 		MeetingTopic string `json:"meeting_topic"`
 		Personal     bool   `json:"personal"`
+		RootID       string `json:"root_id"`
 	} `json:"context"`
 }
 
@@ -413,7 +414,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		}
 		p.deleteEphemeralPost(action.UserId, action.PostId)
 	} else {
-		meetingID, err = p.startMeeting(user, channel, "", req.Topic, req.Personal, "")
+		meetingID, err = p.startMeeting(user, channel, "", req.Topic, req.Personal, action.Context.RootID)
 		if err != nil {
 			mlog.Error("Error starting a new meeting", mlog.Err(err))
 			http.Error(w, err.Error(), http.StatusInternalServerError)

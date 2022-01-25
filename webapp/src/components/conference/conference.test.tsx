@@ -41,7 +41,8 @@ describe('Conference', () => {
     const defaultProps = {
         post: basePost,
         jwt: null,
-        actions
+        actions,
+        currentUserId: 'test'
     };
 
     Conference.prototype.getViewportWidth = () => 10;
