@@ -1,1 +1,26 @@
-{}
+{
+    "jitsi.command.help.text": "* |/jitsi| - Új megbeszélés létrehozása\n* |/jitsi [topic]| - Új megbeszélés létrehozása megadott témával\n* |/jitsi help| - A súgó szöveg megjelenítése\n* |/jitsi settings| - A Jitsi plugin aktuális felhasználói beállításainak megtekintése\n* |/jitsi settings [setting] [value]| - A felhasználói beállítások frissítése (lásd alább a lehetőségeket)\n\n###### Jitsi beállítások:\n* |/jitsi settings embedded [true/false]|: (Kísérleti) Ha igaz, akkor a Jitsi megbeszélés lebegő ablakként van beágyazva a Mattermost-ba. Ha hamis, a Jitsi megbeszélés egy új ablakban nyílik meg.\n* | |/jitsi settings naming_scheme [words/uuid/mattermost/ask]|: Válassza ki, hogyan képződjenek a megbeszélés nevei az alábbi lehetőségek egyikével:\n    * |words|: Véletlenszerű angol szavak a címben (pl. PlayfulDragonsObserveCuriously).\n    * |uuid|: UUID (univerzálisan egyedi azonosító).\n    * |mattermost|: Mattermost specifikus nevek. Csapatnév, csatornanév és véletlenszerű szöveg kombinációja nyilvános és privát csatornákon; személyes találkozó neve a közvetlen és csoportos üzenetek csatornáin.\n    * |ask|: A plugin minden alkalommal, amikor találkozót indít, kéri a név megadását",
+    "jitsi.ask.channel_meeting": "Csatorna megbeszélés",
+    "jitsi.ask.meeting_name_random_words": "Megbeszélés neve véletlen szavakkal",
+    "jitsi.ask.select_meeting_type": "Kezdéshez válassza ki a megbeszélés típusát",
+    "jitsi.command.help.title": "###### Mattermost Jitsi Plugin - Perjel parancs súgó\n",
+    "jitsi.command.settings.current_values": "###### Jitsi beállítások:\n* Beágyazás: |{{.Embedded}}|\n* Elnevezés séma: |{{.NamingScheme}}|",
+    "jitsi.command.settings.invalid_parameters": "Érvénytelen beállítások paraméter",
+    "jitsi.command.settings.unable_to_get": "Nem tudom beolvasni a felhasználói beállításokat",
+    "jitsi.command.settings.unable_to_set": "Nem tudom elmenteni a felhasználói beállításokat",
+    "jitsi.command.settings.wrong_embedded_value": "Érvénytelen `embedded` érték, használjon `true` vagy `false` értékek közül egyet.",
+    "jitsi.command.settings.updated": "Jitsi beállítások frissítve",
+    "jitsi.command.settings.wrong_field": "Érvénytelen beállítás mező, használjon `embedded` vagy `naming_scheme` értékek közül egyet.",
+    "jitsi.command.settings.wrong_naming_scheme_value": "Érvénytelen `naming_scheme` érték, használjon `ask`, `words`, `uuid` vagy `mattermost` értékek közül egyet.",
+    "jitsi.start_meeting.channel_meeting_topic": "{{.ChannelName}} Csatorna megbeszélés",
+    "jitsi.start_meeting.fallback_text": "Videós Megbeszélés kezdődött a [{{.MeetingID}}]({{.MeetingURL}}) linken.\n\n[Becsatlakozás a megbeszélésbe]({{.MeetingURL}})",
+    "jitsi.start_meeting.meeting_link_valid_until": "Megbeszélés link érvényessége: {{.Datetime}}",
+    "jitsi.start_meeting.personal_meeting_id": "Személyes megbeszélés azonosító (PMI)",
+    "jitsi.start_meeting.personal_meeting_topic": "{{.Name}} személyes megbeszélése",
+    "jitsi.start_meeting.slack_attachment_text": "{{.MeetingType}}: [{{.MeetingID}}]({{.MeetingURL}})\n\n[Becsatlakozás a megbeszélésbe]({{.MeetingURL}})",
+    "jitsi.start_meeting.meeting_id": "Megbeszélés azonosító",
+    "jitsi.start_meeting.default_meeting_topic": "Jitsi Megbeszélés",
+    "jitsi.ask.uuid_meeting": "Megbeszélés neve legyen egy UUID",
+    "jitsi.ask.title": "Jitsi megbeszélés indítása",
+    "jitsi.ask.personal_meeting": "Személyes megbeszélés"
+}
