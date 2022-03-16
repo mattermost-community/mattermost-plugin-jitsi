@@ -1,0 +1,14 @@
+{
+  "jitsi.close": "Bezárás",
+  "jitsi.creator-has-started-a-meeting": "{creator} elindított egy megbeszélést",
+  "jitsi.default-title": "Jitsi megbeszélés",
+  "jitsi.join-meeting": "BECSATLAKOZÁS A MEGBESZÉLÉSBE",
+  "jitsi.link-valid-until": "Megbeszélés linkjének érvényessége: ",
+  "jitsi.maximize": "Maximalizálás",
+  "jitsi.meeting-id": "Megbeszélés azonosító: ",
+  "jitsi.minimize": "Kicsinyítés",
+  "jitsi.move-down": "Mozgatás fel",
+  "jitsi.move-up": "Mozgatás le",
+  "jitsi.open-in-new-tab": "Megnyitás új tabon",
+  "jitsi.personal-meeting-id": "Személyes megbeszélés azonosító (PMI): "
+}

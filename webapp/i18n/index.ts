@@ -3,6 +3,7 @@ import * as de from './de.json';
 import * as en from './en.json';
 import * as es from './es.json';
 import * as fr from './fr.json';
+import * as hu from './hu.json';
 import * as it from './it.json';
 import * as ja from './ja.json';
 import * as ko from './ko.json';
@@ -28,6 +29,8 @@ export function getTranslations(locale: string): {[key: string]: string} {
         return es;
     case 'fr':
         return fr;
+    case 'hu':
+        return hu;
     case 'it':
         return it;
     case 'ja':
