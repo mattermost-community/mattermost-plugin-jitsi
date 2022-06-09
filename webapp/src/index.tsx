@@ -43,7 +43,7 @@ class PluginClass {
         const action = (channel: Channel) => {
             store.dispatch(startMeeting(channel.id));
         };
-        const helpText = 'Start Jitsi Meeting'
+        const helpText = 'Start Jitsi Meeting';
 
         // Channel header icon
         registry.registerChannelHeaderButtonAction(<Icon/>, action, helpText);
@@ -55,7 +55,6 @@ class PluginClass {
             const iconURL = `${siteUrl}/plugins/${pluginId}/public/app-bar-icon.png`;
             registry.registerAppBarComponent(iconURL, action, helpText);
         }
-
 
         Client.setServerRoute(getServerRoute(store.getState()));
         registry.registerPostTypeComponent('custom_jitsi', (props: { post: Post }) => (
