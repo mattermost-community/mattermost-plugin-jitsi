@@ -96,8 +96,8 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
         }
 
         const props = post.props;
-
         let meetingLink = props.meeting_link;
+
         if (props.jwt_meeting) {
             meetingLink += '?jwt=' + (props.meeting_jwt);
         }
@@ -155,7 +155,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
                                     onClick={this.openJitsiMeeting}
                                     href={meetingLink}
                                 >
-                                    {props.meeting_id}
+                                    {props.meeting_id_label}
                                 </a>
                             </span>
                             <div>
