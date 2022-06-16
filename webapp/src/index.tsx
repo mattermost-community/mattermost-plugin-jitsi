@@ -36,13 +36,23 @@ class PluginClass {
             document.head.appendChild(script);
         }
         registry.registerReducer(reducer);
-        registry.registerChannelHeaderButtonAction(
-            <Icon/>,
-            (channel: Channel) => {
-                store.dispatch(startMeeting(channel.id));
-            },
-            'Start Jitsi Meeting'
-        );
+
+        const action = (channel: Channel) => {
+            store.dispatch(startMeeting(channel.id));
+        };
+        const helpText = 'Start Jitsi Meeting';
+
+        // Channel header icon
+        registry.registerChannelHeaderButtonAction(<Icon/>, action, helpText);
+
+        // App Bar icon
+        if (registry.registerAppBarComponent) {
+            const config = getConfig(store.getState());
+            const siteUrl = (config && config.SiteURL) || '';
+            const iconURL = `${siteUrl}/plugins/${pluginId}/public/app-bar-icon.png`;
+            registry.registerAppBarComponent(iconURL, action, helpText);
+        }
+
         registry.registerPostTypeComponent('custom_jitsi', (props: {post: Post}) => (<I18nProvider><PostTypeJitsi post={props.post}/></I18nProvider>));
         registry.registerWebSocketEventHandler('custom_jitsi_config_update', () => store.dispatch(loadConfig()));
         store.dispatch(loadConfig());
