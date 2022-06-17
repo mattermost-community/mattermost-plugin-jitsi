@@ -8,6 +8,14 @@ function JaaSRoot() {
     return (<JaaSConference/>);
 }
 
-ReactDOM.render(<Provider store={store}>
+export class InjectionProvider extends React.Component<any> {
+    public render(): JSX.Element {
+        const stores = {...this.props};
+        delete stores.children;
+        return React.createElement(Provider as any, stores, this.props.children);
+    }
+}
+
+ReactDOM.render(<InjectionProvider store={store}>
     <JaaSRoot/>
-</Provider>, document.getElementById('jaas-root'));
+</InjectionProvider>, document.getElementById('jaas-root'));
