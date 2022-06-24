@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {describe, expect, it} from '@jest/globals';
+import {jest, describe, expect, it} from '@jest/globals';
 import {shallow} from 'enzyme';
 
 import {Post} from 'mattermost-redux/types/posts';

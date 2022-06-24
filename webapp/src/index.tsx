@@ -23,11 +23,15 @@ class PluginClass {
 
     initialize(registry: any, store: any) {
         if ((window as any).JitsiMeetExternalAPI) {
+            console.log('isjitsimeetexternalapi');
+
             this.rootPortal = new RootPortal(registry, store);
             if (this.rootPortal) {
                 this.rootPortal.render();
             }
         } else {
+            console.log('notjitsimeetexternalapi');
+
             const script = document.createElement('script');
             script.type = 'text/javascript';
             script.onload = () => {

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {FormattedMessage} from 'react-intl';
 
 type Props = {
     disabled: boolean,
@@ -25,10 +26,13 @@ export default class JaaSSection extends React.Component<Props> {
             <div>
                 <div className='form-group'>
                     <label className='col-sm-4'>
-                        {'Embed JaaS video inside Mattermost:'}
+                        <FormattedMessage
+                            id='jaas.embed-meeting'
+                            defaultMessage={'Embed JaaS video inside Mattermost:'}
+                        />
                     </label>
                     <div className='col-sm-8'>
-                        <label className='radio-inline'>
+                        <label className='radio-inline pt-0'>
                             <input
                                 type='radio'
                                 value='true'
@@ -37,7 +41,7 @@ export default class JaaSSection extends React.Component<Props> {
                             />
                             <span>{'true'}</span>
                         </label>
-                        <label className='radio-inline'>
+                        <label className='radio-inline pt-0'>
                             <input
                                 type='radio'
                                 value='false'
@@ -48,17 +52,23 @@ export default class JaaSSection extends React.Component<Props> {
                         </label>
                         <div className='help-text'>
                             <span>
-                                {'(Experimental) When true, JaaS video is embedded as a floating window inside Mattermost by default.'}
+                                <FormattedMessage
+                                    id='jaas.embed-meeting-description'
+                                    defaultMessage={'(Experimental) When true, JaaS video is embedded as a floating window inside Mattermost by default.'}
+                                />
                             </span>
                         </div>
                     </div>
                 </div>
                 <div className='form-group'>
                     <label className='col-sm-4'>
-                        {'Enable Compatibility Mode:'}
+                        <FormattedMessage
+                            id='jitsi.enable-compatibility-mode'
+                            defaultMessage={'Enable Compatibility Mode:'}
+                        />
                     </label>
                     <div className='col-sm-8'>
-                        <label className='radio-inline'>
+                        <label className='radio-inline pt-0'>
                             <input
                                 type='radio'
                                 value='true'
@@ -67,7 +77,7 @@ export default class JaaSSection extends React.Component<Props> {
                             />
                             <span>{'true'}</span>
                         </label>
-                        <label className='radio-inline'>
+                        <label className='radio-inline pt-0'>
                             <input
                                 type='radio'
                                 value='false'
@@ -78,14 +88,20 @@ export default class JaaSSection extends React.Component<Props> {
                         </label>
                         <div className='help-text'>
                             <span>
-                                {'(Insecure) If your Jitsi server is not compatible with this plugin, include the JavaScript API hosted on your Jitsi server directly in Mattermost instead of the default API version provided by the plugin. WARNING: Enabling this setting can compromise the security of your Mattermost system, if your Jitsi server is not fully trusted and allows direct modification of program files. Use with caution.'}
+                                <FormattedMessage
+                                    id='jitsi.enable-compatibility-mode-description'
+                                    defaultMessage={'(Insecure) If your Jitsi server is not compatible with this plugin, include the JavaScript API hosted on your Jitsi server directly in Mattermost instead of the default API version provided by the plugin. WARNING: Enabling this setting can compromise the security of your Mattermost system, if your Jitsi server is not fully trusted and allows direct modification of program files. Use with caution.'}
+                                />
                             </span>
                         </div>
                     </div>
                 </div>
                 <div className='form-group'>
                     <label className='col-sm-4'>
-                        {'AppID for JaaS Authentication:'}
+                        <FormattedMessage
+                            id='jaas.app-id'
+                            defaultMessage={'AppID for JaaS Authentication:'}
+                        />
                     </label>
                     <div className='col-sm-8'>
                         <input
@@ -98,14 +114,20 @@ export default class JaaSSection extends React.Component<Props> {
                         />
                         <div className='help-text'>
                             <span>
-                                {'Specify your JaaS AppID. You can get the AppID from https://jaas.8x8.vc/#/apikeys .'}
+                                <FormattedMessage
+                                    id='jaas.app-id-description'
+                                    defaultMessage={'Specify your JaaS AppID. You can get the AppID from https://jaas.8x8.vc/#/apikeys .'}
+                                />
                             </span>
                         </div>
                     </div>
                 </div>
                 <div className='form-group'>
                     <label className='col-sm-4'>
-                        {'Api key for JaaS Authentication:'}
+                        <FormattedMessage
+                            id='jaas.api-id'
+                            defaultMessage={'Api ID for JaaS Authentication:'}
+                        />
                     </label>
                     <div className='col-sm-8'>
                         <input
@@ -118,14 +140,20 @@ export default class JaaSSection extends React.Component<Props> {
                         />
                         <div className='help-text'>
                             <span>
-                                {'Specify your JaaS Api Key. You can get the Api Key from https://jaas.8x8.vc/#/apikeys .'}
+                                <FormattedMessage
+                                    id='jaas.api-id-description'
+                                    defaultMessage={'Specify your JaaS Api ID. You can get the Api ID from https://jaas.8x8.vc/#/apikeys .'}
+                                />
                             </span>
                         </div>
                     </div>
                 </div>
                 <div className='form-group'>
                     <label className='col-sm-4'>
-                        {'RSA Private key for JaaS Authentication:'}
+                        <FormattedMessage
+                            id='jaas.rsa-key'
+                            defaultMessage={'RSA Private key for JaaS Authentication:'}
+                        />
                     </label>
                     <div className='col-sm-8'>
                         <textarea
@@ -138,7 +166,10 @@ export default class JaaSSection extends React.Component<Props> {
                         />
                         <div className='help-text'>
                             <span>
-                                {'Specify your JaaS private key. You can get the private key from https://jaas.8x8.vc/#/start-guide in the 1. Api Key section .'}
+                                <FormattedMessage
+                                    id='jaas.rsa-key-description'
+                                    defaultMessage={'Specify your JaaS private key. You can get the private key from https://jaas.8x8.vc/#/start-guide in the 1. Api Key section .'}
+                                />
                             </span>
                         </div>
                     </div>

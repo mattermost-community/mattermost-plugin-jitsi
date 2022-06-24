@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {FormattedMessage} from 'react-intl';
 
 type Props = {
     disabled: boolean,
@@ -39,7 +40,10 @@ export class JitsiSection extends React.Component<Props> {
             <div>
                 <div className='form-group'>
                     <label className='col-sm-4'>
-                        {'Jitsi Server URL:'}
+                        <FormattedMessage
+                            id='jitsi.server-url'
+                            defaultMessage={'Jitsi Server URL:'}
+                        />
                     </label>
                     <div className='col-sm-8'>
                         <input
@@ -52,10 +56,25 @@ export class JitsiSection extends React.Component<Props> {
                         />
                         <div className='help-text'>
                             <span>
-                                {'The url for your Jitsi server, for example '}
-                                <a href='https://jitsi.example.com'>{'https://jitsi.example.com'}</a>
+                                <FormattedMessage
+                                    id='jitsi.example-server-url'
+                                    defaultMessage={'The url for your Jitsi server, for example '}
+                                />
+                                <a
+                                    href='#'
+                                    target='_blank'
+                                    rel='noreferrer'
+                                >{'https://jitsi.example.com'}</a>
                                 {'. Defaults to '}
-                                <a href='https://meet.jit.si'>{'https://meet.jit.si'}</a>
+                                <a
+                                    href='https://meet.jit.si'
+                                    target='_blank'
+                                    rel='noreferrer'
+                                >{'https://meet.jit.si'}</a>
+                                <FormattedMessage
+                                    id='jitsi.public-server-url'
+                                    defaultMessage={', which is the public server provided by Jitsi.'}
+                                />
                                 {', which is the public server provided by Jitsi.'}
                             </span>
                         </div>
@@ -63,7 +82,10 @@ export class JitsiSection extends React.Component<Props> {
                 </div>
                 <div className='form-group'>
                     <label className='col-sm-4'>
-                        {'Embed Jitsi video inside Mattermost:'}
+                        <FormattedMessage
+                            id='jitsi.embed-video'
+                            defaultMessage={'Embed Jitsi video inside Mattermost:'}
+                        />
                     </label>
                     <div className='col-sm-8'>
                         <label className='radio-inline'>
@@ -86,14 +108,20 @@ export class JitsiSection extends React.Component<Props> {
                         </label>
                         <div className='help-text'>
                             <span>
-                                {'(Experimental) When true, Jitsi video is embedded as a floating window inside Mattermost by default. Users can override this setting with \'/jitsi settings\'.'}
+                                <FormattedMessage
+                                    id='jitsi.embed-video-description'
+                                    defaultMessage={'(Experimental) When true, Jitsi video is embedded as a floating window inside Mattermost by default. Users can override this setting with \'/jitsi settings\'.'}
+                                />
                             </span>
                         </div>
                     </div>
                 </div>
                 <div className='form-group'>
                     <label className='col-sm-4'>
-                        {'Jitsi Meeting Names:'}
+                        <FormattedMessage
+                            id='jitsi.meeting-names'
+                            defaultMessage={'Jitsi Meeting Names:'}
+                        />
                     </label>
                     <div className='col-sm-8'>
                         <div className='radio'>
@@ -104,7 +132,10 @@ export class JitsiSection extends React.Component<Props> {
                                     checked={this.props.namingScheme === JITSI_NAMING_SCHEME.WORDS}
                                     onChange={this.props.onJitsiMeetingNamesChange}
                                 />
-                                {'Random English words in title case (e.g. PlayfulDragonsObserveCuriously)'}
+                                <FormattedMessage
+                                    id='jitsi.random-english-words'
+                                    defaultMessage={'Random English words in title case (e.g. PlayfulDragonsObserveCuriously)'}
+                                />
                             </label>
                         </div>
                         <div className='radio'>
@@ -115,7 +146,10 @@ export class JitsiSection extends React.Component<Props> {
                                     checked={this.props.namingScheme === JITSI_NAMING_SCHEME.UUID}
                                     onChange={this.props.onJitsiMeetingNamesChange}
                                 />
-                                {'UUID (universally unique identifier)'}
+                                <FormattedMessage
+                                    id='jitsi.uuid'
+                                    defaultMessage={'UUID (universally unique identifier)'}
+                                />
                             </label>
                         </div>
                         <div className='radio'>
@@ -126,7 +160,10 @@ export class JitsiSection extends React.Component<Props> {
                                     checked={this.props.namingScheme === JITSI_NAMING_SCHEME.MATTERMOST}
                                     onChange={this.props.onJitsiMeetingNamesChange}
                                 />
-                                {'Mattermost context specific names. Combination of team name, channel name, and random text in Public and Private channels; personal meeting name in Direct and Group Message channels.'}
+                                <FormattedMessage
+                                    id='jitsi.context-specific'
+                                    defaultMessage={'Mattermost context specific names. Combination of team name, channel name, and random text in Public and Private channels; personal meeting name in Direct and Group Message channels.'}
+                                />
                             </label>
                         </div>
                         <div className='radio'>
@@ -137,19 +174,28 @@ export class JitsiSection extends React.Component<Props> {
                                     checked={this.props.namingScheme === JITSI_NAMING_SCHEME.ASK}
                                     onChange={this.props.onJitsiMeetingNamesChange}
                                 />
-                                {'Allow user to select meeting name'}
+                                <FormattedMessage
+                                    id='jitsi.allow-user'
+                                    defaultMessage={'Allow user to select meeting name'}
+                                />
                             </label>
                         </div>
                         <div className='help-text'>
                             <span>
-                                {'Select how meeting names are generated by default. Users can override this setting with \'/jitsi settings\'.'}
+                                <FormattedMessage
+                                    id='jitsi.meeting-names-description'
+                                    defaultMessage={'Select how meeting names are generated by default. Users can override this setting with \'/jitsi settings\'.'}
+                                />
                             </span>
                         </div>
                     </div>
                 </div>
                 <div className='form-group'>
                     <label className='col-sm-4'>
-                        {'Use JWT Authentication for Jitsi:'}
+                        <FormattedMessage
+                            id='jitsi.use-jwt'
+                            defaultMessage={'Use JWT Authentication for Jitsi:'}
+                        />
                     </label>
                     <div className='col-sm-8'>
                         <label className='radio-inline'>
@@ -172,14 +218,20 @@ export class JitsiSection extends React.Component<Props> {
                         </label>
                         <div className='help-text'>
                             <span>
-                                {'(Optional) If your Jitsi server uses JSON Web Tokens (JWT) for authentication, set this value to true.'}
+                                <FormattedMessage
+                                    id='jitsi.use-jwt-description'
+                                    defaultMessage={'(Optional) If your Jitsi server uses JSON Web Tokens (JWT) for authentication, set this value to true.'}
+                                />
                             </span>
                         </div>
                     </div>
                 </div>
                 <div className='form-group'>
                     <label className='col-sm-4'>
-                        {'App ID for JWT Authentication:'}
+                        <FormattedMessage
+                            id='jitsi.app-id'
+                            defaultMessage={'App ID for JWT Authentication:'}
+                        />
                     </label>
                     <div className='col-sm-8'>
                         <input
@@ -191,14 +243,20 @@ export class JitsiSection extends React.Component<Props> {
                         />
                         <div className='help-text'>
                             <span>
-                                {'(Optional) The app ID used for authentication by the Jitsi server and JWT token generator.'}
+                                <FormattedMessage
+                                    id='jitsi.app-id-description'
+                                    defaultMessage={'(Optional) The app ID used for authentication by the Jitsi server and JWT token generator.'}
+                                />
                             </span>
                         </div>
                     </div>
                 </div>
                 <div className='form-group'>
                     <label className='col-sm-4'>
-                        {'App Secret for JWT Authentication:'}
+                        <FormattedMessage
+                            id='jitsi.app-secret'
+                            defaultMessage={'App Secret for JWT Authentication:'}
+                        />
                     </label>
                     <div className='col-sm-8'>
                         <input
@@ -210,14 +268,20 @@ export class JitsiSection extends React.Component<Props> {
                         />
                         <div className='help-text'>
                             <span>
-                                {'(Optional) The app secret used for authentication by the Jitsi server and JWT token generator.'}
+                                <FormattedMessage
+                                    id='jitsi.app-secret-description'
+                                    defaultMessage={'(Optional) The app secret used for authentication by the Jitsi server and JWT token generator.'}
+                                />
                             </span>
                         </div>
                     </div>
                 </div>
                 <div className='form-group'>
                     <label className='col-sm-4'>
-                        {'Meeting Link Expiry Time (minutes):'}
+                        <FormattedMessage
+                            id='jitsi.link-expiry-time'
+                            defaultMessage={'Meeting Link Expiry Time (minutes):'}
+                        />
                     </label>
                     <div className='col-sm-8'>
                         <input
@@ -230,14 +294,20 @@ export class JitsiSection extends React.Component<Props> {
                         />
                         <div className='help-text'>
                             <span>
-                                {'(Optional) The number of minutes from when the meeting link is created to when it becomes invalid. Minimum is 1 minute. Only applies if using JWT authentication for your Jitsi server.'}
+                                <FormattedMessage
+                                    id='jitsi.link-expiry-time-description'
+                                    defaultMessage={'(Optional) The number of minutes from when the meeting link is created to when it becomes invalid. Minimum is 1 minute. Only applies if using JWT authentication for your Jitsi server.'}
+                                />
                             </span>
                         </div>
                     </div>
                 </div>
                 <div className='form-group'>
                     <label className='col-sm-4'>
-                        {'Enable Compatibility Mode:'}
+                        <FormattedMessage
+                            id='jitsi.enable-compatibility-mode'
+                            defaultMessage={'Enable Compatibility Mode:'}
+                        />
                     </label>
                     <div className='col-sm-8'>
                         <label className='radio-inline'>
@@ -260,7 +330,10 @@ export class JitsiSection extends React.Component<Props> {
                         </label>
                         <div className='help-text'>
                             <span>
-                                {'(Insecure) If your Jitsi server is not compatible with this plugin, include the JavaScript API hosted on your Jitsi server directly in Mattermost instead of the default API version provided by the plugin. WARNING: Enabling this setting can compromise the security of your Mattermost system, if your Jitsi server is not fully trusted and allows direct modification of program files. Use with caution.'}
+                                <FormattedMessage
+                                    id='jitsi.enable-compatibility-mode-description'
+                                    defaultMessage={'(Insecure) If your Jitsi server is not compatible with this plugin, include the JavaScript API hosted on your Jitsi server directly in Mattermost instead of the default API version provided by the plugin. WARNING: Enabling this setting can compromise the security of your Mattermost system, if your Jitsi server is not fully trusted and allows direct modification of program files. Use with caution.'}
+                                />
                             </span>
                         </div>
                     </div>

@@ -1,7 +1,9 @@
 import * as React from 'react';
+import {FormattedMessage} from 'react-intl';
 import JaaSSection from './jaas_section';
 import {JitsiSection, JITSI_NAMING_SCHEME} from './jitsi_section';
 import {id as pluginId} from '../../manifest';
+import I18nProvider from 'components/i18n_provider';
 
 type Props = {
     id: string,
@@ -241,38 +243,46 @@ export default class JitsiSettings extends React.Component<Props, State> {
 
     render() {
         return (
-            <div>
-                <div className='form-group'>
-                    <div className='col-sm-6'>
-                        <label className='radio-inline'>
-                            <input
-                                type='radio'
-                                checked={this.state.mode === JITSI_MODE}
-                                onChange={this.onModeSelected}
-                                value={JITSI_MODE}
-                            />
-                            <span>{'Enable Jitsi'}</span>
-                        </label>
+            <I18nProvider>
+                <div>
+                    <div className='form-group'>
+                        <div className='col-sm-6'>
+                            <label className='radio-inline'>
+                                <input
+                                    type='radio'
+                                    checked={this.state.mode === JITSI_MODE}
+                                    onChange={this.onModeSelected}
+                                    value={JITSI_MODE}
+                                />
+                                <FormattedMessage
+                                    id='jitsi.input-enable-jitsi'
+                                    defaultMessage='Enable Jitsi'
+                                />
+                            </label>
+                        </div>
+                        <div className='col-sm-6'>
+                            <label className='radio-inline'>
+                                <input
+                                    type='radio'
+                                    checked={this.state.mode === JAAS_MODE}
+                                    onChange={this.onModeSelected}
+                                    value={JAAS_MODE}
+                                />
+                                <FormattedMessage
+                                    id='jitsi.input-enable-jass'
+                                    defaultMessage='Enable JasS'
+                                />
+                            </label>
+                        </div>
                     </div>
-                    <div className='col-sm-6'>
-                        <label className='radio-inline'>
-                            <input
-                                type='radio'
-                                checked={this.state.mode === JAAS_MODE}
-                                onChange={this.onModeSelected}
-                                value={JAAS_MODE}
-                            />
-                            <span>{'Enable JaaS'}</span>
-                        </label>
-                    </div>
+                    <hr style={{height: '3px'}}/>
+                    {
+                        this.state.mode === JAAS_MODE ?
+                            this.renderJaaSSettings() :
+                            this.renderJitsiSettings()
+                    }
                 </div>
-                <hr style={{height: '3px'}}/>
-                {
-                    this.state.mode === JAAS_MODE ?
-                        this.renderJaaSSettings() :
-                        this.renderJitsiSettings()
-                }
-            </div>
+            </I18nProvider>
         );
     }
 }
