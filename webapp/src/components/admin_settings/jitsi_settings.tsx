@@ -246,8 +246,14 @@ export default class JitsiSettings extends React.Component<Props, State> {
             <I18nProvider>
                 <div>
                     <div className='form-group'>
-                        <div className='col-sm-6'>
-                            <label className='radio-inline'>
+                        <label className='col-sm-4'>
+                            <FormattedMessage
+                                id='jitsi.server'
+                                defaultMessage={'Server:'}
+                            />
+                        </label>
+                        <div className='col-sm-8'>
+                            <label className='radio-inline pt-0'>
                                 <input
                                     type='radio'
                                     checked={this.state.mode === JITSI_MODE}
@@ -256,12 +262,10 @@ export default class JitsiSettings extends React.Component<Props, State> {
                                 />
                                 <FormattedMessage
                                     id='jitsi.input-enable-jitsi'
-                                    defaultMessage='Enable Jitsi'
+                                    defaultMessage='Jitsi'
                                 />
                             </label>
-                        </div>
-                        <div className='col-sm-6'>
-                            <label className='radio-inline'>
+                            <label className='radio-inline pt-0'>
                                 <input
                                     type='radio'
                                     checked={this.state.mode === JAAS_MODE}
@@ -270,9 +274,17 @@ export default class JitsiSettings extends React.Component<Props, State> {
                                 />
                                 <FormattedMessage
                                     id='jitsi.input-enable-jass'
-                                    defaultMessage='Enable JasS'
+                                    defaultMessage='JasS'
                                 />
                             </label>
+                            <div className='help-text'>
+                                <span>
+                                    <FormattedMessage
+                                        id='jitsi.serever-description'
+                                        defaultMessage={'Select the type of jitsi server you want to use.'}
+                                    />
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <hr style={{height: '3px'}}/>

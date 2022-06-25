@@ -41,6 +41,7 @@
   "jaas.api-id-description": "Specify your JaaS Api ID. You can get the Api ID from https://jaas.8x8.vc/#/apikeys .",
   "jaas.rsa-key": "RSA Private key for JaaS Authentication:",
   "jaas.rsa-key-description": "Specify your JaaS private key. You can get the private key from https://jaas.8x8.vc/#/start-guide in the 1. Api Key section .",
-  "jitsi.input-enable-jitsi": "Enable Jitsi",
-  "jitsi.input-enable-jass": "Enable JaaS"
+  "jitsi.input-enable-jitsi": "Jitsi",
+  "jitsi.input-enable-jass": "JaaS",
+  "jitsi.server": "Server:"
 }
