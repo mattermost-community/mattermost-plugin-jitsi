@@ -5,8 +5,8 @@ import (
 )
 
 type UserConfig struct {
-	Embedded     bool   `json:"embedded"`
 	NamingScheme string `json:"naming_scheme"`
+	Embedded     bool   `json:"embedded"`
 }
 
 type User struct {
@@ -57,13 +57,13 @@ type JaaSContext struct {
 
 // JaaSClaims ...
 type JaaSClaims struct {
+	Context  JaaSContext `json:"context"`
 	Audience string      `json:"aud,omitempty"`
 	Subject  string      `json:"sub,omitempty"`
 	Issuer   string      `json:"iss,omitempty"`
 	Room     string      `json:"room,omitempty"`
 	Exp      int64       `json:"exp,omitempty"`
 	Nbf      int64       `json:"nbf,omitempty"`
-	Context  JaaSContext `json:"context"`
 }
 
 // JaaSSettings ...

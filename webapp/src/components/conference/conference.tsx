@@ -89,15 +89,13 @@ export default class Conference extends React.PureComponent<Props, State> {
         const url = new URL(post.props.meeting_link);
 
         const noSSL = url.protocol === 'http:';
-        console.log(this.props.jwt);
-        
+
         const domain = url.host;
         const options = {
             roomName: post.props.meeting_id,
             width: this.state.minimized ? MINIMIZED_WIDTH : vw,
             height: this.state.minimized ? MINIMIZED_HEIGHT : vh,
             jwt: this.props.jwt,
-            // jwt: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InZwYWFzLW1hZ2ljLWNvb2tpZS01MjkzMjg5NGI2OTQ0YzNkODNkMGI0NWM4OGMyYTE1NS9jNTVmMzAifQ.eyJhdWQiOiJqaXRzaSIsInN1YiI6InZwYWFzLW1hZ2ljLWNvb2tpZS01MjkzMjg5NGI2OTQ0YzNkODNkMGI0NWM4OGMyYTE1NSIsImlzcyI6ImNoYXQiLCJyb29tIjoiKiIsImNvbnRleHQiOnsidXNlciI6eyJhdmF0YXIiOiJodHRwOi8vbG9jYWxob3N0OjgwNjUvYXBpL3Y0L3VzZXJzLzZqYXU2YjV4cWlidWRrNHdwanV6YWhkeTdjL2ltYWdlP189MTY1NTgxMjExMDQ4NCIsIm5hbWUiOiJyYWdoYXZhZ2dhcndhbDIzMDgiLCJlbWFpbCI6InJhZ2hhdkBnbWFpbC5jb20iLCJpZCI6IjZqYXU2YjV4cWlidWRrNHdwanV6YWhkeTdjIiwibW9kZXJhdG9yIjoidHJ1ZSJ9LCJmZWF0dXJlcyI6eyJsaXZlc3RyZWFtaW5nIjoidHJ1ZSIsInJlY29yZGluZyI6InRydWUiLCJvdXRib3VuZC1jYWxsIjoidHJ1ZSIsInRyYW5zY3JpcHRpb24iOiJ0cnVlIn19LCJleHAiOjE2NTYwOTcxNDgsIm5iZiI6MTY1NjA4OTk0OH0.MBgvGNig52cJFwWetym4Ry0MVl-o-a2xJnNc6E-swdjeYjecR5Y7ND4k4tzgFKI4valnTNoVkalvae3y0wHIU6wLvXsRFrDienMXmq7RMd87atxO1RV6gRf4uuNRztKGTx2R_Ypm-Jpoq15HPrCTK-0rNjrO2DYYEntstKMPKB0RPOli360RqFfT63r-FWh82jYPCLTfZASOiqCq6qGkQKYN1-SbuLTO3bbkhPxmMPu2lRpcZWoFgZMd4B-Q2js2l-ImSzvIQOExhnMuYj4MMiFboPWIoyAg-tpVYjsAUviohC-OSLWk4cnrbUWV1prhP-NwPb-4XRQLg12BzOvo8P6RCOQZCtEUbWtUh8mO-oaFqcM4qwD3P_S508xK-sYxZho3QO2palVuga1wCajd8Awo7p0DauT5j8skodnQs5EyU5-yuvE9xiaa35z9ePqniTSDLwg-Zqwky9Z8zhzkd6T3ijzGAoT7gWHQXHzXMfcIJPpx-ZMdlJEl3x5TGZCJV7d6vDovEYV7q1g3x-7YP_VUvtJAFfCJ3uloaG2Aj6Tkjsli21UskPxWVUQUtT_lloUe87uuuz-UlEXZTRTG3AyQbHm5lfpLGRKdNasNd-jQn2zwV3mIIJsVfYYxfGfii-o0DEkkYFNodb62uoz6pYj8o-yMhSvDCSFM-4YTchE",
             noSSL,
             parentNode: document.querySelector('#jitsiMeet'),
             onload: () => {

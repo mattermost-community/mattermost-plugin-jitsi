@@ -73,10 +73,10 @@ func TestCommandSettings(t *testing.T) {
 	}
 
 	tests := []struct {
+		newConfig *UserConfig
 		name      string
 		command   string
 		output    string
-		newConfig *UserConfig
 	}{
 		{
 			name:      "set valid setting with valid value",

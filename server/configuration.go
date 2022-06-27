@@ -31,17 +31,17 @@ type configuration struct {
 
 type jitsisettings struct {
 	JitsiURL               string
-	JitsiJWT               bool
-	JitsiEmbedded          bool
 	JitsiAppID             string
 	JitsiAppSecret         string
-	JitsiLinkValidTime     int
 	JitsiNamingScheme      string
-	JitsiCompatibilityMode bool
-	UseJaaS                bool
 	JaaSAppID              string
 	JaaSApiKey             string
 	JaaSPrivateKey         string
+	JitsiLinkValidTime     int
+	JitsiJWT               bool
+	JitsiEmbedded          bool
+	JitsiCompatibilityMode bool
+	UseJaaS                bool
 }
 
 const publicJitsiServerURL = "https://meet.jit.si"

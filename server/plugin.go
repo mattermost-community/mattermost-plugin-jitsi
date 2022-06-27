@@ -164,14 +164,22 @@ func signClaimsJaaS(apiKeyJaaS string, privateKeyJaaS string, claimsJaaS *JaaSCl
 		return "", errors.New("internal server error")
 	}
 
-	var privPemBytes []byte = privPem.Bytes
+	var privPemBytes = privPem.Bytes
 	var parsedKey interface{}
-	parsedKey, err = x509.ParsePKCS8PrivateKey(privPemBytes)
+	switch privPem.Type {
+	case "RSA PRIVATE KEY":
+		parsedKey, err = x509.ParsePKCS1PrivateKey(privPemBytes)
+	case "PRIVATE KEY":
+		parsedKey, err = x509.ParsePKCS8PrivateKey(privPemBytes)
+	default:
+		return "", errors.New("invalid private key")
+	}
 
 	if err != nil {
 		mlog.Error("Error parsing JaaS private key", mlog.Err(err))
 		return "", err
 	}
+
 	success := false
 	var privateKey *rsa.PrivateKey
 	privateKey, success = parsedKey.(*rsa.PrivateKey)

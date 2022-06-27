@@ -43,7 +43,7 @@ module.exports = [
         resolve: {
             modules: [
                 'src/jaas',
-                'node_modules'
+                'node_modules'  
             ],
             extensions: ['*', '.js', '.jsx', '.ts', '.tsx']
         },
