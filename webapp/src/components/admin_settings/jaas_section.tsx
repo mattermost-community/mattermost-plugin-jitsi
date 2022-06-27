@@ -168,7 +168,7 @@ export default class JaaSSection extends React.Component<Props> {
                             <span>
                                 <FormattedMessage
                                     id='jaas.rsa-key-description'
-                                    defaultMessage={'Specify your JaaS private key. You can get the private key from https://jaas.8x8.vc/#/start-guide in the 1. Api Key section .'}
+                                    defaultMessage={'Specify your JaaS private key. You can get the private key by generating an API key pair from https://jaas.8x8.vc/#/apikeys OR from https://jaas.8x8.vc/#/start-guide in the 1. Api Key section(NOTE: While generating the key from terminal make sure to set the size to be 2048 and not 4096).'}
                                 />
                             </span>
                         </div>
