@@ -43,6 +43,14 @@ const manifest = JSON.parse(`
                 "default": null
             },
             {
+                "key": "JitsiPrejoinPage",
+                "display_name": "Show prejoin page:",
+                "type": "bool",
+                "help_text": "When true, prejoin page will not be displayed when meet is embedded inside mattermost.",
+                "placeholder": "",
+                "default": null
+            },
+            {
                 "key": "JitsiNamingScheme",
                 "display_name": "Jitsi Meeting Names:",
                 "type": "radio",

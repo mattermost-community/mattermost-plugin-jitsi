@@ -16,6 +16,8 @@ type Props = {
     currentUserId: string,
     post: Post | null,
     jwt: string | null,
+    showPrejoinPage: boolean,
+    meetingEmbedded: boolean,
     actions: {
         openJitsiMeeting: (post: Post | null, jwt: string | null) => void
         setUserStatus: (userId: string, status: string) => void
@@ -101,6 +103,10 @@ export default class Conference extends React.PureComponent<Props, State> {
             onload: () => {
                 this.setState({loading: false});
                 this.resizeIframe();
+            },
+            configOverwrite: {
+                // disable the prejoin page
+                prejoinPageEnabled: this.props.meetingEmbedded && this.props.showPrejoinPage
             }
         };
         this.api = new (window as any).JitsiMeetExternalAPI(domain, options);

@@ -12,7 +12,9 @@ export type GlobalState = ReduxGlobalState & {
         config: {
             embedded?: boolean,
             // eslint-disable-next-line camelcase
-            naming_scheme?: 'ask' | 'words' | 'mattermost' | 'uuid'
+            naming_scheme?: 'ask' | 'words' | 'mattermost' | 'uuid',
+            // eslint-disable-next-line camelcase
+            show_prejoin_page: boolean
         }
     }
 }

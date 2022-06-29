@@ -8,10 +8,14 @@ import Conference from './conference';
 import {openJitsiMeeting, setUserStatus} from '../../actions';
 
 function mapStateToProps(state: GlobalState) {
+    const config = state['plugins-jitsi'].config;
+
     return {
         currentUserId: getCurrentUserId(state),
         post: state['plugins-jitsi'].openMeeting,
-        jwt: state['plugins-jitsi'].openMeetingJwt
+        jwt: state['plugins-jitsi'].openMeetingJwt,
+        showPrejoinPage: Boolean(config.show_prejoin_page),
+        meetingEmbedded: Boolean(config.embedded)
     };
 }
 
