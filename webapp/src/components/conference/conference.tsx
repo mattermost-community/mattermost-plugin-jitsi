@@ -17,7 +17,7 @@ type Props = {
     post: Post | null,
     jwt: string | null,
     showPrejoinPage: boolean,
-    meetingEmbedded: boolean,
+    meetingEmbedded?: boolean,
     actions: {
         openJitsiMeeting: (post: Post | null, jwt: string | null) => void
         setUserStatus: (userId: string, status: string) => void
@@ -105,7 +105,7 @@ export default class Conference extends React.PureComponent<Props, State> {
                 this.resizeIframe();
             },
             configOverwrite: {
-                // disable the prejoin page
+                // Disable the pre-join page
                 prejoinPageEnabled: this.props.meetingEmbedded && this.props.showPrejoinPage
             }
         };

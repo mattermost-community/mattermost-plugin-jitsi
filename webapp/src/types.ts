@@ -18,3 +18,5 @@ export type GlobalState = ReduxGlobalState & {
         }
     }
 }
+
+export type plugin = 'plugins-jitsi'
