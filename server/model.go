@@ -25,7 +25,7 @@ type EnrichMeetingJwtRequest struct {
 	Jwt string `json:"jwt"`
 }
 
-// Claims extents cristalhq/jwt standard claims to add jitsi-web-token specific fields
+// Claims extends cristalhq/jwt standard claims to add jitsi-web-token specific fields
 type Claims struct {
 	jwt.StandardClaims
 	Context Context `json:"context"`

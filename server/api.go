@@ -102,13 +102,13 @@ func (p *Plugin) handleJaaSSettings(w http.ResponseWriter, r *http.Request) {
 	userID := r.Header.Get("Mattermost-User-Id")
 	if userID != "" {
 		// Handle moderator
-		userRet, appErr := p.API.GetUser(userID)
+		userResult, appErr := p.API.GetUser(userID)
 		if appErr != nil {
-			mlog.Debug("Unable to the user", mlog.Err(appErr))
+			mlog.Debug("Unable to get the user", mlog.Err(appErr))
 			http.Error(w, "Forbidden", http.StatusForbidden)
 			return
 		}
-		user = userRet
+		user = userResult
 	}
 
 	jaasSettings, err2 := p.getJaaSSettings(jaasSettingsFromAction.Jwt, jaasSettingsFromAction.Path, user)
@@ -144,7 +144,7 @@ func (p *Plugin) handleJaaSBundle(w http.ResponseWriter, r *http.Request) {
 
 	bundlePath, err := p.API.GetBundlePath()
 	if err != nil {
-		mlog.Error("Filed to get the bundle path")
+		mlog.Error("Failed to get the bundle path")
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
@@ -174,7 +174,7 @@ func (p *Plugin) handleJaaSBundle(w http.ResponseWriter, r *http.Request) {
 func (p *Plugin) handleOpenJaaSMeeting(w http.ResponseWriter, r *http.Request) {
 	bundlePath, err := p.API.GetBundlePath()
 	if err != nil {
-		mlog.Error("Filed to get the bundle path")
+		mlog.Error("Failed to get the bundle path")
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
@@ -283,7 +283,7 @@ func (p *Plugin) proxyExternalAPIjsJaaS(w http.ResponseWriter, r *http.Request) 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		mlog.Error("Error getting reading the content", mlog.String("url", p.getConfiguration().Get8x8vcURL()+"/external_api.min.js"), mlog.Err(err))
+		mlog.Error("Error reading the content", mlog.String("url", p.getConfiguration().Get8x8vcURL()+"/external_api.min.js"), mlog.Err(err))
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
@@ -292,7 +292,7 @@ func (p *Plugin) proxyExternalAPIjsJaaS(w http.ResponseWriter, r *http.Request) 
 	w.Header().Set("Content-Type", "application/javascript")
 	_, err = w.Write(body)
 	if err != nil {
-		mlog.Warn("Unable to write response body", mlog.String("handler", "proxyExternalAPIjs"), mlog.Err(err))
+		mlog.Warn("Unable to write response body", mlog.String("handler", "proxyExternalAPIjsJaaS"), mlog.Err(err))
 	}
 }
 

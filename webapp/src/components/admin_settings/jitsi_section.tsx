@@ -31,7 +31,6 @@ export const JITSI_NAMING_SCHEME = {
 export class JitsiSection extends React.Component<Props> {
     constructor(props: any) {
         super(props);
-        console.log('JitsiSection');
     }
 
     render() {

@@ -66,23 +66,21 @@ export default class JitsiSettings extends React.Component<Props, State> {
         let selectedMode = JITSI_MODE;
 
         // Check previous setting setup in case of upgrade
-
         if (this.props.value) {
-            selectedMode = this.props.value.usejaas === true ? JAAS_MODE : JITSI_MODE;
+            selectedMode = this.props.value.usejaas ? JAAS_MODE : JITSI_MODE;
         }
 
         let selectedSettings = DEFAULT_SETTINGS;
-
         if (!this.props.value) {
             selectedSettings = {
-                jitsiurl: this.props.config.PluginSettings.Plugins[pluginId].jitsiurl || DEFAULT_SETTINGS.jitsiurl,
-                jitsiappsecret: this.props.config.PluginSettings.Plugins[pluginId].jitsiappsecret || DEFAULT_SETTINGS.jitsiappsecret,
-                jitsiappid: this.props.config.PluginSettings.Plugins[pluginId].jitsiappid || DEFAULT_SETTINGS.jaasappid,
-                jitsicompatibilitymode: this.props.config.PluginSettings.Plugins[pluginId].jitsicompatibilitymode || DEFAULT_SETTINGS.jitsicompatibilitymode,
-                jitsiembedded: this.props.config.PluginSettings.Plugins[pluginId].jitsiembedded || DEFAULT_SETTINGS.jitsiembedded,
-                jitsijwt: this.props.config.PluginSettings.Plugins[pluginId].jitsijwt || DEFAULT_SETTINGS.jitsijwt,
-                jitsilinkvalidtime: this.props.config.PluginSettings.Plugins[pluginId].jitsilinkvalidtime || DEFAULT_SETTINGS.jitsilinkvalidtime,
-                jitsinamingscheme: this.props.config.PluginSettings.Plugins[pluginId].jitsinamingscheme || DEFAULT_SETTINGS.jitsinamingscheme,
+                jitsiurl: this.props.config.PluginSettings.Plugins[pluginId].jitsiurl ?? DEFAULT_SETTINGS.jitsiurl,
+                jitsiappsecret: this.props.config.PluginSettings.Plugins[pluginId].jitsiappsecret ?? DEFAULT_SETTINGS.jitsiappsecret,
+                jitsiappid: this.props.config.PluginSettings.Plugins[pluginId].jitsiappid ?? DEFAULT_SETTINGS.jaasappid,
+                jitsicompatibilitymode: this.props.config.PluginSettings.Plugins[pluginId].jitsicompatibilitymode ?? DEFAULT_SETTINGS.jitsicompatibilitymode,
+                jitsiembedded: this.props.config.PluginSettings.Plugins[pluginId].jitsiembedded ?? DEFAULT_SETTINGS.jitsiembedded,
+                jitsijwt: this.props.config.PluginSettings.Plugins[pluginId].jitsijwt ?? DEFAULT_SETTINGS.jitsijwt,
+                jitsilinkvalidtime: this.props.config.PluginSettings.Plugins[pluginId].jitsilinkvalidtime ?? DEFAULT_SETTINGS.jitsilinkvalidtime,
+                jitsinamingscheme: this.props.config.PluginSettings.Plugins[pluginId].jitsinamingscheme ?? DEFAULT_SETTINGS.jitsinamingscheme,
                 usejaas: DEFAULT_SETTINGS.usejaas,
                 jaasappid: DEFAULT_SETTINGS.jaasappid,
                 jaasapikey: DEFAULT_SETTINGS.jaasapikey,
@@ -92,7 +90,7 @@ export default class JitsiSettings extends React.Component<Props, State> {
 
         this.state = {
             mode: selectedMode,
-            value: this.props.value || selectedSettings
+            value: this.props.value ?? selectedSettings
         };
 
         this.onJaaSApiKeyChanged = this.onJaaSApiKeyChanged.bind(this);
@@ -127,8 +125,6 @@ export default class JitsiSettings extends React.Component<Props, State> {
         });
     }
 
-    componentDidUpdate() {}
-
     updateSettingsState(key: any, newValue: any) {
         this.setState((state) => {
             return {
@@ -157,13 +153,11 @@ export default class JitsiSettings extends React.Component<Props, State> {
 
     // We reuse some of the Jitsi settings for JaaS
     onJaaSEmbeddedChanged(e: any) {
-        const newValue = e.target.value === 'true';
-        this.updateSettingsState('jitsiembedded', newValue);
+        this.updateSettingsState('jitsiembedded', e.target.value === 'true');
     }
 
     onJaaSCompatibilityChange(e: any) {
-        const newValue = e.target.value === 'true';
-        this.updateSettingsState('jitsicompatibilitymode', newValue);
+        this.updateSettingsState('jitsicompatibilitymode', e.target.value === 'true');
     }
 
     onJitsiAppIDChanged(e: any) {
@@ -175,8 +169,7 @@ export default class JitsiSettings extends React.Component<Props, State> {
     }
 
     onJitsiCompatibilityChanged(e: any) {
-        const newValue = e.target.value === 'true';
-        this.updateSettingsState('jitsicompatibilitymode', newValue);
+        this.updateSettingsState('jitsicompatibilitymode', e.target.value === 'true');
     }
 
     onJitsiEmbeddedChanged(e: any) {
@@ -211,14 +204,14 @@ export default class JitsiSettings extends React.Component<Props, State> {
                 onJitsiMeetingLinkExpChange={this.onJitsiMeetingLinkExpChanged}
                 onJitsiMeetingNamesChange={this.onJitsiMeetingNamesChanged}
                 onJitsiURLChange={this.onJitsiURLChanged}
-                serverUrl={this.state.value.jitsiurl || ''}
-                embedded={this.state.value.jitsiembedded || false}
-                namingScheme={this.state.value.jitsinamingscheme || JITSI_NAMING_SCHEME.WORDS}
-                jwtEnabled={this.state.value.jitsijwt || false}
-                appID={this.state.value.jitsiappid || ''}
-                appSecret={this.state.value.jitsiappsecret || ''}
-                meetingLinkExpire={this.state.value.jitsilinkvalidtime || JITSI_LINK_VALID_TIME}
-                compatibilityMode={this.state.value.jitsicompatibilitymode || false}
+                serverUrl={this.state.value.jitsiurl ?? ''}
+                embedded={this.state.value.jitsiembedded ?? false}
+                namingScheme={this.state.value.jitsinamingscheme ?? JITSI_NAMING_SCHEME.WORDS}
+                jwtEnabled={this.state.value.jitsijwt ?? false}
+                appID={this.state.value.jitsiappid ?? ''}
+                appSecret={this.state.value.jitsiappsecret ?? ''}
+                meetingLinkExpire={this.state.value.jitsilinkvalidtime ?? JITSI_LINK_VALID_TIME}
+                compatibilityMode={this.state.value.jitsicompatibilitymode ?? false}
             />
         );
     }
@@ -232,11 +225,11 @@ export default class JitsiSettings extends React.Component<Props, State> {
                 onPrivateKeyChange={this.onJaaSPrivateKeyChanged}
                 onEmbeddedChange={this.onJaaSEmbeddedChanged}
                 onCompatibilityChange={this.onJaaSCompatibilityChange}
-                appID={this.state.value.jaasappid || ''}
-                apiKey={this.state.value.jaasapikey || ''}
-                privateKey={this.state.value.jaasprivatekey || ''}
-                embedded={this.state.value.jitsiembedded || false}
-                compatibilityMode={this.state.value.jitsicompatibilitymode || false}
+                appID={this.state.value.jaasappid ?? ''}
+                apiKey={this.state.value.jaasapikey ?? ''}
+                privateKey={this.state.value.jaasprivatekey ?? ''}
+                embedded={this.state.value.jitsiembedded ?? false}
+                compatibilityMode={this.state.value.jitsicompatibilitymode ?? false}
             />
         );
     }

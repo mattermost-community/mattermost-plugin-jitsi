@@ -31,6 +31,9 @@ const configChangeEvent = "config_update"
 
 const jaasAudienceClaim = "jitsi"
 const jaasIssuerClaim = "chat"
+const rsaPrivateKey = "RSA PRIVATE KEY"
+const privateKey = "PRIVATE KEY"
+const DefaultValidityOfMeetingLinkInMinutes = 120
 
 type Plugin struct {
 	plugin.MattermostPlugin
@@ -158,18 +161,17 @@ func signClaimsJaaS(apiKeyJaaS string, privateKeyJaaS string, claimsJaaS *JaaSCl
 	var err error
 	privateKeyJaaSBytes := []byte(privateKeyJaaS)
 	privPem, _ := pem.Decode(privateKeyJaaSBytes)
-
 	if privPem == nil {
 		mlog.Error("Error decoding specified JaaS private key")
 		return "", errors.New("internal server error")
 	}
 
-	var privPemBytes = privPem.Bytes
+	privPemBytes := privPem.Bytes
 	var parsedKey interface{}
 	switch privPem.Type {
-	case "RSA PRIVATE KEY":
+	case rsaPrivateKey:
 		parsedKey, err = x509.ParsePKCS1PrivateKey(privPemBytes)
-	case "PRIVATE KEY":
+	case privateKey:
 		parsedKey, err = x509.ParsePKCS8PrivateKey(privPemBytes)
 	default:
 		return "", errors.New("invalid private key")
@@ -183,21 +185,19 @@ func signClaimsJaaS(apiKeyJaaS string, privateKeyJaaS string, claimsJaaS *JaaSCl
 	success := false
 	var privateKey *rsa.PrivateKey
 	privateKey, success = parsedKey.(*rsa.PrivateKey)
-
 	if !success {
 		mlog.Error("Error converting JaaS private Key", mlog.Err(err))
 		return "", err
 	}
 
 	signer, err := jwt.NewSignerRS(jwt.RS256, privateKey)
-
 	if err != nil {
 		return "", err
 	}
 
 	builder := jwt.NewBuilder(signer, jwt.WithKeyID(apiKeyJaaS))
-	token, err := builder.Build(claimsJaaS)
 
+	token, err := builder.Build(claimsJaaS)
 	if err != nil {
 		return "", err
 	}
@@ -367,7 +367,6 @@ func (p *Plugin) getJaaSSettings(jwtToken string, path string, user *model.User)
 	} else {
 		var err error
 		jwtToken, err = p.generateJaaSJwtForGuest(uuid.New().String() + "-guest")
-
 		if err != nil {
 			mlog.Error("Error generating JaaS token for guest", mlog.Err(err))
 			return nil, errors.New("failed creating new JaaS token for guest")
@@ -470,7 +469,7 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 	meetingUntil := ""
 
 	if p.getConfiguration().UseJaaS {
-		meetingLinkValidUntil = time.Now().Add(time.Duration(120) * time.Minute)
+		meetingLinkValidUntil = time.Now().Add(time.Duration(DefaultValidityOfMeetingLinkInMinutes) * time.Minute)
 
 		var err2 error
 		jwtToken, err2 = p.generateJaaSJwtForUser(user)
