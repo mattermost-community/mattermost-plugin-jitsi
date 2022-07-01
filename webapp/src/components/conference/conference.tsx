@@ -141,7 +141,8 @@ export default class Conference extends React.PureComponent<Props, State> {
             const vh = this.getViewportHeight();
             const iframe = this.api.getIFrame();
             iframe.style.width = this.state.minimized ? MINIMIZED_WIDTH + 'px' : vw + 'px';
-            iframe.style.height = this.state.minimized ? (this.props.showPrejoinPage ? `calc(${WINDOW_HEIGHT}vh - ${MATTERMOST_HEADER_HEIGHT}px)` : MINIMIZED_HEIGHT + 'px') : vh + 'px';
+            const minimizedHeight = this.props.showPrejoinPage ? `calc(${WINDOW_HEIGHT}vh - ${MATTERMOST_HEADER_HEIGHT}px)` : MINIMIZED_HEIGHT + 'px';
+            iframe.style.height = this.state.minimized ? minimizedHeight : vh + 'px';
         }
     }
 
@@ -342,7 +343,8 @@ export default class Conference extends React.PureComponent<Props, State> {
         const vw = this.getViewportWidth();
         const width = this.state.minimized ? MINIMIZED_WIDTH : vw;
         const vh = this.getViewportHeight();
-        const height = this.state.minimized ? (this.props.showPrejoinPage ? WINDOW_HEIGHT : MINIMIZED_HEIGHT) : vh;
+        const minimizedHeight = this.props.showPrejoinPage ? WINDOW_HEIGHT : MINIMIZED_HEIGHT;
+        const height = this.state.minimized ? minimizedHeight : vh;
         const style = getStyle(height, width, this.state.position, this.props.showPrejoinPage, this.state.minimized);
         return (
             <React.Fragment>
@@ -370,6 +372,7 @@ function getStyle(height: number, width: number, position: 'top' | 'bottom', sho
     const jitsiZIndex = 1100;
     const buttonsZIndex = 1200;
     const loadingZIndex = 1200;
+    const minimizedPositionBottom = position === POSITION_BOTTOM ? ((height - BORDER_SIZE) - BUTTONS_PADDING_TOP) + 'px' : '';
 
     return {
         jitsiMeetContainer: {
@@ -413,7 +416,7 @@ function getStyle(height: number, width: number, position: 'top' | 'bottom', sho
         },
         buttons: {
             position: 'absolute',
-            bottom: showPrejoinPage && isMinimized ? `calc(${height}vh - ${BORDER_SIZE + BUTTONS_PADDING_TOP + MATTERMOST_HEADER_HEIGHT}px)` : position === POSITION_BOTTOM ? ((height - BORDER_SIZE) - BUTTONS_PADDING_TOP) + 'px' : '',
+            bottom: showPrejoinPage && isMinimized ? `calc(${height}vh - ${BORDER_SIZE + BUTTONS_PADDING_TOP + MATTERMOST_HEADER_HEIGHT}px)` : minimizedPositionBottom,
             top: position === POSITION_TOP && !showPrejoinPage ? `${BORDER_SIZE}px` : '',
             right: `${BORDER_SIZE + BUTTONS_PADDING_RIGHT}px`,
             color: 'white',
