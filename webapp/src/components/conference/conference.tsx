@@ -141,8 +141,8 @@ export default class Conference extends React.PureComponent<Props, State> {
             const vh = this.getViewportHeight();
             const iframe = this.api.getIFrame();
             iframe.style.width = this.state.minimized ? MINIMIZED_WIDTH + 'px' : vw + 'px';
-            const minimizedHeight = this.props.showPrejoinPage ? `calc(${WINDOW_HEIGHT}vh - ${MATTERMOST_HEADER_HEIGHT}px)` : MINIMIZED_HEIGHT + 'px';
-            iframe.style.height = this.state.minimized ? minimizedHeight : vh + 'px';
+            const minimizedHeight = this.props.showPrejoinPage ? `calc(${WINDOW_HEIGHT}vh - ${MATTERMOST_HEADER_HEIGHT}px)` : `${MINIMIZED_HEIGHT}px`;
+            iframe.style.height = this.state.minimized ? minimizedHeight : `${vh}px`;
         }
     }
 
@@ -372,7 +372,7 @@ function getStyle(height: number, width: number, position: 'top' | 'bottom', sho
     const jitsiZIndex = 1100;
     const buttonsZIndex = 1200;
     const loadingZIndex = 1200;
-    const minimizedPositionBottom = position === POSITION_BOTTOM ? ((height - BORDER_SIZE) - BUTTONS_PADDING_TOP) + 'px' : '';
+    const minimizedPositionBottom = position === POSITION_BOTTOM ? `${height - BORDER_SIZE - BUTTONS_PADDING_TOP}px` : '';
 
     return {
         jitsiMeetContainer: {
