@@ -53,6 +53,14 @@ const manifestStr = `
         "default": null
       },
       {
+        "key": "JitsiPrejoinPage",
+        "display_name": "Show pre-join page:",
+        "type": "bool",
+        "help_text": "When false, pre-join page will not be displayed when Jitsi is embedded inside Mattermost.",
+        "placeholder": "",
+        "default": null
+      },
+      {
         "key": "JitsiNamingScheme",
         "display_name": "Jitsi Meeting Names:",
         "type": "radio",

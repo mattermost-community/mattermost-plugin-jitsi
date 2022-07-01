@@ -1,7 +1,7 @@
 import {Client4} from 'mattermost-redux/client';
 import {ClientError} from 'mattermost-redux/client/client4';
 
-import {id} from '../manifest';
+import {id} from 'manifest';
 
 export default class Client {
     private url: string | undefined;

@@ -5,7 +5,7 @@ import {combineReducers} from 'redux';
 
 import {Post} from 'mattermost-redux/types/posts';
 
-import ActionTypes from '../action_types';
+import ActionTypes from 'action_types';
 
 function openMeeting(state: Post | null = null, action: {type: string, data: {post: Post | null, jwt: string | null}}) {
     switch (action.type) {
