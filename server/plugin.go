@@ -15,6 +15,7 @@ import (
 
 	"github.com/cristalhq/jwt/v3"
 	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 	"github.com/mattermost/mattermost-plugin-api/experimental/telemetry"
 	"github.com/mattermost/mattermost-plugin-api/i18n"
 	"github.com/mattermost/mattermost-server/v5/mlog"
@@ -34,6 +35,8 @@ const jaasIssuerClaim = "chat"
 const rsaPrivateKey = "RSA PRIVATE KEY"
 const privateKey = "PRIVATE KEY"
 const DefaultValidityOfMeetingLinkInMinutes = 120
+const typeUser = "user"
+const typeGuest = "guest"
 
 type Plugin struct {
 	plugin.MattermostPlugin
@@ -53,6 +56,8 @@ type Plugin struct {
 	botID string
 
 	jaasURLCheckRegExp *regexp.Regexp
+
+	router *mux.Router
 }
 
 func (p *Plugin) OnActivate() error {
@@ -102,6 +107,7 @@ func (p *Plugin) OnActivate() error {
 	if err != nil {
 		p.API.LogWarn("telemetry client not started", "error", err.Error())
 	}
+	p.router = p.InitAPI()
 
 	return nil
 }
@@ -290,10 +296,13 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 	return signClaims(secret, claims)
 }
 
-func (p *Plugin) generateJaaSJwtForUser(user *model.User) (string, error) {
+func (p *Plugin) setJWTClaims(user *model.User, userType string) (string, error) {
 	// User did not specify a jwt, generate a new jwt for user
 	const ExpTimeDelaySec = 7200
-	const _true = "true"
+	permission := "true"
+	if userType != typeUser {
+		permission = "false"
+	}
 
 	claims := JaaSClaims{}
 	claims.Issuer = jaasIssuerClaim
@@ -302,52 +311,49 @@ func (p *Plugin) generateJaaSJwtForUser(user *model.User) (string, error) {
 	claims.Room = "*"
 	claims.Exp = time.Now().Unix() + ExpTimeDelaySec
 	claims.Nbf = time.Now().Unix()
-	claims.Context.Features.LiveStreaming = _true
-	claims.Context.Features.Recording = _true
-	claims.Context.Features.OutboundCall = _true
-	claims.Context.Features.Transcription = _true
+	claims.Context.Features.LiveStreaming = permission
+	claims.Context.Features.Recording = permission
+	claims.Context.Features.OutboundCall = permission
+	claims.Context.Features.Transcription = permission
 	claims.Context.User.Avatar = ""
-	claims.Context.User.Email = user.Email
+	claims.Context.User.Email = ""
+	if userType == typeUser {
+		claims.Context.User.Email = user.Email
+	}
 	claims.Context.User.ID = user.Id
-	claims.Context.User.IsModerator = _true
+	claims.Context.User.IsModerator = permission
 	claims.Context.User.Name = user.GetFullName()
 
-	var err2 error
-	var jwtToken string
-	jwtToken, err2 = signClaimsJaaS(p.getConfiguration().JaaSApiKey, p.getConfiguration().JaaSPrivateKey, &claims)
+	jwtToken, err := signClaimsJaaS(p.getConfiguration().JaaSApiKey, p.getConfiguration().JaaSPrivateKey, &claims)
+	if err != nil {
+		mlog.Error(fmt.Sprintf("Error generating JaaS token for %s", userType), mlog.Err(err))
+		return "", err
+	}
 
 	// Maybe let the user join as guest...?
-	return jwtToken, err2
+	return jwtToken, nil
+}
+
+func (p *Plugin) generateJaaSJwtForUser(user *model.User) (string, error) {
+	token, err := p.setJWTClaims(user, typeUser)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }
 
 func (p *Plugin) generateJaaSJwtForGuest(userid string) (string, error) {
-	const ExpTimeDelaySec = 7200
-	const _false = "false"
-
-	guestClaims := JaaSClaims{}
-	guestClaims.Issuer = jaasIssuerClaim
-	guestClaims.Audience = jaasAudienceClaim
-	guestClaims.Subject = p.getConfiguration().JaaSAppID
-	guestClaims.Room = "*"
-	guestClaims.Exp = time.Now().Unix() + ExpTimeDelaySec
-	guestClaims.Nbf = time.Now().Unix()
-	guestClaims.Context.Features.LiveStreaming = _false
-	guestClaims.Context.Features.Recording = _false
-	guestClaims.Context.Features.OutboundCall = _false
-	guestClaims.Context.Features.Transcription = _false
-	guestClaims.Context.User.Avatar = ""
-	guestClaims.Context.User.Email = ""
-	guestClaims.Context.User.ID = userid
-	guestClaims.Context.User.IsModerator = _false
-	guestClaims.Context.User.Name = ""
-
-	jwtToken, err := signClaimsJaaS(p.getConfiguration().JaaSApiKey, p.getConfiguration().JaaSPrivateKey, &guestClaims)
-	if err != nil {
-		mlog.Error("Error generating JaaS token for guest", mlog.Err(err))
-		return "", errors.New("failed creating new JaaS token for guest")
+	user := &model.User{
+		Id: userid,
 	}
 
-	return jwtToken, err
+	token, err := p.setJWTClaims(user, typeGuest)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }
 
 func (p *Plugin) getJaaSSettings(jwtToken string, path string, user *model.User) (*JaaSSettings, error) {

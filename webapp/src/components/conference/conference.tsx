@@ -11,6 +11,7 @@ const BUTTONS_PADDING_TOP = 10;
 const BUTTONS_PADDING_RIGHT = 2;
 const MINIMIZED_WIDTH = 384;
 const MINIMIZED_HEIGHT = 288;
+const JAAS_DOMAIN = '8x8.vc';
 
 type Props = {
     currentUserId: string,
@@ -104,7 +105,7 @@ export default class Conference extends React.PureComponent<Props, State> {
             }
         };
 
-        this.api = new (window as any).JitsiMeetExternalAPI(post.props.jaas_meeting ? '8x8.vc' : domain, options);
+        this.api = new (window as any).JitsiMeetExternalAPI(post.props.jaas_meeting ? JAAS_DOMAIN : domain, options);
         this.api.on('videoConferenceJoined', () => {
             if (this.state.minimized) {
                 this.minimize();

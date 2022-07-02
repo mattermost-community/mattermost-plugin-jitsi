@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"sync"
 
+	"github.com/gorilla/mux"
 	"github.com/mattermost/mattermost-server/v5/mlog"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
@@ -42,31 +43,35 @@ type JaaSSettingsFromAction struct {
 	Path string `json:"jaasPath"`
 }
 
+func (p *Plugin) InitAPI() *mux.Router {
+	r := mux.NewRouter()
+
+	apiRouter := r.PathPrefix("/api/v1").Subrouter()
+
+	apiRouter.HandleFunc("/meetings/enrich", p.handleEnrichMeetingJwt).Methods(http.MethodPost)
+	apiRouter.HandleFunc("/meetings", p.handleStartMeeting).Methods(http.MethodPost)
+	apiRouter.HandleFunc("/config", p.handleConfig).Methods(http.MethodPost)
+	apiRouter.HandleFunc("/meetings/jaas/settings", p.handleJaaSSettings)
+	r.HandleFunc("/jitsi_meet_external_api.js", p.handleExternalAPIjs)
+	r.HandleFunc("/jaas-main.js", p.handleJaaSBundle)
+	r.HandleFunc("{anything:.*}", p.handleDefault)
+
+	return r
+}
+
 func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Request) {
-	switch path := r.URL.Path; path {
-	case "/api/v1/meetings/enrich":
-		p.handleEnrichMeetingJwt(w, r)
-	case "/api/v1/meetings":
-		p.handleStartMeeting(w, r)
-	case "/api/v1/config":
-		p.handleConfig(w, r)
-	case "/jitsi_meet_external_api.js":
-		p.handleExternalAPIjs(w, r)
-	case "/jaas-main.js":
-		p.handleJaaSBundle(w, r)
-	case "/api/v1/meetings/jaas/settings":
-		p.handleJaaSSettings(w, r)
-	default:
+	p.router.ServeHTTP(w, r)
+}
 
-		if p.getConfiguration().UseJaaS {
-			if p.isJaaSMeeting(path) {
-				p.handleOpenJaaSMeeting(w, r)
-				return
-			}
+func (p *Plugin) handleDefault(w http.ResponseWriter, r *http.Request) {
+	if p.getConfiguration().UseJaaS {
+		if p.isJaaSMeeting(r.URL.Path) {
+			p.handleOpenJaaSMeeting(w, r)
+			return
 		}
-
-		http.NotFound(w, r)
 	}
+
+	http.NotFound(w, r)
 }
 
 func (p *Plugin) handleJaaSSettings(w http.ResponseWriter, r *http.Request) {
