@@ -27,8 +27,8 @@ export class JaaSConference extends React.PureComponent<Props, State> {
         const url = new URL(window.location.href);
         const noSSL = url.protocol === 'http:';
 
-        const ws = Math.max(document.documentElement.clientWidth || 0, window?.innerWidth || 0);
-        const hs = Math.max(document.documentElement.clientHeight || 0, window?.innerHeight || 0);
+        const ws = Math.max(document.documentElement.clientWidth ?? 0, window?.innerWidth ?? 0);
+        const hs = Math.max(document.documentElement.clientHeight ?? 0, window?.innerHeight ?? 0);
         const options = {
             width: ws,
             height: hs,
