@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {FormattedMessage} from 'react-intl';
 
 type Props = {
@@ -28,7 +28,7 @@ export const JITSI_NAMING_SCHEME = {
     ASK: 'ask'
 };
 
-const JitsiSection = (props: Props) => {
+const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeetingLinkExpChange, onJitsiMeetingNamesChange, onJitsiJwtAuthChange, onJitsiAppSecretChange, onJitsiCompatibilityChange, onJitsiURLChange, serverUrl, embedded, namingScheme, jwtEnabled, appID, appSecret, meetingLinkExpire, compatibilityMode}: Props) => {
     // TODO rewrite common components or use Mattermost components
     return (
         <div>
@@ -45,8 +45,8 @@ const JitsiSection = (props: Props) => {
                         type='input'
                         placeholder='https://meet.jit.si'
                         maxLength={-1}
-                        onChange={props.onJitsiURLChange}
-                        value={props.serverUrl}
+                        onChange={onJitsiURLChange}
+                        value={serverUrl}
                     />
                     <div className='help-text'>
                         <span>
@@ -70,8 +70,8 @@ const JitsiSection = (props: Props) => {
                         <input
                             type='radio'
                             value='true'
-                            checked={props.embedded}
-                            onChange={props.onJitsiEmbeddedChange}
+                            checked={embedded}
+                            onChange={onJitsiEmbeddedChange}
                         />
                         <span>{'true'}</span>
                     </label>
@@ -79,8 +79,8 @@ const JitsiSection = (props: Props) => {
                         <input
                             type='radio'
                             value='false'
-                            checked={!props.embedded}
-                            onChange={props.onJitsiEmbeddedChange}
+                            checked={!embedded}
+                            onChange={onJitsiEmbeddedChange}
                         />
                         <span>{'false'}</span>
                     </label>
@@ -107,8 +107,8 @@ const JitsiSection = (props: Props) => {
                             <input
                                 type='radio'
                                 value={JITSI_NAMING_SCHEME.WORDS}
-                                checked={props.namingScheme === JITSI_NAMING_SCHEME.WORDS}
-                                onChange={props.onJitsiMeetingNamesChange}
+                                checked={namingScheme === JITSI_NAMING_SCHEME.WORDS}
+                                onChange={onJitsiMeetingNamesChange}
                             />
                             <FormattedMessage
                                 id='jitsi.random-english-words'
@@ -121,8 +121,8 @@ const JitsiSection = (props: Props) => {
                             <input
                                 type='radio'
                                 value={JITSI_NAMING_SCHEME.UUID}
-                                checked={props.namingScheme === JITSI_NAMING_SCHEME.UUID}
-                                onChange={props.onJitsiMeetingNamesChange}
+                                checked={namingScheme === JITSI_NAMING_SCHEME.UUID}
+                                onChange={onJitsiMeetingNamesChange}
                             />
                             <FormattedMessage
                                 id='jitsi.uuid'
@@ -135,8 +135,8 @@ const JitsiSection = (props: Props) => {
                             <input
                                 type='radio'
                                 value={JITSI_NAMING_SCHEME.MATTERMOST}
-                                checked={props.namingScheme === JITSI_NAMING_SCHEME.MATTERMOST}
-                                onChange={props.onJitsiMeetingNamesChange}
+                                checked={namingScheme === JITSI_NAMING_SCHEME.MATTERMOST}
+                                onChange={onJitsiMeetingNamesChange}
                             />
                             <FormattedMessage
                                 id='jitsi.context-specific'
@@ -149,8 +149,8 @@ const JitsiSection = (props: Props) => {
                             <input
                                 type='radio'
                                 value={JITSI_NAMING_SCHEME.ASK}
-                                checked={props.namingScheme === JITSI_NAMING_SCHEME.ASK}
-                                onChange={props.onJitsiMeetingNamesChange}
+                                checked={namingScheme === JITSI_NAMING_SCHEME.ASK}
+                                onChange={onJitsiMeetingNamesChange}
                             />
                             <FormattedMessage
                                 id='jitsi.allow-user'
@@ -180,8 +180,8 @@ const JitsiSection = (props: Props) => {
                         <input
                             type='radio'
                             value='true'
-                            checked={props.jwtEnabled}
-                            onChange={props.onJitsiJwtAuthChange}
+                            checked={jwtEnabled}
+                            onChange={onJitsiJwtAuthChange}
                         />
                         <span>{'true'}</span>
                     </label>
@@ -189,8 +189,8 @@ const JitsiSection = (props: Props) => {
                         <input
                             type='radio'
                             value='false'
-                            checked={!props.jwtEnabled}
-                            onChange={props.onJitsiJwtAuthChange}
+                            checked={!jwtEnabled}
+                            onChange={onJitsiJwtAuthChange}
                         />
                         <span>{'false'}</span>
                     </label>
@@ -216,8 +216,8 @@ const JitsiSection = (props: Props) => {
                         className='form-control'
                         type='input'
                         maxLength={-1}
-                        onChange={props.onJitsiAppIDChange}
-                        value={props.appID}
+                        onChange={onJitsiAppIDChange}
+                        value={appID}
                     />
                     <div className='help-text'>
                         <span>
@@ -241,8 +241,8 @@ const JitsiSection = (props: Props) => {
                         className='form-control'
                         type='input'
                         maxLength={-1}
-                        onChange={props.onJitsiAppSecretChange}
-                        value={props.appSecret}
+                        onChange={onJitsiAppSecretChange}
+                        value={appSecret}
                     />
                     <div className='help-text'>
                         <span>
@@ -267,8 +267,8 @@ const JitsiSection = (props: Props) => {
                         type={'number'}
                         min={1}
                         defaultValue={30}
-                        onChange={props.onJitsiMeetingLinkExpChange}
-                        value={props.meetingLinkExpire}
+                        onChange={onJitsiMeetingLinkExpChange}
+                        value={meetingLinkExpire}
                     />
                     <div className='help-text'>
                         <span>
@@ -292,8 +292,8 @@ const JitsiSection = (props: Props) => {
                         <input
                             type='radio'
                             value='true'
-                            checked={props.compatibilityMode}
-                            onChange={props.onJitsiCompatibilityChange}
+                            checked={compatibilityMode}
+                            onChange={onJitsiCompatibilityChange}
                         />
                         <span>{'true'}</span>
                     </label>
@@ -301,8 +301,8 @@ const JitsiSection = (props: Props) => {
                         <input
                             type='radio'
                             value='false'
-                            checked={!props.compatibilityMode}
-                            onChange={props.onJitsiCompatibilityChange}
+                            checked={!compatibilityMode}
+                            onChange={onJitsiCompatibilityChange}
                         />
                         <span>{'false'}</span>
                     </label>

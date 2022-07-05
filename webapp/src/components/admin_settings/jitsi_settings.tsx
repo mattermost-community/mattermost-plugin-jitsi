@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useCallback, useEffect, useState, useMemo, ChangeEvent} from 'react';
 import {FormattedMessage} from 'react-intl';
 import JaaSSection from './jaas_section';
 import JitsiSection, {JITSI_NAMING_SCHEME} from './jitsi_section';
@@ -39,7 +39,7 @@ const JITSI_MODE = 'JITSI_MODE';
 const JAAS_MODE = 'JAAS_MODE';
 
 const DEFAULT_JITSI_URL = 'https://meet.jit.si';
-const JITSI_LINK_VALID_TIME = 30; // TODO set default value
+const JITSI_LINK_VALID_TIME = 30;
 const DEFAULT_SETTINGS: Settings = {
     usejaas: false,
     jitsiurl: DEFAULT_JITSI_URL,
@@ -55,146 +55,141 @@ const DEFAULT_SETTINGS: Settings = {
     jaasprivatekey: ''
 };
 
-const JitsiSettings = (props: Props) => {
-    // Check previous setting setup in case of upgrade
-    const selectedMode = props.value?.usejaas ? JAAS_MODE : JITSI_MODE;
+const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: Props) => {
+    const selectedMode = value?.usejaas ? JAAS_MODE : JITSI_MODE;
 
     let selectedSettings = DEFAULT_SETTINGS;
-    if (!props.value) {
-        selectedSettings = {
-            jitsiurl: props.config.PluginSettings.Plugins[pluginId].jitsiurl ?? DEFAULT_SETTINGS.jitsiurl,
-            jitsiappsecret: props.config.PluginSettings.Plugins[pluginId].jitsiappsecret ?? DEFAULT_SETTINGS.jitsiappsecret,
-            jitsiappid: props.config.PluginSettings.Plugins[pluginId].jitsiappid ?? DEFAULT_SETTINGS.jaasappid,
-            jitsicompatibilitymode: props.config.PluginSettings.Plugins[pluginId].jitsicompatibilitymode ?? DEFAULT_SETTINGS.jitsicompatibilitymode,
-            jitsiembedded: props.config.PluginSettings.Plugins[pluginId].jitsiembedded ?? DEFAULT_SETTINGS.jitsiembedded,
-            jitsijwt: props.config.PluginSettings.Plugins[pluginId].jitsijwt ?? DEFAULT_SETTINGS.jitsijwt,
-            jitsilinkvalidtime: props.config.PluginSettings.Plugins[pluginId].jitsilinkvalidtime ?? DEFAULT_SETTINGS.jitsilinkvalidtime,
-            jitsinamingscheme: props.config.PluginSettings.Plugins[pluginId].jitsinamingscheme ?? DEFAULT_SETTINGS.jitsinamingscheme,
+    if (!value) {
+        selectedSettings = useMemo(() => ({
+            jitsiurl: config.PluginSettings.Plugins[pluginId].jitsiurl ?? DEFAULT_SETTINGS.jitsiurl,
+            jitsiappsecret: config.PluginSettings.Plugins[pluginId].jitsiappsecret ?? DEFAULT_SETTINGS.jitsiappsecret,
+            jitsiappid: config.PluginSettings.Plugins[pluginId].jitsiappid ?? DEFAULT_SETTINGS.jaasappid,
+            jitsicompatibilitymode: config.PluginSettings.Plugins[pluginId].jitsicompatibilitymode ?? DEFAULT_SETTINGS.jitsicompatibilitymode,
+            jitsiembedded: config.PluginSettings.Plugins[pluginId].jitsiembedded ?? DEFAULT_SETTINGS.jitsiembedded,
+            jitsijwt: config.PluginSettings.Plugins[pluginId].jitsijwt ?? DEFAULT_SETTINGS.jitsijwt,
+            jitsilinkvalidtime: config.PluginSettings.Plugins[pluginId].jitsilinkvalidtime ?? DEFAULT_SETTINGS.jitsilinkvalidtime,
+            jitsinamingscheme: config.PluginSettings.Plugins[pluginId].jitsinamingscheme ?? DEFAULT_SETTINGS.jitsinamingscheme,
             usejaas: DEFAULT_SETTINGS.usejaas,
             jaasappid: DEFAULT_SETTINGS.jaasappid,
             jaasapikey: DEFAULT_SETTINGS.jaasapikey,
             jaasprivatekey: DEFAULT_SETTINGS.jaasprivatekey
-        };
+        }), [config]);
     }
 
-    const [value, setValue] = React.useState(props.value ?? selectedSettings);
-    const [mode, setMode] = React.useState(selectedMode);
+    const [settings, setSettings] = useState(value ?? selectedSettings);
+    const [mode, setMode] = useState(selectedMode);
 
-    React.useEffect(() => {
-        props.onChange(props.id, value);
-        props.setSaveNeeded();
-    }, [value]);
+    useEffect(() => {
+        onChange(id, settings);
+        setSaveNeeded();
+    }, [settings]);
 
-    const onModeSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onModeSelected = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         const newMode = e.target.value;
-        setValue({
-            ...value,
+        setSettings({
+            ...settings,
             usejaas: newMode === JAAS_MODE
         });
         setMode(newMode);
-    };
+    }, [settings]);
 
-    const updateSettingsState = (key: string, newValue: string | boolean) => {
-        setValue({
-            ...value,
+    const updateSettingsState = useCallback((key: string, newValue: string | boolean) => {
+        setSettings({
+            ...settings,
             [key]: newValue
         });
-    };
+    }, [settings]);
 
-    const onJaaSApiKeyChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onJaaSApiKeyChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jaasapikey', e.target.value);
-    };
+    }, []);
 
-    const onJaaSAppIDChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onJaaSAppIDChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jaasappid', e.target.value);
-    };
+    }, []);
 
-    const onJaaSPrivateKeyChanged = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const onJaaSPrivateKeyChanged = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
         updateSettingsState('jaasprivatekey', e.target.value);
-    };
+    }, []);
 
     // We reuse some of the Jitsi settings for JaaS
-    const onJaaSEmbeddedChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onJaaSEmbeddedChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsiembedded', e.target.value === 'true');
-    };
+    }, []);
 
-    const onJaaSCompatibilityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onJaaSCompatibilityChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsicompatibilitymode', e.target.value === 'true');
-    };
+    }, []);
 
-    const onJitsiAppIDChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onJitsiAppIDChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsiappid', e.target.value);
-    };
+    }, []);
 
-    const onJitsiAppSecretChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onJitsiAppSecretChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsiappsecret', e.target.value);
-    };
+    }, []);
 
-    const onJitsiCompatibilityChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onJitsiCompatibilityChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsicompatibilitymode', e.target.value === 'true');
-    };
+    }, []);
 
-    const onJitsiEmbeddedChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onJitsiEmbeddedChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsiembedded', e.target.value === 'true');
-    };
+    }, []);
 
-    const onJitsiAuthChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onJitsiAuthChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsijwt', e.target.value === 'true');
-    };
+    }, []);
 
-    const onJitsiMeetingLinkExpChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onJitsiMeetingLinkExpChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsilinkvalidtime', e.target.value);
-    };
+    }, []);
 
-    const onJitsiMeetingNamesChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onJitsiMeetingNamesChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsinamingscheme', e.target.value);
-    };
+    }, []);
 
-    const onJitsiURLChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onJitsiURLChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsiurl', e.target.value);
-    };
+    }, []);
 
-    const renderJitsiSettings = () => {
-        return (
-            <JitsiSection
-                disabled={props.disabled}
-                onJitsiAppIDChange={onJitsiAppIDChanged}
-                onJitsiAppSecretChange={onJitsiAppSecretChanged}
-                onJitsiCompatibilityChange={onJitsiCompatibilityChanged}
-                onJitsiEmbeddedChange={onJitsiEmbeddedChanged}
-                onJitsiJwtAuthChange={onJitsiAuthChanged}
-                onJitsiMeetingLinkExpChange={onJitsiMeetingLinkExpChanged}
-                onJitsiMeetingNamesChange={onJitsiMeetingNamesChanged}
-                onJitsiURLChange={onJitsiURLChanged}
-                serverUrl={value.jitsiurl ?? ''}
-                embedded={value.jitsiembedded ?? false}
-                namingScheme={value.jitsinamingscheme ?? JITSI_NAMING_SCHEME.WORDS}
-                jwtEnabled={value.jitsijwt ?? false}
-                appID={value.jitsiappid ?? ''}
-                appSecret={value.jitsiappsecret ?? ''}
-                meetingLinkExpire={value.jitsilinkvalidtime ?? JITSI_LINK_VALID_TIME}
-                compatibilityMode={value.jitsicompatibilitymode ?? false}
-            />
-        );
-    };
+    const renderJitsiSettings = useMemo(() => (
+        <JitsiSection
+            disabled={disabled}
+            onJitsiAppIDChange={onJitsiAppIDChanged}
+            onJitsiAppSecretChange={onJitsiAppSecretChanged}
+            onJitsiCompatibilityChange={onJitsiCompatibilityChanged}
+            onJitsiEmbeddedChange={onJitsiEmbeddedChanged}
+            onJitsiJwtAuthChange={onJitsiAuthChanged}
+            onJitsiMeetingLinkExpChange={onJitsiMeetingLinkExpChanged}
+            onJitsiMeetingNamesChange={onJitsiMeetingNamesChanged}
+            onJitsiURLChange={onJitsiURLChanged}
+            serverUrl={settings.jitsiurl ?? ''}
+            embedded={settings.jitsiembedded ?? false}
+            namingScheme={settings.jitsinamingscheme ?? JITSI_NAMING_SCHEME.WORDS}
+            jwtEnabled={settings.jitsijwt ?? false}
+            appID={settings.jitsiappid ?? ''}
+            appSecret={settings.jitsiappsecret ?? ''}
+            meetingLinkExpire={settings.jitsilinkvalidtime ?? JITSI_LINK_VALID_TIME}
+            compatibilityMode={settings.jitsicompatibilitymode ?? false}
+        />
+    ), [disabled, settings]);
 
-    const renderJaaSSettings = () => {
-        return (
-            <JaaSSection
-                disabled={props.disabled}
-                onApiKeyIDChange={onJaaSApiKeyChanged}
-                onAppIDChange={onJaaSAppIDChanged}
-                onPrivateKeyChange={onJaaSPrivateKeyChanged}
-                onEmbeddedChange={onJaaSEmbeddedChanged}
-                onCompatibilityChange={onJaaSCompatibilityChange}
-                appID={value.jaasappid ?? ''}
-                apiKey={value.jaasapikey ?? ''}
-                privateKey={value.jaasprivatekey ?? ''}
-                embedded={value.jitsiembedded ?? false}
-                compatibilityMode={value.jitsicompatibilitymode ?? false}
-            />
-        );
-    };
+    const renderJaaSSettings = useMemo(() => (
+        <JaaSSection
+            disabled={disabled}
+            onApiKeyIDChange={onJaaSApiKeyChanged}
+            onAppIDChange={onJaaSAppIDChanged}
+            onPrivateKeyChange={onJaaSPrivateKeyChanged}
+            onEmbeddedChange={onJaaSEmbeddedChanged}
+            onCompatibilityChange={onJaaSCompatibilityChange}
+            appID={settings.jaasappid ?? ''}
+            apiKey={settings.jaasapikey ?? ''}
+            privateKey={settings.jaasprivatekey ?? ''}
+            embedded={settings.jitsiembedded ?? false}
+            compatibilityMode={settings.jitsicompatibilitymode ?? false}
+        />
+    ), [settings, disabled]);
 
     return (
         <I18nProvider>
@@ -234,7 +229,7 @@ const JitsiSettings = (props: Props) => {
                         <div className='help-text'>
                             <span>
                                 <FormattedMessage
-                                    id='jitsi.serever-description'
+                                    id='jitsi.server-description'
                                     defaultMessage={'Select the type of jitsi server you want to use.'}
                                 />
                             </span>
@@ -242,11 +237,7 @@ const JitsiSettings = (props: Props) => {
                     </div>
                 </div>
                 <hr style={{height: '3px'}}/>
-                {
-                    mode === JAAS_MODE ?
-                        renderJaaSSettings() :
-                        renderJitsiSettings()
-                }
+                {mode === JAAS_MODE ? renderJaaSSettings : renderJitsiSettings}
             </div>
         </I18nProvider>
     );

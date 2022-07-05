@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {FormattedMessage} from 'react-intl';
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
     compatibilityMode: boolean
 };
 
-const JaaSSection = (props: Props) => {
+const JaaSSection = ({disabled, onApiKeyIDChange, onAppIDChange, onPrivateKeyChange, onEmbeddedChange, onCompatibilityChange, apiKey, appID, privateKey, embedded, compatibilityMode}: Props) => {
     return (
         <div>
             <div className='form-group'>
@@ -30,8 +30,8 @@ const JaaSSection = (props: Props) => {
                         <input
                             type='radio'
                             value='true'
-                            checked={props.embedded}
-                            onChange={props.onEmbeddedChange}
+                            checked={embedded}
+                            onChange={onEmbeddedChange}
                         />
                         <span>{'true'}</span>
                     </label>
@@ -39,8 +39,8 @@ const JaaSSection = (props: Props) => {
                         <input
                             type='radio'
                             value='false'
-                            checked={!props.embedded}
-                            onChange={props.onEmbeddedChange}
+                            checked={!embedded}
+                            onChange={onEmbeddedChange}
                         />
                         <span>{'false'}</span>
                     </label>
@@ -66,8 +66,8 @@ const JaaSSection = (props: Props) => {
                         <input
                             type='radio'
                             value='true'
-                            checked={props.compatibilityMode}
-                            onChange={props.onCompatibilityChange}
+                            checked={compatibilityMode}
+                            onChange={onCompatibilityChange}
                         />
                         <span>{'true'}</span>
                     </label>
@@ -75,8 +75,8 @@ const JaaSSection = (props: Props) => {
                         <input
                             type='radio'
                             value='false'
-                            checked={!props.compatibilityMode}
-                            onChange={props.onCompatibilityChange}
+                            checked={!compatibilityMode}
+                            onChange={onCompatibilityChange}
                         />
                         <span>{'false'}</span>
                     </label>
@@ -102,9 +102,9 @@ const JaaSSection = (props: Props) => {
                         className='form-control'
                         type='input'
                         maxLength={-1}
-                        onChange={props.onAppIDChange}
-                        value={props.appID}
-                        disabled={props.disabled}
+                        onChange={onAppIDChange}
+                        value={appID}
+                        disabled={disabled}
                     />
                     <div className='help-text'>
                         <span>
@@ -128,9 +128,9 @@ const JaaSSection = (props: Props) => {
                         className='form-control'
                         type='input'
                         maxLength={-1}
-                        onChange={props.onApiKeyIDChange}
-                        value={props.apiKey}
-                        disabled={props.disabled}
+                        onChange={onApiKeyIDChange}
+                        value={apiKey}
+                        disabled={disabled}
                     />
                     <div className='help-text'>
                         <span>
@@ -154,9 +154,9 @@ const JaaSSection = (props: Props) => {
                         className='form-control'
                         maxLength={-1}
                         rows={5}
-                        onChange={props.onPrivateKeyChange}
-                        value={props.privateKey}
-                        disabled={props.disabled}
+                        onChange={onPrivateKeyChange}
+                        value={privateKey}
+                        disabled={disabled}
                     />
                     <div className='help-text'>
                         <span>

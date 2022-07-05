@@ -326,8 +326,7 @@ func (p *Plugin) setJWTClaims(user *model.User, userType string) (string, error)
 
 	jwtToken, err := signClaimsJaaS(p.getConfiguration().JaaSApiKey, p.getConfiguration().JaaSPrivateKey, &claims)
 	if err != nil {
-		mlog.Error(fmt.Sprintf("Error generating JaaS token for %s", userType), mlog.Err(err))
-		return "", err
+		return "", errors.Wrap(err, fmt.Sprintf("failed creating new JaaS token for %s %s", userType, user.Id))
 	}
 
 	// Maybe let the user join as guest...?
@@ -335,12 +334,7 @@ func (p *Plugin) setJWTClaims(user *model.User, userType string) (string, error)
 }
 
 func (p *Plugin) generateJaaSJwtForUser(user *model.User) (string, error) {
-	token, err := p.setJWTClaims(user, typeUser)
-	if err != nil {
-		return "", err
-	}
-
-	return token, nil
+	return p.setJWTClaims(user, typeUser)
 }
 
 func (p *Plugin) generateJaaSJwtForGuest(userid string) (string, error) {
@@ -348,12 +342,7 @@ func (p *Plugin) generateJaaSJwtForGuest(userid string) (string, error) {
 		Id: userid,
 	}
 
-	token, err := p.setJWTClaims(user, typeGuest)
-	if err != nil {
-		return "", err
-	}
-
-	return token, nil
+	return p.setJWTClaims(user, typeGuest)
 }
 
 func (p *Plugin) getJaaSSettings(jwtToken string, path string, user *model.User) (*JaaSSettings, error) {
@@ -365,8 +354,6 @@ func (p *Plugin) getJaaSSettings(jwtToken string, path string, user *model.User)
 				mlog.Error("failed to generate new token for user!")
 				return nil, err
 			}
-
-			// jwtToken = jwtGen
 		} else if claims.Context.User.ID != user.Id {
 			return nil, errors.New("not authorized")
 		}

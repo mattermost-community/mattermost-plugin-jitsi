@@ -52,9 +52,10 @@ func (p *Plugin) InitAPI() *mux.Router {
 	apiRouter.HandleFunc("/meetings", p.handleStartMeeting).Methods(http.MethodPost)
 	apiRouter.HandleFunc("/config", p.handleConfig).Methods(http.MethodPost)
 	apiRouter.HandleFunc("/meetings/jaas/settings", p.handleJaaSSettings)
+	apiRouter.HandleFunc("/meetings/{apiid}/{roomname}", p.handleJaaSWindow)
 	r.HandleFunc("/jitsi_meet_external_api.js", p.handleExternalAPIjs)
 	r.HandleFunc("/jaas-main.js", p.handleJaaSBundle)
-	r.HandleFunc("{anything:.*}", p.handleDefault)
+	r.HandleFunc("{anything:*}", http.NotFound)
 
 	return r
 }
@@ -63,15 +64,13 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 	p.router.ServeHTTP(w, r)
 }
 
-func (p *Plugin) handleDefault(w http.ResponseWriter, r *http.Request) {
+func (p *Plugin) handleJaaSWindow(w http.ResponseWriter, r *http.Request) {
 	if p.getConfiguration().UseJaaS {
 		if p.isJaaSMeeting(r.URL.Path) {
 			p.handleOpenJaaSMeeting(w, r)
 			return
 		}
 	}
-
-	http.NotFound(w, r)
 }
 
 func (p *Plugin) handleJaaSSettings(w http.ResponseWriter, r *http.Request) {

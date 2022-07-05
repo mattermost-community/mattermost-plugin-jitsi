@@ -36,7 +36,7 @@
   "jitsi.open-in-new-tab": "Open in new tab",
   "jitsi.personal-meeting-id": "Personal Meeting ID (PMI): ",
   "jitsi.random-english-words": "Random English words in title case (e.g. PlayfulDragonsObserveCuriously)",
-  "jitsi.serever-description": "Select the type of jitsi server you want to use.",
+  "jitsi.server-description": "Select the type of jitsi server you want to use.",
   "jitsi.server": "Server:",
   "jitsi.server-url": "Jitsi Server URL:",
   "jitsi.server-url-description": "The url for your Jitsi server, for example https://jitsi.example.com. Defaults to https://meet.jit.si, which is the public server provided by Jitsi.",
