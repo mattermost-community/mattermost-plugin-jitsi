@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {FormattedMessage} from 'react-intl';
 import JaaSSection from './jaas_section';
+import {RadioField} from '../RadioField/RadioField';
 import JitsiSection, {JITSI_NAMING_SCHEME} from './jitsi_section';
 import {id as pluginId} from '../../manifest';
 import I18nProvider from 'components/i18n_provider';
@@ -79,6 +79,21 @@ const JitsiSettings = (props: Props) => {
 
     const [value, setValue] = React.useState(props.value ?? selectedSettings);
     const [mode, setMode] = React.useState(selectedMode);
+
+    const JITSI_SERVER_OPTIONS = [
+        {
+            value: JITSI_MODE,
+            checked: mode === JITSI_MODE,
+            id: 'jitsi.input-enable-jitsi',
+            message: 'Jitsi'
+        },
+        {
+            value: JAAS_MODE,
+            checked: mode === JAAS_MODE,
+            id: 'jitsi.input-enable-jass',
+            message: 'JasS'
+        }
+    ];
 
     React.useEffect(() => {
         props.onChange(props.id, value);
@@ -199,48 +214,21 @@ const JitsiSettings = (props: Props) => {
     return (
         <I18nProvider>
             <div>
-                <div className='form-group'>
-                    <label className='col-sm-4'>
-                        <FormattedMessage
-                            id='jitsi.server'
-                            defaultMessage={'Server:'}
-                        />
-                    </label>
-                    <div className='col-sm-8'>
-                        <label className='radio-inline pt-0'>
-                            <input
-                                type='radio'
-                                checked={mode === JITSI_MODE}
-                                onChange={onModeSelected}
-                                value={JITSI_MODE}
-                            />
-                            <FormattedMessage
-                                id='jitsi.input-enable-jitsi'
-                                defaultMessage='Jitsi'
-                            />
-                        </label>
-                        <label className='radio-inline pt-0'>
-                            <input
-                                type='radio'
-                                checked={mode === JAAS_MODE}
-                                onChange={onModeSelected}
-                                value={JAAS_MODE}
-                            />
-                            <FormattedMessage
-                                id='jitsi.input-enable-jass'
-                                defaultMessage='JasS'
-                            />
-                        </label>
-                        <div className='help-text'>
-                            <span>
-                                <FormattedMessage
-                                    id='jitsi.serever-description'
-                                    defaultMessage={'Select the type of jitsi server you want to use.'}
-                                />
-                            </span>
-                        </div>
-                    </div>
-                </div>
+
+                <RadioField
+                    heading={{
+                        id: 'jitsi.server',
+                        message: 'Server:'
+                    }}
+                    labelClass={'radio-inline'}
+                    options={JITSI_SERVER_OPTIONS}
+                    onChange={onModeSelected}
+                    description={{
+                        id: 'jitsi.serever-description',
+                        message: 'Select the type of jitsi server you want to use.'
+                    }}
+                />
+
                 <hr style={{height: '3px'}}/>
                 {
                     mode === JAAS_MODE ?
