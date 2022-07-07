@@ -21,28 +21,28 @@ type Props = {
     }
 }
 
-export const RadioField = (props: Props) => {
+export const RadioField = ({heading, divClass, labelClass, options, onChange, description}: Props) => {
     return (
         <>
             <div className='form-group'>
                 <label className='col-sm-4'>
                     <FormattedMessage
-                        id={props.heading.id}
-                        defaultMessage={props.heading.message}
+                        id={heading.id}
+                        defaultMessage={heading.message}
                     />
                 </label>
                 <div className='col-sm-8'>
                     <>
-                        <div className={`${props.divClass}`}>
-                            {props.options.map((option) => (
+                        <div className={`${divClass}`}>
+                            {options.map((option) => (
                                 <>
-                                    <label className={`pt-0 ${props.labelClass}`}>
+                                    <label className={`pt-0 ${labelClass}`}>
                                         <input
                                             key={option.value}
                                             type='radio'
                                             value={option.value}
                                             checked={option.checked}
-                                            onChange={props.onChange}
+                                            onChange={onChange}
                                         />
                                         {option.value === 'true' || option.value === 'false' ?
                                             <span>{option.value}</span> :
@@ -57,8 +57,8 @@ export const RadioField = (props: Props) => {
                         <div className='help-text'>
                             <span>
                                 <FormattedMessage
-                                    id={props.description.id}
-                                    defaultMessage={props.description.message}
+                                    id={description.id}
+                                    defaultMessage={description.message}
                                 />
                             </span>
                         </div>

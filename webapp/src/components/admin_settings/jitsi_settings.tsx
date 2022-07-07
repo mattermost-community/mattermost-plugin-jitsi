@@ -214,7 +214,6 @@ const JitsiSettings = (props: Props) => {
     return (
         <I18nProvider>
             <div>
-
                 <RadioField
                     heading={{
                         id: 'jitsi.server',
@@ -228,7 +227,6 @@ const JitsiSettings = (props: Props) => {
                         message: 'Select the type of jitsi server you want to use.'
                     }}
                 />
-
                 <hr style={{height: '3px'}}/>
                 {
                     mode === JAAS_MODE ?

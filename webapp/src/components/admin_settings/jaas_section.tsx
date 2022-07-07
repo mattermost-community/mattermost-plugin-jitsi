@@ -55,7 +55,6 @@ const JaaSSection = (props: Props) => {
                     message: '(Experimental) When true, JaaS video is embedded as a floating window inside Mattermost by default.'
                 }}
             />
-
             <RadioField
                 heading={{
                     id: 'jaas.enable-compatibility-mode',
@@ -69,7 +68,6 @@ const JaaSSection = (props: Props) => {
                     message: '(Insecure) If your JaaS server is not compatible with this plugin, include the JavaScript API hosted on your Jaas server directly in Mattermost instead of the default API version provided by the plugin. WARNING: Enabling this setting can compromise the security of your Mattermost system, if your JaaS server is not fully trusted and allows direct modification of program files. Use with caution.'
                 }}
             />
-
             <InputField
                 heading={{
                     id: 'jaas.app-id',
@@ -88,7 +86,6 @@ const JaaSSection = (props: Props) => {
                     message: 'Specify your JaaS AppID. You can get the AppID from https://jaas.8x8.vc/#/apikeys.'
                 }}
             />
-
             <InputField
                 heading={{
                     id: 'jaas.api-key-id',
@@ -107,7 +104,6 @@ const JaaSSection = (props: Props) => {
                     message: 'Specify your JaaS Api key ID. You can get the Api key ID from https://jaas.8x8.vc/#/apikeys.'
                 }}
             />
-
             <InputField
                 heading={{
                     id: 'jaas.rsa-key',
@@ -126,7 +122,6 @@ const JaaSSection = (props: Props) => {
                     message: 'Specify your JaaS private key. You can get the private key by generating an API key pair from https://jaas.8x8.vc/#/apikeys OR from https://jaas.8x8.vc/#/start-guide in the "Api Key" section. (NOTE: While generating the key manually make sure to set the size to be 2048 and not 4096).'
                 }}
             />
-
         </div>
     );
 };

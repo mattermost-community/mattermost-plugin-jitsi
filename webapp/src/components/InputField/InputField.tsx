@@ -6,7 +6,7 @@ type Props = {
         id: string;
         message: string;
     };
-    tagType: any;
+    tagType: string;
     input: {
         type?: string;
         placeholder?: string;
@@ -14,7 +14,7 @@ type Props = {
         min?: number;
         rows?: number;
         defaultValue?: number;
-        onChange: (e: any) => void;
+        onChange: (e: React.ChangeEvent<any>) => void;
         value: string | number;
         disabled?: boolean;
     };
@@ -24,36 +24,44 @@ type Props = {
     }
 }
 
-export const InputField = (props: Props) => {
-    console.log(props.input.defaultValue);
-    console.log(props.tagType);
+export const InputField = ({heading, tagType, input, description}: Props) => {
     return (
         <>
             <div className='form-group'>
                 <label className='col-sm-4'>
                     <FormattedMessage
-                        id={props.heading.id}
-                        defaultMessage={props.heading.message}
+                        id={heading.id}
+                        defaultMessage={heading.message}
                     />
                 </label>
                 <div className='col-sm-8'>
-                    <props.tagType
-                        className='form-control'
-                        type={props.input.type}
-                        placeholder={props.input.placeholder}
-                        maxLength={props.input.maxLength}
-                        onChange={props.input.onChange}
-                        value={props.input.value}
-                        disabled={props.input.disabled}
-                        min={props.input.min}
-                        defaultValue={props.input.defaultValue}
-                        rows={props.input.rows}
-                    />
+                    {tagType === 'input' ? (
+                        <input
+                            className='form-control'
+                            type={input.type}
+                            placeholder={input.placeholder}
+                            maxLength={input.maxLength}
+                            onChange={input.onChange}
+                            value={input.value}
+                            disabled={input.disabled}
+                            min={input.min}
+                            defaultValue={input.defaultValue}
+                        />
+                    ) : (
+                        <textarea
+                            className='form-control'
+                            maxLength={input.maxLength}
+                            rows={input.rows}
+                            onChange={input.onChange}
+                            value={input.value}
+                            disabled={input.disabled}
+                        />
+                    )}
                     <div className='help-text'>
                         <span>
                             <FormattedMessage
-                                id={props.description.id}
-                                defaultMessage={props.description.message}
+                                id={description.id}
+                                defaultMessage={description.message}
                             />
                         </span>
                     </div>
