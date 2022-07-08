@@ -96,8 +96,7 @@ func (p *Plugin) handleJaaSSettings(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = json.NewDecoder(bytes.NewReader(bodyData)).Decode(&jaasSettingsFromAction)
-	if err != nil {
+	if err = json.NewDecoder(bytes.NewReader(bodyData)).Decode(&jaasSettingsFromAction); err != nil {
 		mlog.Debug("Unable to decode the request content as start meeting request or start meeting action")
 		http.Error(w, "Unable to decode your request", http.StatusBadRequest)
 		return
@@ -110,7 +109,7 @@ func (p *Plugin) handleJaaSSettings(w http.ResponseWriter, r *http.Request) {
 		userResult, appErr := p.API.GetUser(userID)
 		if appErr != nil {
 			mlog.Debug("Unable to get the user", mlog.Err(appErr))
-			http.Error(w, "Unable to get the user", http.StatusForbidden)
+			http.Error(w, "You are forbidden to get the user", http.StatusForbidden)
 			return
 		}
 		user = userResult
@@ -126,7 +125,7 @@ func (p *Plugin) handleJaaSSettings(w http.ResponseWriter, r *http.Request) {
 	settingsJSON, err := json.Marshal(jaasSettings)
 	if err != nil {
 		mlog.Error("Error marshaling the JaaSSettings to json", mlog.Err(err))
-		http.Error(w, "Error marshaling the JaaSSettings to json", http.StatusInternalServerError)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -143,7 +142,7 @@ func (p *Plugin) isJaaSMeeting(path string) bool {
 
 func (p *Plugin) handleJaaSBundle(w http.ResponseWriter, r *http.Request) {
 	if !p.getConfiguration().UseJaaS {
-		http.Error(w, "jaas not enabled", http.StatusFound)
+		http.Error(w, "Not found", http.StatusNotFound)
 		return
 	}
 
@@ -246,8 +245,8 @@ func (p *Plugin) handleExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 
 	bundlePath, err := p.API.GetBundlePath()
 	if err != nil {
-		mlog.Error("Filed to get the bundle path")
-		http.Error(w, "Filed to get the bundle path", http.StatusInternalServerError)
+		mlog.Error("Failed to get the bundle path")
+		http.Error(w, "Failed to get the bundle path", http.StatusInternalServerError)
 		return
 	}
 	externalAPIPath := filepath.Join(bundlePath, "assets", "external_api.js")

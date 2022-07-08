@@ -106,7 +106,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         };
 
         this.api = new (window as any).JitsiMeetExternalAPI(post.props.jaas_meeting ? JAAS_DOMAIN : domain, options);
-        
+
         this.api.on('videoConferenceJoined', () => {
             if (this.state.minimized) {
                 this.minimize();
@@ -140,7 +140,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         }
     }
 
-    componentDidMount() {        
+    componentDidMount() {
         document.addEventListener('keydown', this.escFunction, false);
         window.addEventListener('resize', this.resizeIframe);
         window.addEventListener('message', this.preventMessages, false);
@@ -174,8 +174,8 @@ export default class Conference extends React.PureComponent<Props, State> {
         }
     }
 
-    close = () => {        
-        if(this.api){
+    close = () => {
+        if (this.api) {
             this.api.executeCommand('hangup');
             setTimeout(() => {
                 this.props.actions.openJitsiMeeting(null, null);

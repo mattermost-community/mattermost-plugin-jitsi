@@ -252,10 +252,10 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 
 		newContext := JaaSContext{
 			User: JaaSUser{
-				Avatar:      fmt.Sprintf("%s/api/v4/users/%s/image?_=%d", *config.ServiceSettings.SiteURL, sanitizedUser.Id, sanitizedUser.LastPictureUpdate),
-				Name:        sanitizedUser.GetDisplayName(model.SHOW_NICKNAME_FULLNAME),
-				Email:       sanitizedUser.Email,
-				ID:          sanitizedUser.Id,
+				Avatar:    fmt.Sprintf("%s/api/v4/users/%s/image?_=%d", *config.ServiceSettings.SiteURL, sanitizedUser.Id, sanitizedUser.LastPictureUpdate),
+				Name:      sanitizedUser.GetDisplayName(model.SHOW_NICKNAME_FULLNAME),
+				Email:     sanitizedUser.Email,
+				ID:        sanitizedUser.Id,
 				Moderator: `true`,
 			},
 			Features: claims.Context.Features,

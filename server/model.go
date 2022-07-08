@@ -34,10 +34,10 @@ type Claims struct {
 
 // JaaSUser ...
 type JaaSUser struct {
-	Avatar      string `json:"avatar"`
-	Name        string `json:"name"`
-	Email       string `json:"email"`
-	ID          string `json:"id,omitempty"`
+	Avatar    string `json:"avatar"`
+	Name      string `json:"name"`
+	Email     string `json:"email"`
+	ID        string `json:"id,omitempty"`
 	Moderator string `json:"moderator,omitempty"`
 }
 
