@@ -1,4 +1,16 @@
 import {connect} from 'react-redux';
-import {JaaSConference, MapDispatchToProps} from './jaas_conference';
+import {AnyAction} from 'redux';
+import {ThunkDispatch} from 'redux-thunk';
 
-export default connect(null, MapDispatchToProps)(JaaSConference);
+import {startMeetingWindowActionCreator} from '../../actions';
+import JaaSConference from './jaas_conference';
+
+function mapDispatchToProps(dispatch: ThunkDispatch<any, any, AnyAction>) {
+    return {
+        actions: {
+            startJaaSMeetingWindow: (param1: string | null, param2: string | null) => dispatch(startMeetingWindowActionCreator(param1, param2))
+        }
+    };
+}
+
+export default connect(null, mapDispatchToProps)(JaaSConference);

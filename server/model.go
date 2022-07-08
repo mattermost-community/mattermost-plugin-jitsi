@@ -38,7 +38,7 @@ type JaaSUser struct {
 	Name        string `json:"name"`
 	Email       string `json:"email"`
 	ID          string `json:"id,omitempty"`
-	IsModerator string `json:"moderator,omitempty"`
+	Moderator string `json:"moderator,omitempty"`
 }
 
 // JaaSFeatures ...

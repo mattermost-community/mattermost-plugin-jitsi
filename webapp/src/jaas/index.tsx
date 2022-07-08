@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
+
 import store from './reducers/store';
-import JaaSConference from '../jaas/components/conference';
+import JaaSConference from './components/conference';
 
 function JaaSRoot() {
     return (<JaaSConference/>);

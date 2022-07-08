@@ -1,8 +1,6 @@
 import React from 'react';
 import {id as pluginId} from '../../../manifest';
-import {AnyAction} from 'redux';
-import {StartMeetingWindowAction, startMeetingWindowActionCreator} from '../../actions';
-import {ThunkDispatch} from 'redux-thunk';
+import {StartMeetingWindowAction} from 'jaas/actions';
 
 type Props = {
     actions: {
@@ -15,8 +13,12 @@ type State = {
     jaasRoom?: string | null,
 }
 
-export class JaaSConference extends React.PureComponent<Props, State> {
+const JWT = 'jwt';
+const JAAS_URL = '8x8.vc';
+
+export default class JaaSConference extends React.PureComponent<Props, State> {
     api: any;
+    style = getStyle();
 
     constructor(props: Props) {
         super(props);
@@ -36,22 +38,19 @@ export class JaaSConference extends React.PureComponent<Props, State> {
             jwt,
             noSSL,
             parentNode: document.querySelector('#jitsiMeet'),
-            onload: () => {
-                console.log('JitsiMeetExternalAPI loaded...');
-            }
         };
 
-        this.api = new (window as any).JitsiMeetExternalAPI('8x8.vc', options);
+        this.api = new (window as any).JitsiMeetExternalAPI(JAAS_URL, options);
     }
 
-    componentDidMount() {        
+    componentDidMount() {                
         if (!(window as any).JitsiMeetExternalAPI) {
             const script = document.createElement('script');
             script.type = 'text/javascript';
             script.onload = () => {
                 if (!this.state.jaasRoom) {
                     const params = new URLSearchParams(window.location.search);
-                    const jwt = params.get('jwt');
+                    const jwt = params.get(JWT);
                     const path = window.location.pathname;
                     this.props.actions.startJaaSMeetingWindow(jwt, path).
                         then((response) => {
@@ -68,17 +67,16 @@ export class JaaSConference extends React.PureComponent<Props, State> {
     }
 
     componentDidUpdate(prevProps: Props, prevState: State) {
-        if (prevState !== this.state) {
+        if (prevState.jaasJwt !== this.state.jaasJwt || prevState.jaasRoom !== this.state.jaasRoom) {
             this.initJaaS(this.state.jaasJwt as string, this.state.jaasRoom as string);
         }
     }
 
     render() {
-        const style = getStyle();
         return (
             <div
                 id='jitsiMeet'
-                style={style.jitsiMeetContainer}
+                style={this.style.jitsiMeetContainer}
             />
         );
     }
@@ -90,14 +88,6 @@ function getStyle() : { [key: string]: React.CSSProperties} {
             width: '100%',
             height: '100%',
             display: 'flex'
-        }
-    };
-}
-
-export function MapDispatchToProps(dispatch: ThunkDispatch<any, any, AnyAction>) {
-    return {
-        actions: {
-            startJaaSMeetingWindow: (param1: string | null, param2: string | null) => dispatch(startMeetingWindowActionCreator(param1, param2))
         }
     };
 }

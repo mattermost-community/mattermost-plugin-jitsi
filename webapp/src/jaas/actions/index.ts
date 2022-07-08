@@ -1,8 +1,9 @@
-import {id} from '../../manifest';
-import {JaaSActionTypes} from '../action_types';
 import {ActionCreator, Dispatch, Action} from 'redux';
 import {ThunkAction} from 'redux-thunk';
 import {Client4} from 'mattermost-redux/client';
+
+import {id} from '../../manifest';
+import {JaaSActionTypes} from '../action_types';
 
 export interface StartMeetingWindowAction extends Action<JaaSActionTypes.START_MEETING_WINDOW> {
     data: {
@@ -11,7 +12,7 @@ export interface StartMeetingWindowAction extends Action<JaaSActionTypes.START_M
     }
 }
 
-const baseUrl = '/plugins/' + id;
+const baseUrl = `/plugins/${id}`;
 
 export type StartMeetingWindowThunk = ActionCreator<ThunkAction<Promise<StartMeetingWindowAction>, {}, null, StartMeetingWindowAction>>;
 
@@ -20,7 +21,7 @@ function startMeetingWindowAction(jwt: string | null, path: string | null) {
         try {
             const options = {
                 method: 'post',
-                body: JSON.stringify({jaasJwt: jwt || '', jaasPath: path}),
+                body: JSON.stringify({jaasJwt: jwt ?? '', jaasPath: path}),
                 headers: {}
             };
             return fetch(`${baseUrl}/api/v1/meetings/jaas/settings`, Client4.getOptions(options)).

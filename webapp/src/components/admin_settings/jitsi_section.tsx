@@ -44,7 +44,6 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
                         className='form-control'
                         type='input'
                         placeholder='https://meet.jit.si'
-                        maxLength={-1}
                         onChange={onJitsiURLChange}
                         value={serverUrl}
                     />
@@ -215,7 +214,6 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
                     <input
                         className='form-control'
                         type='input'
-                        maxLength={-1}
                         onChange={onJitsiAppIDChange}
                         value={appID}
                     />
@@ -240,7 +238,6 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
                     <input
                         className='form-control'
                         type='input'
-                        maxLength={-1}
                         onChange={onJitsiAppSecretChange}
                         value={appSecret}
                     />

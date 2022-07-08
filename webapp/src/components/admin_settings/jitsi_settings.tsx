@@ -1,10 +1,11 @@
 import React, {useCallback, useEffect, useState, useMemo, ChangeEvent} from 'react';
 import {FormattedMessage} from 'react-intl';
+import {AdminConfig} from 'mattermost-redux/types/config';
+
+import {id as pluginId} from 'manifest';
+import I18nProvider from 'components/i18n_provider';
 import JaaSSection from './jaas_section';
 import JitsiSection, {JITSI_NAMING_SCHEME} from './jitsi_section';
-import {id as pluginId} from '../../manifest';
-import I18nProvider from 'components/i18n_provider';
-import {AdminConfig} from 'mattermost-redux/types/config';
 
 type Props = {
     id: string,
@@ -59,22 +60,20 @@ const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: P
     const selectedMode = value?.usejaas ? JAAS_MODE : JITSI_MODE;
 
     let selectedSettings = DEFAULT_SETTINGS;
-    if (!value) {
-        selectedSettings = useMemo(() => ({
-            jitsiurl: config.PluginSettings.Plugins[pluginId].jitsiurl ?? DEFAULT_SETTINGS.jitsiurl,
-            jitsiappsecret: config.PluginSettings.Plugins[pluginId].jitsiappsecret ?? DEFAULT_SETTINGS.jitsiappsecret,
-            jitsiappid: config.PluginSettings.Plugins[pluginId].jitsiappid ?? DEFAULT_SETTINGS.jaasappid,
-            jitsicompatibilitymode: config.PluginSettings.Plugins[pluginId].jitsicompatibilitymode ?? DEFAULT_SETTINGS.jitsicompatibilitymode,
-            jitsiembedded: config.PluginSettings.Plugins[pluginId].jitsiembedded ?? DEFAULT_SETTINGS.jitsiembedded,
-            jitsijwt: config.PluginSettings.Plugins[pluginId].jitsijwt ?? DEFAULT_SETTINGS.jitsijwt,
-            jitsilinkvalidtime: config.PluginSettings.Plugins[pluginId].jitsilinkvalidtime ?? DEFAULT_SETTINGS.jitsilinkvalidtime,
-            jitsinamingscheme: config.PluginSettings.Plugins[pluginId].jitsinamingscheme ?? DEFAULT_SETTINGS.jitsinamingscheme,
-            usejaas: DEFAULT_SETTINGS.usejaas,
-            jaasappid: DEFAULT_SETTINGS.jaasappid,
-            jaasapikey: DEFAULT_SETTINGS.jaasapikey,
-            jaasprivatekey: DEFAULT_SETTINGS.jaasprivatekey
-        }), [config]);
-    }
+    selectedSettings = useMemo(() => ({
+        jitsiurl: config.PluginSettings.Plugins[pluginId].jitsiurl ?? DEFAULT_SETTINGS.jitsiurl,
+        jitsiappsecret: config.PluginSettings.Plugins[pluginId].jitsiappsecret ?? DEFAULT_SETTINGS.jitsiappsecret,
+        jitsiappid: config.PluginSettings.Plugins[pluginId].jitsiappid ?? DEFAULT_SETTINGS.jaasappid,
+        jitsicompatibilitymode: config.PluginSettings.Plugins[pluginId].jitsicompatibilitymode ?? DEFAULT_SETTINGS.jitsicompatibilitymode,
+        jitsiembedded: config.PluginSettings.Plugins[pluginId].jitsiembedded ?? DEFAULT_SETTINGS.jitsiembedded,
+        jitsijwt: config.PluginSettings.Plugins[pluginId].jitsijwt ?? DEFAULT_SETTINGS.jitsijwt,
+        jitsilinkvalidtime: config.PluginSettings.Plugins[pluginId].jitsilinkvalidtime ?? DEFAULT_SETTINGS.jitsilinkvalidtime,
+        jitsinamingscheme: config.PluginSettings.Plugins[pluginId].jitsinamingscheme ?? DEFAULT_SETTINGS.jitsinamingscheme,
+        usejaas: DEFAULT_SETTINGS.usejaas,
+        jaasappid: DEFAULT_SETTINGS.jaasappid,
+        jaasapikey: DEFAULT_SETTINGS.jaasapikey,
+        jaasprivatekey: DEFAULT_SETTINGS.jaasprivatekey
+    }), [config]);
 
     const [settings, setSettings] = useState(value ?? selectedSettings);
     const [mode, setMode] = useState(selectedMode);
@@ -85,12 +84,11 @@ const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: P
     }, [settings]);
 
     const onModeSelected = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        const newMode = e.target.value;
         setSettings({
             ...settings,
-            usejaas: newMode === JAAS_MODE
+            usejaas: e.target.value === JAAS_MODE
         });
-        setMode(newMode);
+        setMode(e.target.value);
     }, [settings]);
 
     const updateSettingsState = useCallback((key: string, newValue: string | boolean) => {
@@ -153,7 +151,7 @@ const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: P
         updateSettingsState('jitsiurl', e.target.value);
     }, []);
 
-    const renderJitsiSettings = useMemo(() => (
+    const jitsiSection = useMemo(() => (
         <JitsiSection
             disabled={disabled}
             onJitsiAppIDChange={onJitsiAppIDChanged}
@@ -175,7 +173,7 @@ const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: P
         />
     ), [disabled, settings]);
 
-    const renderJaaSSettings = useMemo(() => (
+    const jaasSection = useMemo(() => (
         <JaaSSection
             disabled={disabled}
             onApiKeyIDChange={onJaaSApiKeyChanged}
@@ -237,7 +235,7 @@ const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: P
                     </div>
                 </div>
                 <hr style={{height: '3px'}}/>
-                {mode === JAAS_MODE ? renderJaaSSettings : renderJitsiSettings}
+                {mode === JAAS_MODE ? jaasSection : jitsiSection}
             </div>
         </I18nProvider>
     );

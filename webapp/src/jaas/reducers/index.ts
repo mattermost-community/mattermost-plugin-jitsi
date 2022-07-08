@@ -1,7 +1,7 @@
-import {JaaSMeetingState, JaaSState} from 'jaas/util';
 import {combineReducers, AnyAction, Reducer} from 'redux';
 import {JaaSActionTypes} from '../action_types';
 import {StartMeetingWindowAction} from '../actions';
+import {JaaSMeetingState, JaaSState} from '../util';
 
 type JaaSActions = StartMeetingWindowAction | AnyAction;
 

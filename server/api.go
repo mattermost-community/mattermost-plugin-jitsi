@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -16,6 +17,7 @@ import (
 )
 
 const externalAPICacheTTL = 3600000
+const mattermostUserID = "Mattermost-User-Id"
 
 var externalAPICache []byte
 var externalAPILastUpdate int64
@@ -48,14 +50,14 @@ func (p *Plugin) InitAPI() *mux.Router {
 
 	apiRouter := r.PathPrefix("/api/v1").Subrouter()
 
+	r.HandleFunc("/jitsi_meet_external_api.js", p.handleExternalAPIjs)
+	r.HandleFunc("/jaas-main.js", p.handleJaaSBundle)
+	r.HandleFunc("{anything:.*}", http.NotFound)
 	apiRouter.HandleFunc("/meetings/enrich", p.handleEnrichMeetingJwt).Methods(http.MethodPost)
 	apiRouter.HandleFunc("/meetings", p.handleStartMeeting).Methods(http.MethodPost)
 	apiRouter.HandleFunc("/config", p.handleConfig).Methods(http.MethodPost)
 	apiRouter.HandleFunc("/meetings/jaas/settings", p.handleJaaSSettings)
 	apiRouter.HandleFunc("/meetings/{apiid}/{roomname}", p.handleJaaSWindow)
-	r.HandleFunc("/jitsi_meet_external_api.js", p.handleExternalAPIjs)
-	r.HandleFunc("/jaas-main.js", p.handleJaaSBundle)
-	r.HandleFunc("{anything:*}", http.NotFound)
 
 	return r
 }
@@ -75,7 +77,7 @@ func (p *Plugin) handleJaaSWindow(w http.ResponseWriter, r *http.Request) {
 
 func (p *Plugin) handleJaaSSettings(w http.ResponseWriter, r *http.Request) {
 	if !p.getConfiguration().UseJaaS {
-		mlog.Error("error JaaS requested while disabled")
+		mlog.Error("Error JaaS requested while disabled")
 		http.NotFound(w, r)
 		return
 	}
@@ -87,7 +89,6 @@ func (p *Plugin) handleJaaSSettings(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var jaasSettingsFromAction JaaSSettingsFromAction
-
 	bodyData, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		mlog.Debug("Unable to read request body", mlog.Err(err))
@@ -95,29 +96,29 @@ func (p *Plugin) handleJaaSSettings(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err1 := json.NewDecoder(bytes.NewReader(bodyData)).Decode(&jaasSettingsFromAction)
-	if err1 != nil {
+	err = json.NewDecoder(bytes.NewReader(bodyData)).Decode(&jaasSettingsFromAction)
+	if err != nil {
 		mlog.Debug("Unable to decode the request content as start meeting request or start meeting action")
 		http.Error(w, "Unable to decode your request", http.StatusBadRequest)
 		return
 	}
 
-	var user *model.User = nil
-	userID := r.Header.Get("Mattermost-User-Id")
+	var user *model.User
+	userID := r.Header.Get(mattermostUserID)
 	if userID != "" {
 		// Handle moderator
 		userResult, appErr := p.API.GetUser(userID)
 		if appErr != nil {
 			mlog.Debug("Unable to get the user", mlog.Err(appErr))
-			http.Error(w, "Forbidden", http.StatusForbidden)
+			http.Error(w, "Unable to get the user", http.StatusForbidden)
 			return
 		}
 		user = userResult
 	}
 
-	jaasSettings, err2 := p.getJaaSSettings(jaasSettingsFromAction.Jwt, jaasSettingsFromAction.Path, user)
-	if err2 != nil {
-		mlog.Error("Error getting JaaSSettings", mlog.Err(err2))
+	jaasSettings, err := p.getJaaSSettings(jaasSettingsFromAction.Jwt, jaasSettingsFromAction.Path, user)
+	if err != nil {
+		mlog.Error("Error getting JaaSSettings", mlog.Err(err))
 		http.Error(w, "Invalid JaaS settings", http.StatusBadRequest)
 		return
 	}
@@ -125,7 +126,7 @@ func (p *Plugin) handleJaaSSettings(w http.ResponseWriter, r *http.Request) {
 	settingsJSON, err := json.Marshal(jaasSettings)
 	if err != nil {
 		mlog.Error("Error marshaling the JaaSSettings to json", mlog.Err(err))
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		http.Error(w, "Error marshaling the JaaSSettings to json", http.StatusInternalServerError)
 		return
 	}
 
@@ -142,29 +143,29 @@ func (p *Plugin) isJaaSMeeting(path string) bool {
 
 func (p *Plugin) handleJaaSBundle(w http.ResponseWriter, r *http.Request) {
 	if !p.getConfiguration().UseJaaS {
-		http.Error(w, "Not found", http.StatusFound)
+		http.Error(w, "jaas not enabled", http.StatusFound)
 		return
 	}
 
 	bundlePath, err := p.API.GetBundlePath()
 	if err != nil {
 		mlog.Error("Failed to get the bundle path")
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		http.Error(w, "Failed to get the bundle path", http.StatusInternalServerError)
 		return
 	}
 
-	jaasMainPath := filepath.Join(bundlePath, "webapp", "dist", "jaas", "jaas-main.js")
-	jaasMainFile, err := os.Open(jaasMainPath)
+	jaasPath := filepath.Join(bundlePath, "webapp", "dist", "jaas", "jaas-main.js")
+	jaasFile, err := os.Open(jaasPath)
 	if err != nil {
-		mlog.Error("Error opening file", mlog.String("path", jaasMainPath), mlog.Err(err))
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		mlog.Error("Error opening file", mlog.String("path", jaasPath), mlog.Err(err))
+		http.Error(w, "Error opening file", http.StatusInternalServerError)
 		return
 	}
 
-	code, err := ioutil.ReadAll(jaasMainFile)
+	code, err := ioutil.ReadAll(jaasFile)
 	if err != nil {
-		mlog.Error("Error reading file content", mlog.String("path", jaasMainPath), mlog.Err(err))
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		mlog.Error("Error reading file content", mlog.String("path", jaasPath), mlog.Err(err))
+		http.Error(w, "Error reading file content", http.StatusInternalServerError)
 		return
 	}
 
@@ -179,7 +180,7 @@ func (p *Plugin) handleOpenJaaSMeeting(w http.ResponseWriter, r *http.Request) {
 	bundlePath, err := p.API.GetBundlePath()
 	if err != nil {
 		mlog.Error("Failed to get the bundle path")
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		http.Error(w, "Failed to get the bundle path", http.StatusInternalServerError)
 		return
 	}
 
@@ -187,13 +188,13 @@ func (p *Plugin) handleOpenJaaSMeeting(w http.ResponseWriter, r *http.Request) {
 	jaasFile, err := os.Open(jaasPath)
 	if err != nil {
 		mlog.Error("Error opening file", mlog.String("path", jaasPath), mlog.Err(err))
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		http.Error(w, "Error opening file", http.StatusInternalServerError)
 		return
 	}
 	code, err := ioutil.ReadAll(jaasFile)
 	if err != nil {
 		mlog.Error("Error reading file content", mlog.String("path", jaasPath), mlog.Err(err))
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		http.Error(w, "Error reading file content", http.StatusInternalServerError)
 		return
 	}
 
@@ -205,7 +206,7 @@ func (p *Plugin) handleOpenJaaSMeeting(w http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Plugin) handleConfig(w http.ResponseWriter, r *http.Request) {
-	userID := r.Header.Get("Mattermost-User-Id")
+	userID := r.Header.Get(mattermostUserID)
 
 	if userID == "" {
 		http.Error(w, "Not authorized", http.StatusUnauthorized)
@@ -215,14 +216,14 @@ func (p *Plugin) handleConfig(w http.ResponseWriter, r *http.Request) {
 	config, err := p.getUserConfig(userID)
 	if err != nil {
 		mlog.Error("Error getting user config", mlog.Err(err))
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		http.Error(w, "Error getting user config", http.StatusInternalServerError)
 		return
 	}
 
 	b, err := json.Marshal(config)
 	if err != nil {
 		mlog.Error("Error marshaling the Config to json", mlog.Err(err))
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		http.Error(w, "Error marshaling the Config to json", http.StatusInternalServerError)
 		return
 	}
 
@@ -246,20 +247,20 @@ func (p *Plugin) handleExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 	bundlePath, err := p.API.GetBundlePath()
 	if err != nil {
 		mlog.Error("Filed to get the bundle path")
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		http.Error(w, "Filed to get the bundle path", http.StatusInternalServerError)
 		return
 	}
 	externalAPIPath := filepath.Join(bundlePath, "assets", "external_api.js")
 	externalAPIFile, err := os.Open(externalAPIPath)
 	if err != nil {
 		mlog.Error("Error opening file", mlog.String("path", externalAPIPath), mlog.Err(err))
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		http.Error(w, "Error opening file", http.StatusInternalServerError)
 		return
 	}
 	code, err := ioutil.ReadAll(externalAPIFile)
 	if err != nil {
 		mlog.Error("Error reading file content", mlog.String("path", externalAPIPath), mlog.Err(err))
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		http.Error(w, "Error reading file content", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/javascript")
@@ -278,17 +279,17 @@ func (p *Plugin) proxyExternalAPIjsJaaS(w http.ResponseWriter, r *http.Request) 
 		_, _ = w.Write(externalAPICache)
 		return
 	}
-	resp, err := http.Get(p.getConfiguration().Get8x8vcURL() + "/libs/external_api.min.js")
+	resp, err := http.Get(fmt.Sprintf("%s/libs/external_api.min.js", p.getConfiguration().Get8x8vcURL()))
 	if err != nil {
 		mlog.Error("Error getting the external_api.min.js file from your 8x8", mlog.Err(err))
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		http.Error(w, "Error getting the external_api.min.js file from your 8x8", http.StatusInternalServerError)
 		return
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		mlog.Error("Error reading the content", mlog.String("url", p.getConfiguration().Get8x8vcURL()+"/external_api.min.js"), mlog.Err(err))
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		mlog.Error("Error reading the content", mlog.String("url", fmt.Sprintf("%s/external_api.min.js", p.getConfiguration().Get8x8vcURL())), mlog.Err(err))
+		http.Error(w, "Error reading the content", http.StatusInternalServerError)
 		return
 	}
 	externalAPICache = body
@@ -312,14 +313,14 @@ func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 	resp, err := http.Get(p.getConfiguration().GetJitsiURL() + "/external_api.js")
 	if err != nil {
 		mlog.Error("Error getting the external_api.js file from your Jitsi instance, please verify your JitsiURL setting", mlog.Err(err))
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		http.Error(w, "Error getting the external_api.js file from your Jitsi instance, please verify your JitsiURL setting", http.StatusInternalServerError)
 		return
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		mlog.Error("Error getting reading the content", mlog.String("url", p.getConfiguration().GetJitsiURL()+"/external_api.js"), mlog.Err(err))
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		mlog.Error("Error reading the content", mlog.String("url", p.getConfiguration().GetJitsiURL()+"/external_api.js"), mlog.Err(err))
+		http.Error(w, "Error reading the content", http.StatusInternalServerError)
 		return
 	}
 	externalAPICache = body
@@ -338,7 +339,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID := r.Header.Get("Mattermost-User-Id")
+	userID := r.Header.Get(mattermostUserID)
 
 	if userID == "" {
 		http.Error(w, "Not authorized", http.StatusUnauthorized)
@@ -347,7 +348,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 
 	user, appErr := p.API.GetUser(userID)
 	if appErr != nil {
-		mlog.Debug("Unable to the user", mlog.Err(appErr))
+		mlog.Debug("Unable to get the user", mlog.Err(appErr))
 		http.Error(w, "Forbidden", http.StatusForbidden)
 		return
 	}
@@ -447,7 +448,7 @@ func (p *Plugin) handleEnrichMeetingJwt(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	userID := r.Header.Get("Mattermost-User-Id")
+	userID := r.Header.Get(mattermostUserID)
 	if userID == "" {
 		http.Error(w, "Not authorized", http.StatusUnauthorized)
 		return

@@ -105,7 +105,7 @@ func (p *Plugin) OnActivate() error {
 
 	p.telemetryClient, err = telemetry.NewRudderClient()
 	if err != nil {
-		p.API.LogWarn("telemetry client not started", "error", err.Error())
+		p.API.LogWarn("Telemetry client not started", "error", err.Error())
 	}
 	p.router = p.InitAPI()
 
@@ -153,7 +153,7 @@ func signClaims(secret string, claims *Claims) (string, error) {
 	signer, err := jwt.NewSignerHS(jwt.HS256, []byte(secret))
 	if err != nil {
 		mlog.Error("Error generating new HS256 signer", mlog.Err(err))
-		return "", errors.New("internal error")
+		return "", errors.New("error generating new HS256 signer")
 	}
 	builder := jwt.NewBuilder(signer)
 	token, err := builder.Build(claims)
@@ -169,7 +169,7 @@ func signClaimsJaaS(apiKeyJaaS string, privateKeyJaaS string, claimsJaaS *JaaSCl
 	privPem, _ := pem.Decode(privateKeyJaaSBytes)
 	if privPem == nil {
 		mlog.Error("Error decoding specified JaaS private key")
-		return "", errors.New("internal server error")
+		return "", errors.New("error decoding specified JaaS private key")
 	}
 
 	privPemBytes := privPem.Bytes
@@ -256,7 +256,7 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 				Name:        sanitizedUser.GetDisplayName(model.SHOW_NICKNAME_FULLNAME),
 				Email:       sanitizedUser.Email,
 				ID:          sanitizedUser.Id,
-				IsModerator: `true`,
+				Moderator: `true`,
 			},
 			Features: claims.Context.Features,
 		}
@@ -321,15 +321,15 @@ func (p *Plugin) setJWTClaims(user *model.User, userType string) (string, error)
 		claims.Context.User.Email = user.Email
 	}
 	claims.Context.User.ID = user.Id
-	claims.Context.User.IsModerator = permission
+	claims.Context.User.Moderator = permission
 	claims.Context.User.Name = user.GetFullName()
 
 	jwtToken, err := signClaimsJaaS(p.getConfiguration().JaaSApiKey, p.getConfiguration().JaaSPrivateKey, &claims)
 	if err != nil {
+		mlog.Error(fmt.Sprintf("Error generating JaaS token for %s", userType), mlog.Err(err))
 		return "", errors.Wrap(err, fmt.Sprintf("failed creating new JaaS token for %s %s", userType, user.Id))
 	}
 
-	// Maybe let the user join as guest...?
 	return jwtToken, nil
 }
 
@@ -351,7 +351,7 @@ func (p *Plugin) getJaaSSettings(jwtToken string, path string, user *model.User)
 		if err != nil {
 			jwtToken, err = p.generateJaaSJwtForUser(user)
 			if err != nil {
-				mlog.Error("failed to generate new token for user!")
+				mlog.Error("Failed to generate new token for user!")
 				return nil, err
 			}
 		} else if claims.Context.User.ID != user.Id {

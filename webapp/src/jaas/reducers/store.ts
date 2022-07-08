@@ -1,7 +1,8 @@
 import {applyMiddleware, createStore, Store} from 'redux';
+import thunk from 'redux-thunk';
+
 import {loadInitialState, JaaSState} from '../util';
 import combinedReducers from './';
-import thunk from 'redux-thunk';
 
 export function configureStore() : Store<JaaSState> {
     const initialState = loadInitialState();

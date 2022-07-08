@@ -101,7 +101,6 @@ const JaaSSection = ({disabled, onApiKeyIDChange, onAppIDChange, onPrivateKeyCha
                     <input
                         className='form-control'
                         type='input'
-                        maxLength={-1}
                         onChange={onAppIDChange}
                         value={appID}
                         disabled={disabled}
@@ -127,7 +126,6 @@ const JaaSSection = ({disabled, onApiKeyIDChange, onAppIDChange, onPrivateKeyCha
                     <input
                         className='form-control'
                         type='input'
-                        maxLength={-1}
                         onChange={onApiKeyIDChange}
                         value={apiKey}
                         disabled={disabled}
@@ -152,7 +150,6 @@ const JaaSSection = ({disabled, onApiKeyIDChange, onAppIDChange, onPrivateKeyCha
                 <div className='col-sm-8'>
                     <textarea
                         className='form-control'
-                        maxLength={-1}
                         rows={5}
                         onChange={onPrivateKeyChange}
                         value={privateKey}
