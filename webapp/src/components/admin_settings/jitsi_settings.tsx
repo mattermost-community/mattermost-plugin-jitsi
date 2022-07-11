@@ -1,6 +1,6 @@
 import * as React from 'react';
 import JaaSSection from './jaas_section';
-import {RadioField} from '../RadioField/RadioField';
+import {RadioField} from '../RadioField';
 import JitsiSection, {JITSI_NAMING_SCHEME} from './jitsi_section';
 import {id as pluginId} from '../../manifest';
 import I18nProvider from 'components/i18n_provider';

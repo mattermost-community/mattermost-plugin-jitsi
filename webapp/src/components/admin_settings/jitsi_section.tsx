@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import {InputField} from '../InputField/InputField';
-import {RadioField} from '../RadioField/RadioField';
+import {InputField} from '../InputField';
+import {RadioField} from '../RadioField';
 
 type Props = {
     disabled: boolean,
@@ -34,11 +34,15 @@ const JitsiSection = (props: Props) => {
     const EMBED_JITSI_VIDEO_INSIDE_MATTERMOST_OPTIONS = [
         {
             value: 'true',
-            checked: props.embedded
+            checked: props.embedded,
+            id: 'jitsi.embed-enable',
+            message: 'true'
         },
         {
             value: 'false',
-            checked: !props.embedded
+            checked: !props.embedded,
+            id: 'jitsi.embed-disable',
+            message: 'false'
         }
     ];
 
@@ -72,22 +76,30 @@ const JitsiSection = (props: Props) => {
     const JITSI_USE_JWT_OPTIONS = [
         {
             value: 'true',
-            checked: props.jwtEnabled
+            checked: props.jwtEnabled,
+            id: 'jitsi.jwt-enable',
+            message: 'true'
         },
         {
             value: 'false',
-            checked: !props.jwtEnabled
+            checked: !props.jwtEnabled,
+            id: 'jitsi.jwt-disable',
+            message: 'false'
         }
     ];
 
     const JITSI_COMPATIBILITY_OPTIONS = [
         {
             value: 'true',
-            checked: props.compatibilityMode
+            checked: props.compatibilityMode,
+            id: 'jitsi.compatibility-enable',
+            message: 'true'
         },
         {
             value: 'false',
-            checked: !props.compatibilityMode
+            checked: !props.compatibilityMode,
+            id: 'jitsi.compatibility-disable',
+            message: 'false'
         }
     ];
 

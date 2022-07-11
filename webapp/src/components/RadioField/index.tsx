@@ -44,12 +44,10 @@ export const RadioField = ({heading, divClass, labelClass, options, onChange, de
                                             checked={option.checked}
                                             onChange={onChange}
                                         />
-                                        {option.value === 'true' || option.value === 'false' ?
-                                            <span>{option.value}</span> :
-                                            <FormattedMessage
-                                                id={option.id}
-                                                defaultMessage={option.message}
-                                            />}
+                                        <FormattedMessage
+                                            id={option.id}
+                                            defaultMessage={option.message}
+                                        />
                                     </label>
                                 </>
                             ))}

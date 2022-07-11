@@ -7,6 +7,10 @@
   "jaas.embed-meeting-description": "(Experimental) When true, JaaS video is embedded as a floating window inside Mattermost by default.",
   "jaas.rsa-key": "RSA Private key for JaaS Authentication:",
   "jaas.rsa-key-description": "Specify your JaaS private key. You can get the private key by generating an API key pair from https://jaas.8x8.vc/#/apikeys OR from https://jaas.8x8.vc/#/start-guide in the \"Api Key\" section. (NOTE: While generating the key manually make sure to set the size to be 2048 and not 4096).",
+  "jaas.embed-enable": "true",
+  "jaas.embed-disable": "false",
+  "jaas.compatibility-enable": "true",
+  "jaas.compatibility-disable": "false",
   "jitsi.allow-user": "Allow user to select meeting name",
   "jitsi.app-id": "App ID for JWT Authentication:",
   "jitsi.app-id-description": "(Optional) The app ID used for authentication by the Jitsi server and JWT token generator.",
@@ -42,5 +46,11 @@
   "jitsi.server-url-description": "The url for your Jitsi server, for example https://jitsi.example.com. Defaults to https://meet.jit.si, which is the public server provided by Jitsi.",
   "jitsi.use-jwt": "Use JWT Authentication for Jitsi:",
   "jitsi.use-jwt-description": "(Optional) If your Jitsi server uses JSON Web Tokens (JWT) for authentication, set this value to true.",
-  "jitsi.uuid": "UUID (universally unique identifier)"
+  "jitsi.uuid": "UUID (universally unique identifier)",
+  "jitsi.embed-enable": "true",
+  "jitsi.embed-disable": "false",
+  "jitsi.jwt-enable": "true",
+  "jitsi.jwt-disable": "false",
+  "jitsi.compatibility-enable": "true",
+  "jitsi.compatibility-disable": "false"
 }
