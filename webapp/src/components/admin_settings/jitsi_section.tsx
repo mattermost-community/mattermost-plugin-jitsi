@@ -1,5 +1,4 @@
-import * as React from 'react';
-
+import React from 'react';
 import {InputField} from '../InputField';
 import {RadioField} from '../RadioField';
 
@@ -30,17 +29,17 @@ export const JITSI_NAMING_SCHEME = {
     ASK: 'ask'
 };
 
-const JitsiSection = (props: Props) => {
+const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeetingLinkExpChange, onJitsiMeetingNamesChange, onJitsiJwtAuthChange, onJitsiAppSecretChange, onJitsiCompatibilityChange, onJitsiURLChange, serverUrl, embedded, namingScheme, jwtEnabled, appID, appSecret, meetingLinkExpire, compatibilityMode}: Props) => {
     const EMBED_JITSI_VIDEO_INSIDE_MATTERMOST_OPTIONS = [
         {
             value: 'true',
-            checked: props.embedded,
+            checked: embedded,
             id: 'jitsi.embed-enable',
             message: 'true'
         },
         {
             value: 'false',
-            checked: !props.embedded,
+            checked: !embedded,
             id: 'jitsi.embed-disable',
             message: 'false'
         }
@@ -49,25 +48,25 @@ const JitsiSection = (props: Props) => {
     const JITSI_MEETING_NAMES_OPTIONS = [
         {
             value: JITSI_NAMING_SCHEME.WORDS,
-            checked: props.namingScheme === JITSI_NAMING_SCHEME.WORDS,
+            checked: namingScheme === JITSI_NAMING_SCHEME.WORDS,
             id: 'jitsi.random-english-words',
             message: 'Random English words in title case (e.g. PlayfulDragonsObserveCuriously)'
         },
         {
             value: JITSI_NAMING_SCHEME.UUID,
-            checked: props.namingScheme === JITSI_NAMING_SCHEME.UUID,
+            checked: namingScheme === JITSI_NAMING_SCHEME.UUID,
             id: 'jitsi.uuid',
             message: 'UUID (universally unique identifier)'
         },
         {
             value: JITSI_NAMING_SCHEME.MATTERMOST,
-            checked: props.namingScheme === JITSI_NAMING_SCHEME.MATTERMOST,
+            checked: namingScheme === JITSI_NAMING_SCHEME.MATTERMOST,
             id: 'jitsi.context-specific',
             message: 'Mattermost context specific names. Combination of team name, channel name, and random text in Public and Private channels; personal meeting name in Direct and Group Message channels.'
         },
         {
             value: JITSI_NAMING_SCHEME.ASK,
-            checked: props.namingScheme === JITSI_NAMING_SCHEME.ASK,
+            checked: namingScheme === JITSI_NAMING_SCHEME.ASK,
             id: 'jitsi.allow-user',
             message: 'Allow user to select meeting name'
         }
@@ -76,13 +75,13 @@ const JitsiSection = (props: Props) => {
     const JITSI_USE_JWT_OPTIONS = [
         {
             value: 'true',
-            checked: props.jwtEnabled,
+            checked: jwtEnabled,
             id: 'jitsi.jwt-enable',
             message: 'true'
         },
         {
             value: 'false',
-            checked: !props.jwtEnabled,
+            checked: !jwtEnabled,
             id: 'jitsi.jwt-disable',
             message: 'false'
         }
@@ -91,19 +90,18 @@ const JitsiSection = (props: Props) => {
     const JITSI_COMPATIBILITY_OPTIONS = [
         {
             value: 'true',
-            checked: props.compatibilityMode,
+            checked: compatibilityMode,
             id: 'jitsi.compatibility-enable',
             message: 'true'
         },
         {
             value: 'false',
-            checked: !props.compatibilityMode,
+            checked: !compatibilityMode,
             id: 'jitsi.compatibility-disable',
             message: 'false'
         }
     ];
 
-    // TODO rewrite common components or use Mattermost components
     return (
         <div>
             <InputField
@@ -116,8 +114,8 @@ const JitsiSection = (props: Props) => {
                     type: 'input',
                     placeholder: 'https://meet.jit.si',
                     maxLength: -1,
-                    onChange: props.onJitsiURLChange,
-                    value: props.serverUrl
+                    onChange: onJitsiURLChange,
+                    value: serverUrl
                 }}
                 description={{
                     id: 'jitsi.server-url-description',
@@ -131,7 +129,7 @@ const JitsiSection = (props: Props) => {
                 }}
                 labelClass={'radio-inline'}
                 options={EMBED_JITSI_VIDEO_INSIDE_MATTERMOST_OPTIONS}
-                onChange={props.onJitsiEmbeddedChange}
+                onChange={onJitsiEmbeddedChange}
                 description={{
                     id: 'jitsi.embed-video-description',
                     message: '(Experimental) When true, Jitsi video is embedded as a floating window inside Mattermost by default. Users can override this setting with \'/jitsi settings\'.'
@@ -144,7 +142,7 @@ const JitsiSection = (props: Props) => {
                 }}
                 divClass={'radio'}
                 options={JITSI_MEETING_NAMES_OPTIONS}
-                onChange={props.onJitsiMeetingNamesChange}
+                onChange={onJitsiMeetingNamesChange}
                 description={{
                     id: 'jitsi.meeting-names-description',
                     message: 'Select how meeting names are generated by default. Users can override this setting with \'/jitsi settings\'.'
@@ -157,7 +155,7 @@ const JitsiSection = (props: Props) => {
                 }}
                 labelClass={'radio-inline'}
                 options={JITSI_USE_JWT_OPTIONS}
-                onChange={props.onJitsiJwtAuthChange}
+                onChange={onJitsiJwtAuthChange}
                 description={{
                     id: 'jitsi.use-jwt-description',
                     message: '(Optional) If your Jitsi server uses JSON Web Tokens (JWT) for authentication, set this value to true.'
@@ -172,8 +170,8 @@ const JitsiSection = (props: Props) => {
                 input={{
                     type: 'input',
                     maxLength: -1,
-                    onChange: props.onJitsiAppIDChange,
-                    value: props.appID
+                    onChange: onJitsiAppIDChange,
+                    value: appID
                 }}
                 description={{
                     id: 'jitsi.app-id-description',
@@ -189,8 +187,8 @@ const JitsiSection = (props: Props) => {
                 input={{
                     type: 'input',
                     maxLength: -1,
-                    onChange: props.onJitsiAppSecretChange,
-                    value: props.appSecret
+                    onChange: onJitsiAppSecretChange,
+                    value: appSecret
                 }}
                 description={{
                     id: 'jitsi.app-secret-description',
@@ -207,8 +205,8 @@ const JitsiSection = (props: Props) => {
                     type: 'number',
                     min: 1,
                     defaultValue: 30,
-                    onChange: props.onJitsiMeetingLinkExpChange,
-                    value: props.meetingLinkExpire
+                    onChange: onJitsiMeetingLinkExpChange,
+                    value: meetingLinkExpire
                 }}
                 description={{
                     id: 'jitsi.link-expiry-time-description',
@@ -222,7 +220,7 @@ const JitsiSection = (props: Props) => {
                 }}
                 labelClass={'radio-inline'}
                 options={JITSI_COMPATIBILITY_OPTIONS}
-                onChange={props.onJitsiCompatibilityChange}
+                onChange={onJitsiCompatibilityChange}
                 description={{
                     id: 'jitsi.enable-compatibility-mode-description',
                     message: '(Insecure) If your Jitsi server is not compatible with this plugin, include the JavaScript API hosted on your Jitsi server directly in Mattermost instead of the default API version provided by the plugin. WARNING: Enabling this setting can compromise the security of your Mattermost system, if your Jitsi server is not fully trusted and allows direct modification of program files. Use with caution.'

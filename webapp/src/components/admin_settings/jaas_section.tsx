@@ -1,10 +1,9 @@
-import * as React from 'react';
-
+import React from 'react';
 import {InputField} from '../InputField';
 import {RadioField} from '../RadioField';
 
 type Props = {
-    disabled: boolean,
+    disable: boolean,
     onAppIDChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     onApiKeyIDChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     onPrivateKeyChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void,
@@ -17,17 +16,17 @@ type Props = {
     compatibilityMode: boolean
 };
 
-const JaaSSection = (props: Props) => {
+const JaaSSection = ({disable, onApiKeyIDChange, onAppIDChange, onPrivateKeyChange, onEmbeddedChange, onCompatibilityChange, apiKey, appID, privateKey, embedded, compatibilityMode}: Props) => {
     const EMBED_JAAS_VIDEO_INSIDE_MATTERMOST_OPTIONS = [
         {
             value: 'true',
-            checked: props.embedded,
+            checked: embedded,
             id: 'jaas.embed-enable',
             message: 'true'
         },
         {
             value: 'false',
-            checked: !props.embedded,
+            checked: !embedded,
             id: 'jaas.embed-disable',
             message: 'false'
         }
@@ -36,13 +35,13 @@ const JaaSSection = (props: Props) => {
     const JAAS_COMPATIBILITY_OPTIONS = [
         {
             value: 'true',
-            checked: props.compatibilityMode,
+            checked: compatibilityMode,
             id: 'jaas.compatibility-enable',
             message: 'true'
         },
         {
             value: 'false',
-            checked: !props.compatibilityMode,
+            checked: !compatibilityMode,
             id: 'jaas.compatibility-disable',
             message: 'false'
         }
@@ -57,7 +56,7 @@ const JaaSSection = (props: Props) => {
                 }}
                 labelClass={'radio-inline'}
                 options={EMBED_JAAS_VIDEO_INSIDE_MATTERMOST_OPTIONS}
-                onChange={props.onEmbeddedChange}
+                onChange={onEmbeddedChange}
                 description={{
                     id: 'jaas.embed-meeting-description',
                     message: '(Experimental) When true, JaaS video is embedded as a floating window inside Mattermost by default.'
@@ -70,7 +69,7 @@ const JaaSSection = (props: Props) => {
                 }}
                 labelClass={'radio-inline'}
                 options={JAAS_COMPATIBILITY_OPTIONS}
-                onChange={props.onCompatibilityChange}
+                onChange={onCompatibilityChange}
                 description={{
                     id: 'jaas.enable-compatibility-mode-description',
                     message: '(Insecure) If your JaaS server is not compatible with this plugin, include the JavaScript API hosted on your Jaas server directly in Mattermost instead of the default API version provided by the plugin. WARNING: Enabling this setting can compromise the security of your Mattermost system, if your JaaS server is not fully trusted and allows direct modification of program files. Use with caution.'
@@ -85,9 +84,9 @@ const JaaSSection = (props: Props) => {
                 input={{
                     type: 'input',
                     maxLength: -1,
-                    onChange: props.onAppIDChange,
-                    value: props.appID,
-                    disabled: props.disabled
+                    onChange: onAppIDChange,
+                    value: appID,
+                    disabled: disable
                 }}
                 description={{
                     id: 'jaas.app-id-description',
@@ -103,9 +102,9 @@ const JaaSSection = (props: Props) => {
                 input={{
                     type: 'input',
                     maxLength: -1,
-                    onChange: props.onApiKeyIDChange,
-                    value: props.apiKey,
-                    disabled: props.disabled
+                    onChange: onApiKeyIDChange,
+                    value: apiKey,
+                    disabled: disable
                 }}
                 description={{
                     id: 'jaas.api-key-id-description',
@@ -121,9 +120,9 @@ const JaaSSection = (props: Props) => {
                 input={{
                     maxLength: -1,
                     rows: 5,
-                    onChange: props.onPrivateKeyChange,
-                    value: props.privateKey,
-                    disabled: props.disabled
+                    onChange: onPrivateKeyChange,
+                    value: privateKey,
+                    disabled: disable
                 }}
                 description={{
                     id: 'jaas.rsa-key-description',
