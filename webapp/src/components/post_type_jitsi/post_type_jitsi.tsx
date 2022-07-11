@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {FormattedMessage} from 'react-intl';
 import {Post} from 'mattermost-redux/types/posts';
 import {Theme} from 'mattermost-redux/types/preferences';
@@ -6,10 +6,9 @@ import {ActionResult} from 'mattermost-redux/types/actions';
 import Constants from 'mattermost-redux/constants/general';
 import {UserProfile} from 'mattermost-redux/types/users';
 import {getFullName} from 'mattermost-redux/utils/user_utils';
-
-import Svgs from '../../constants/svgs';
-
 import {makeStyleFromTheme} from 'mattermost-redux/utils/theme_utils';
+
+import Svgs from 'constants/svgs';
 
 export type Props = {
     post?: Post,
@@ -96,8 +95,8 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
         }
 
         const props = post.props;
-
         let meetingLink = props.meeting_link;
+
         if (props.jwt_meeting) {
             meetingLink += '?jwt=' + (props.meeting_jwt);
         }
@@ -155,7 +154,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
                                     onClick={this.openJitsiMeeting}
                                     href={meetingLink}
                                 >
-                                    {props.meeting_id}
+                                    {props.meeting_id_label}
                                 </a>
                             </span>
                             <div>

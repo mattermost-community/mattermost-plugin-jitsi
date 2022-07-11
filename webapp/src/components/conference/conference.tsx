@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import {FormattedMessage} from 'react-intl';
 import {Post} from 'mattermost-redux/types/posts';
@@ -11,6 +11,7 @@ const BUTTONS_PADDING_TOP = 10;
 const BUTTONS_PADDING_RIGHT = 2;
 const MINIMIZED_WIDTH = 384;
 const MINIMIZED_HEIGHT = 288;
+const JAAS_DOMAIN = '8x8.vc';
 
 type Props = {
     currentUserId: string,
@@ -103,7 +104,9 @@ export default class Conference extends React.PureComponent<Props, State> {
                 this.resizeIframe();
             }
         };
-        this.api = new (window as any).JitsiMeetExternalAPI(domain, options);
+
+        this.api = new (window as any).JitsiMeetExternalAPI(post.props.jaas_meeting ? JAAS_DOMAIN : domain, options);
+
         this.api.on('videoConferenceJoined', () => {
             if (this.state.minimized) {
                 this.minimize();
@@ -172,23 +175,25 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 
     close = () => {
-        this.api.executeCommand('hangup');
-        setTimeout(() => {
-            this.props.actions.openJitsiMeeting(null, null);
-            this.props.actions.setUserStatus(this.props.currentUserId, Constants.ONLINE);
-            this.setState({
-                minimized: true,
-                loading: true,
-                position: POSITION_BOTTOM,
-                wasTileView: true,
-                isTileView: true,
-                wasFilmStrip: true,
-                isFilmStrip: true
-            });
-            if (this.api) {
-                this.api.dispose();
-            }
-        }, 200);
+        if (this.api) {
+            this.api.executeCommand('hangup');
+            setTimeout(() => {
+                this.props.actions.openJitsiMeeting(null, null);
+                this.props.actions.setUserStatus(this.props.currentUserId, Constants.ONLINE);
+                this.setState({
+                    minimized: true,
+                    loading: true,
+                    position: POSITION_BOTTOM,
+                    wasTileView: true,
+                    isTileView: true,
+                    wasFilmStrip: true,
+                    isFilmStrip: true
+                });
+                if (this.api) {
+                    this.api.dispose();
+                }
+            }, 200);
+        }
     }
 
     minimize = () => {

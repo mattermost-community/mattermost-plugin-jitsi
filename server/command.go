@@ -16,6 +16,8 @@ const jitsiCommand = "jitsi"
 
 const jitsiSettingsSeeCommand = "see"
 const jitsiStartCommand = "start"
+const _true = "true"
+const _false = "false"
 
 func startMeetingError(channelID string, detailedError string) (*model.CommandResponse, *model.AppError) {
 	return &model.CommandResponse{
@@ -61,10 +63,10 @@ func getAutocompleteData() *model.AutocompleteData {
 	embedded := model.NewAutocompleteData("embedded", "[value]", "Choose where the Jitsi meeting should open")
 	items := []model.AutocompleteListItem{{
 		HelpText: "Jitsi meeting is embedded as a floating window inside Mattermost",
-		Item:     "true",
+		Item:     _true,
 	}, {
 		HelpText: "Jitsi meeting opens in a new window",
-		Item:     "false",
+		Item:     _false,
 	}}
 	embedded.AddStaticListArgument("Choose where the Jitsi meeting should open", true, items)
 	settings.AddCommand(embedded)
@@ -257,9 +259,9 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 	switch parameters[0] {
 	case "embedded":
 		switch parameters[1] {
-		case "true":
+		case _true:
 			userConfig.Embedded = true
-		case "false":
+		case _false:
 			userConfig.Embedded = false
 		default:
 			text = p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{

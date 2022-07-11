@@ -9,6 +9,7 @@ import (
 	"reflect"
 
 	"github.com/mattermost/mattermost-plugin-api/experimental/telemetry"
+	"github.com/mattermost/mattermost-server/v5/mlog"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/pkg/errors"
 )
@@ -25,29 +26,49 @@ import (
 // If you add non-reference types to your configuration struct, be sure to rewrite Clone as a deep
 // copy appropriate for your types.
 type configuration struct {
+	JitsiSettings jitsisettings
+}
+
+type jitsisettings struct {
 	JitsiURL               string
-	JitsiJWT               bool
-	JitsiEmbedded          bool
 	JitsiAppID             string
 	JitsiAppSecret         string
-	JitsiLinkValidTime     int
 	JitsiNamingScheme      string
+	JaaSAppID              string
+	JaaSApiKey             string
+	JaaSPrivateKey         string
+	JitsiLinkValidTime     int
+	JitsiJWT               bool
+	JitsiEmbedded          bool
 	JitsiCompatibilityMode bool
+	UseJaaS                bool
 }
 
 const publicJitsiServerURL = "https://meet.jit.si"
+const public8x8vcURL = "https://8x8.vc"
 
 // GetJitsiURL return the currently configured JitsiURL or the URL from the
 // public servers provided by Jitsi.
 func (c *configuration) GetJitsiURL() string {
-	if len(c.JitsiURL) > 0 {
-		return c.JitsiURL
+	if len(c.JitsiSettings.JitsiURL) > 0 {
+		return c.JitsiSettings.JitsiURL
+	}
+	return publicJitsiServerURL
+}
+
+func (j *jitsisettings) GetJitsiURL() string {
+	if len(j.JitsiURL) > 0 {
+		return j.JitsiURL
 	}
 	return publicJitsiServerURL
 }
 
 func (c *configuration) GetDefaultJitsiURL() string {
 	return publicJitsiServerURL
+}
+
+func (j *jitsisettings) Get8x8vcURL() string {
+	return public8x8vcURL
 }
 
 // Clone shallow copies the configuration. Your implementation may require a deep copy if
@@ -59,22 +80,73 @@ func (c *configuration) Clone() *configuration {
 
 // IsValid checks if all needed fields are set.
 func (c *configuration) IsValid() error {
-	if len(c.JitsiURL) > 0 {
-		_, err := url.Parse(c.JitsiURL)
+	if len(c.JitsiSettings.JitsiURL) > 0 {
+		_, err := url.Parse(c.JitsiSettings.JitsiURL)
 		if err != nil {
 			return fmt.Errorf("error invalid jitsiURL")
 		}
 	}
 
-	if c.JitsiJWT {
-		if len(c.JitsiAppID) == 0 {
+	if c.JitsiSettings.JitsiJWT {
+		if len(c.JitsiSettings.JitsiAppID) == 0 {
 			return fmt.Errorf("error no Jitsi app ID was provided to use with JWT")
 		}
-		if len(c.JitsiAppSecret) == 0 {
+		if len(c.JitsiSettings.JitsiAppSecret) == 0 {
 			return fmt.Errorf("error no Jitsi app secret provided to use with JWT")
 		}
-		if c.JitsiLinkValidTime < 1 {
-			c.JitsiLinkValidTime = 30
+		if c.JitsiSettings.JitsiLinkValidTime < 1 {
+			c.JitsiSettings.JitsiLinkValidTime = 30
+		}
+	}
+
+	if c.JitsiSettings.UseJaaS {
+		if len(c.JitsiSettings.JaaSApiKey) == 0 {
+			return fmt.Errorf("error no JaaS Api Key was provided for JaaS")
+		}
+
+		if len(c.JitsiSettings.JaaSAppID) == 0 {
+			return fmt.Errorf("error no JaaS AppID was provided for JaaS")
+		}
+
+		if len(c.JitsiSettings.JaaSPrivateKey) == 0 {
+			return fmt.Errorf("error no JaaS Private KEy was provided for JaaS")
+		}
+	}
+
+	return nil
+}
+
+func (j *jitsisettings) IsValid() error {
+	if len(j.JitsiURL) > 0 {
+		_, err := url.Parse(j.JitsiURL)
+		if err != nil {
+			return fmt.Errorf("error invalid jitsiURL")
+		}
+	}
+
+	if j.JitsiJWT {
+		if len(j.JitsiAppID) == 0 {
+			return fmt.Errorf("error no Jitsi app ID was provided to use with JWT")
+		}
+		if len(j.JitsiAppSecret) == 0 {
+			return fmt.Errorf("error no Jitsi app secret provided to use with JWT")
+		}
+		if j.JitsiLinkValidTime < 1 {
+			j.JitsiLinkValidTime = 30
+		}
+	}
+
+	if j.UseJaaS {
+		if len(j.JaaSApiKey) == 0 {
+			mlog.Error("error no JaaS Api Key was provided for JaaS")
+		}
+
+		if len(j.JaaSAppID) == 0 {
+			mlog.Error("error no JaaS AppID was provided for JaaS")
+		}
+
+		if len(j.JaaSPrivateKey) == 0 {
+			mlog.Error("error no JaaS Private Key was provided for JaaS")
 		}
 	}
 
@@ -84,15 +156,16 @@ func (c *configuration) IsValid() error {
 // getConfiguration retrieves the active configuration under lock, making it safe to use
 // concurrently. The active configuration may change underneath the client of this method, but
 // the struct returned by this API call is considered immutable.
-func (p *Plugin) getConfiguration() *configuration {
+func (p *Plugin) getConfiguration() *jitsisettings {
 	p.configurationLock.RLock()
 	defer p.configurationLock.RUnlock()
 
 	if p.configuration == nil {
-		return &configuration{}
+		newConfiguration := configuration{}
+		return &newConfiguration.JitsiSettings
 	}
 
-	return p.configuration
+	return &p.configuration.JitsiSettings
 }
 
 // setConfiguration replaces the active configuration under lock.
@@ -126,7 +199,6 @@ func (p *Plugin) setConfiguration(configuration *configuration) {
 // OnConfigurationChange is invoked when configuration changes may have been made.
 func (p *Plugin) OnConfigurationChange() error {
 	var configuration = new(configuration)
-
 	// Load the public configuration fields from the Mattermost server configuration.
 	if err := p.API.LoadPluginConfiguration(configuration); err != nil {
 		return errors.Wrap(err, "failed to load plugin configuration")
@@ -142,7 +214,6 @@ func (p *Plugin) OnConfigurationChange() error {
 	p.tracker = telemetry.NewTracker(p.telemetryClient, p.API.GetDiagnosticId(), p.API.GetServerVersion(), manifest.Id, manifest.Version, "jitsi", enableDiagnostics)
 
 	p.setConfiguration(configuration)
-
 	return nil
 }
 
