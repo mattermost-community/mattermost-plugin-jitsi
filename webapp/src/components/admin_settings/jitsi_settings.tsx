@@ -59,8 +59,7 @@ const DEFAULT_SETTINGS: Settings = {
 const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: Props) => {
     const selectedMode = value?.usejaas ? JAAS_MODE : JITSI_MODE;
 
-    let selectedSettings = DEFAULT_SETTINGS;
-    selectedSettings = useMemo(() => ({
+    const selectedSettings = useMemo(() => ({
         jitsiurl: config.PluginSettings.Plugins[pluginId].jitsiurl ?? DEFAULT_SETTINGS.jitsiurl,
         jitsiappsecret: config.PluginSettings.Plugins[pluginId].jitsiappsecret ?? DEFAULT_SETTINGS.jitsiappsecret,
         jitsiappid: config.PluginSettings.Plugins[pluginId].jitsiappid ?? DEFAULT_SETTINGS.jaasappid,
@@ -100,56 +99,56 @@ const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: P
 
     const onJaaSApiKeyChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jaasapikey', e.target.value);
-    }, []);
+    }, [updateSettingsState]);
 
     const onJaaSAppIDChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jaasappid', e.target.value);
-    }, []);
+    }, [updateSettingsState]);
 
     const onJaaSPrivateKeyChanged = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
         updateSettingsState('jaasprivatekey', e.target.value);
-    }, []);
+    }, [updateSettingsState]);
 
     // We reuse some of the Jitsi settings for JaaS
     const onJaaSEmbeddedChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsiembedded', e.target.value === 'true');
-    }, []);
+    }, [updateSettingsState]);
 
     const onJaaSCompatibilityChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsicompatibilitymode', e.target.value === 'true');
-    }, []);
+    }, [updateSettingsState]);
 
     const onJitsiAppIDChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsiappid', e.target.value);
-    }, []);
+    }, [updateSettingsState]);
 
     const onJitsiAppSecretChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsiappsecret', e.target.value);
-    }, []);
+    }, [updateSettingsState]);
 
     const onJitsiCompatibilityChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsicompatibilitymode', e.target.value === 'true');
-    }, []);
+    }, [updateSettingsState]);
 
     const onJitsiEmbeddedChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsiembedded', e.target.value === 'true');
-    }, []);
+    }, [updateSettingsState]);
 
     const onJitsiAuthChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsijwt', e.target.value === 'true');
-    }, []);
+    }, [updateSettingsState]);
 
     const onJitsiMeetingLinkExpChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsilinkvalidtime', e.target.value);
-    }, []);
+    }, [updateSettingsState]);
 
     const onJitsiMeetingNamesChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsinamingscheme', e.target.value);
-    }, []);
+    }, [updateSettingsState]);
 
     const onJitsiURLChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateSettingsState('jitsiurl', e.target.value);
-    }, []);
+    }, [updateSettingsState]);
 
     const jitsiSection = useMemo(() => (
         <JitsiSection
