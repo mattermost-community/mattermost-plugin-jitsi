@@ -1,17 +1,19 @@
 import React from 'react';
+
+import {InputFieldType} from 'types';
 import {InputField} from '../InputField';
 import {RadioField} from '../RadioField';
 
 type Props = {
     disabled: boolean,
-    onJitsiURLChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    onJitsiEmbeddedChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    onJitsiMeetingNamesChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    onJitsiJwtAuthChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    onJitsiAppIDChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    onJitsiAppSecretChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    onJitsiMeetingLinkExpChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    onJitsiCompatibilityChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    onJitsiURLChange: (e: React.ChangeEvent<InputFieldType>) => void,
+    onJitsiEmbeddedChange: (e: React.ChangeEvent<InputFieldType>) => void,
+    onJitsiMeetingNamesChange: (e: React.ChangeEvent<InputFieldType>) => void,
+    onJitsiJwtAuthChange: (e: React.ChangeEvent<InputFieldType>) => void,
+    onJitsiAppIDChange: (e: React.ChangeEvent<InputFieldType>) => void,
+    onJitsiAppSecretChange: (e: React.ChangeEvent<InputFieldType>) => void,
+    onJitsiMeetingLinkExpChange: (e: React.ChangeEvent<InputFieldType>) => void,
+    onJitsiCompatibilityChange: (e: React.ChangeEvent<InputFieldType>) => void,
     serverUrl: string,
     embedded: boolean,
     namingScheme: string,
@@ -127,7 +129,7 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
                     id: 'jitsi.embed-video',
                     message: 'Embed Jitsi video inside Mattermost:'
                 }}
-                labelClass={'radio-inline'}
+                radioInline={'radio-inline'}
                 options={EMBED_JITSI_VIDEO_INSIDE_MATTERMOST_OPTIONS}
                 onChange={onJitsiEmbeddedChange}
                 description={{
@@ -140,7 +142,7 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
                     id: 'jitsi.meeting-names',
                     message: 'Jitsi Meeting Names:'
                 }}
-                divClass={'radio'}
+                radioGlobal={'radio'}
                 options={JITSI_MEETING_NAMES_OPTIONS}
                 onChange={onJitsiMeetingNamesChange}
                 description={{
@@ -153,7 +155,7 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
                     id: 'jitsi.use-jwt',
                     message: 'Use JWT Authentication for Jitsi:'
                 }}
-                labelClass={'radio-inline'}
+                radioInline={'radio-inline'}
                 options={JITSI_USE_JWT_OPTIONS}
                 onChange={onJitsiJwtAuthChange}
                 description={{
@@ -218,7 +220,7 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
                     id: 'jitsi.enable-compatibility-mode',
                     message: 'Enable Compatibility Mode:'
                 }}
-                labelClass={'radio-inline'}
+                radioInline={'radio-inline'}
                 options={JITSI_COMPATIBILITY_OPTIONS}
                 onChange={onJitsiCompatibilityChange}
                 description={{

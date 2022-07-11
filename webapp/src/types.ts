@@ -16,3 +16,5 @@ export type GlobalState = ReduxGlobalState & {
         }
     }
 }
+
+export type InputFieldType = HTMLInputElement | HTMLTextAreaElement;

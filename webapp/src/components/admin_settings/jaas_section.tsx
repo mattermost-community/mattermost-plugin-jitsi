@@ -1,14 +1,16 @@
 import React from 'react';
+
+import {InputFieldType} from 'types';
 import {InputField} from '../InputField';
 import {RadioField} from '../RadioField';
 
 type Props = {
     disable: boolean,
-    onAppIDChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    onApiKeyIDChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    onPrivateKeyChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void,
-    onEmbeddedChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    onCompatibilityChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    onAppIDChange: (e: React.ChangeEvent<InputFieldType>) => void,
+    onApiKeyIDChange: (e: React.ChangeEvent<InputFieldType>) => void,
+    onPrivateKeyChange: (e: React.ChangeEvent<InputFieldType>) => void,
+    onEmbeddedChange: (e: React.ChangeEvent<InputFieldType>) => void,
+    onCompatibilityChange: (e: React.ChangeEvent<InputFieldType>) => void,
     apiKey: string,
     appID: string,
     privateKey: string
@@ -54,7 +56,7 @@ const JaaSSection = ({disable, onApiKeyIDChange, onAppIDChange, onPrivateKeyChan
                     id: 'jaas.embed-meeting',
                     message: 'Embed JaaS video inside Mattermost:'
                 }}
-                labelClass={'radio-inline'}
+                radioInline={'radio-inline'}
                 options={EMBED_JAAS_VIDEO_INSIDE_MATTERMOST_OPTIONS}
                 onChange={onEmbeddedChange}
                 description={{
@@ -67,7 +69,7 @@ const JaaSSection = ({disable, onApiKeyIDChange, onAppIDChange, onPrivateKeyChan
                     id: 'jaas.enable-compatibility-mode',
                     message: 'Enable Compatibility Mode:'
                 }}
-                labelClass={'radio-inline'}
+                radioInline={'radio-inline'}
                 options={JAAS_COMPATIBILITY_OPTIONS}
                 onChange={onCompatibilityChange}
                 description={{

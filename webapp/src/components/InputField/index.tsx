@@ -1,6 +1,8 @@
 import * as React from 'react';
 import {FormattedMessage} from 'react-intl';
 
+import {InputFieldType} from 'types';
+
 type Props = {
     heading: {
         id: string;
@@ -14,7 +16,7 @@ type Props = {
         min?: number;
         rows?: number;
         defaultValue?: number;
-        onChange: (e: React.ChangeEvent<any>) => void;
+        onChange: (e: React.ChangeEvent<InputFieldType>) => void;
         value: string | number;
         disabled?: boolean;
     };

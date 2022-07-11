@@ -6,8 +6,8 @@ type Props = {
         id: string;
         message: string;
     };
-    divClass?: string;
-    labelClass?: string;
+    radioGlobal?: string;
+    radioInline?: string;
     options: {
         value: string;
         checked: boolean;
@@ -21,7 +21,7 @@ type Props = {
     }
 }
 
-export const RadioField = ({heading, divClass, labelClass, options, onChange, description}: Props) => {
+export const RadioField = ({heading, radioGlobal, radioInline, options, onChange, description}: Props) => {
     return (
         <>
             <div className='form-group'>
@@ -33,10 +33,10 @@ export const RadioField = ({heading, divClass, labelClass, options, onChange, de
                 </label>
                 <div className='col-sm-8'>
                     <>
-                        <div className={`${divClass}`}>
+                        <div className={`${radioGlobal}`}>
                             {options.map((option) => (
                                 <>
-                                    <label className={`pt-0 ${labelClass}`}>
+                                    <label className={`pt-0 ${radioInline}`}>
                                         <input
                                             key={option.value}
                                             type='radio'
@@ -68,6 +68,6 @@ export const RadioField = ({heading, divClass, labelClass, options, onChange, de
 };
 
 RadioField.defaultProps = {
-    divClass: '',
-    labelClass: ''
+    radioGlobal: '',
+    radioInline: ''
 };
