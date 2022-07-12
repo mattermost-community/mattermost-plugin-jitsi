@@ -37,7 +37,7 @@ export default class JaaSConference extends React.PureComponent<Props, State> {
             roomName: room,
             jwt,
             noSSL,
-            parentNode: document.querySelector('#jitsiMeet'),
+            parentNode: document.querySelector('#jitsiMeet')
         };
 
         this.api = new (window as any).JitsiMeetExternalAPI(JAAS_URL, options);
