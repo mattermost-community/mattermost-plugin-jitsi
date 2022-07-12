@@ -1,7 +1,7 @@
 // Copyright (c) 2017-present Mattermost, Inc. All Rights Reserved.
 // See License.txt for license information.
 
-import * as React from 'react';
+import React from 'react';
 
 import {Channel} from 'mattermost-redux/types/channels';
 import {Post} from 'mattermost-redux/types/posts';

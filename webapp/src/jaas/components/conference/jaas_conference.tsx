@@ -27,7 +27,7 @@ export default class JaaSConference extends React.PureComponent<Props, State> {
 
     initJaaS(jwt: string, room: string) {
         const url = new URL(window.location.href);
-        const noSSL = url.protocol === 'http:';
+        const noSSL = url.protocol === 'https:';
 
         const ws = Math.max(document.documentElement.clientWidth ?? 0, window?.innerWidth ?? 0);
         const hs = Math.max(document.documentElement.clientHeight ?? 0, window?.innerHeight ?? 0);

@@ -89,7 +89,7 @@ export default class Conference extends React.PureComponent<Props, State> {
 
         const url = new URL(post.props.meeting_link);
 
-        const noSSL = url.protocol === 'http:';
+        const noSSL = url.protocol === 'https:';
 
         const domain = url.host;
         const options = {
