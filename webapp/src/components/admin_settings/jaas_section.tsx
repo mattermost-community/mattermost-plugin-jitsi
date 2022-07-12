@@ -6,7 +6,7 @@ import {TextInput} from '../InputField';
 import {RadioField} from '../RadioField';
 
 type Props = {
-    disable: boolean,
+    disabled: boolean,
     onAppIDChange: (e: React.ChangeEvent<InputFieldType>) => void,
     onApiKeyIDChange: (e: React.ChangeEvent<InputFieldType>) => void,
     onPrivateKeyChange: (e: React.ChangeEvent<InputFieldType>) => void,
@@ -19,7 +19,7 @@ type Props = {
     compatibilityMode: boolean
 };
 
-const JaaSSection = ({disable, onApiKeyIDChange, onAppIDChange, onPrivateKeyChange, onEmbeddedChange, onCompatibilityChange, apiKey, appID, privateKey, embedded, compatibilityMode}: Props) => {
+const JaaSSection = ({disabled, onApiKeyIDChange, onAppIDChange, onPrivateKeyChange, onEmbeddedChange, onCompatibilityChange, apiKey, appID, privateKey, embedded, compatibilityMode}: Props) => {
     const EMBED_JAAS_VIDEO_INSIDE_MATTERMOST_OPTIONS = useMemo(() => [
         {
             value: 'true',
@@ -97,7 +97,7 @@ const JaaSSection = ({disable, onApiKeyIDChange, onAppIDChange, onPrivateKeyChan
                 type={'input'}
                 onChange={onAppIDChange}
                 value={appID}
-                disabled={disable}
+                disabled={disabled}
                 description={
                     <FormattedMessage
                         id='jaas.app-id-description'
@@ -116,7 +116,7 @@ const JaaSSection = ({disable, onApiKeyIDChange, onAppIDChange, onPrivateKeyChan
                 type={'input'}
                 onChange={onApiKeyIDChange}
                 value={apiKey}
-                disabled={disable}
+                disabled={disabled}
                 description={
                     <FormattedMessage
                         id='jaas.api-key-id-description'
@@ -135,7 +135,7 @@ const JaaSSection = ({disable, onApiKeyIDChange, onAppIDChange, onPrivateKeyChan
                 rows={5}
                 onChange={onPrivateKeyChange}
                 value={privateKey}
-                disabled={disable}
+                disabled={disabled}
                 description={
                     <FormattedMessage
                         id='jaas.rsa-key-description'

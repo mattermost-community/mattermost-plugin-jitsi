@@ -191,7 +191,7 @@ const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: P
 
     const jaasSection = useMemo(() => (
         <JaaSSection
-            disable={disabled}
+            disabled={disabled}
             onApiKeyIDChange={onJaaSApiKeyChanged}
             onAppIDChange={onJaaSAppIDChanged}
             onPrivateKeyChange={onJaaSPrivateKeyChanged}
