@@ -38,10 +38,6 @@ export default class JaaSConference extends React.PureComponent<Props, State> {
             jwt,
             noSSL,
             parentNode: document.querySelector('#jitsiMeet'),
-            configOverwrite: {
-                startWithVideoMuted: true,
-                startWithAudioMuted: true
-            }
         };
 
         this.api = new (window as any).JitsiMeetExternalAPI(JAAS_URL, options);

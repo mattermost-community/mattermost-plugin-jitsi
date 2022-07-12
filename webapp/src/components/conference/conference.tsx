@@ -99,10 +99,6 @@ export default class Conference extends React.PureComponent<Props, State> {
             jwt: this.props.jwt,
             noSSL,
             parentNode: document.querySelector('#jitsiMeet'),
-            configOverwrite: {
-                startWithVideoMuted: true,
-                startWithAudioMuted: true
-            },
             onload: () => {
                 this.setState({loading: false});
                 this.resizeIframe();
