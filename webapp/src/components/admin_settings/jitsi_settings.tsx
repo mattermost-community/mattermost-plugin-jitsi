@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useState, useMemo, ChangeEvent} from 'react';
+import {FormattedMessage} from 'react-intl';
 import {AdminConfig} from 'mattermost-redux/types/config';
 
 import {id as pluginId} from 'manifest';
@@ -78,7 +79,7 @@ const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: P
     const [settings, setSettings] = useState(value ?? selectedSettings);
     const [mode, setMode] = useState(selectedMode);
 
-    const JITSI_SERVER_OPTIONS = [
+    const JITSI_SERVER_OPTIONS = useMemo(() => [
         {
             value: JITSI_MODE,
             checked: mode === JITSI_MODE,
@@ -91,7 +92,7 @@ const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: P
             id: 'jitsi.input-enable-jass',
             message: 'JasS'
         }
-    ];
+    ], [mode]);
 
     useEffect(() => {
         onChange(id, settings);
@@ -208,17 +209,21 @@ const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: P
         <I18nProvider>
             <div>
                 <RadioField
-                    heading={{
-                        id: 'jitsi.server',
-                        message: 'Server:'
-                    }}
-                    radioInline={'radio-inline'}
+                    heading={
+                        <FormattedMessage
+                            id='jitsi.server'
+                            defaultMessage={'Server:'}
+                        />
+                    }
+                    isInline={true}
                     options={JITSI_SERVER_OPTIONS}
                     onChange={onModeSelected}
-                    description={{
-                        id: 'jitsi.serever-description',
-                        message: 'Select the type of jitsi server you want to use.'
-                    }}
+                    description={
+                        <FormattedMessage
+                            id='jitsi.serever-description'
+                            defaultMessage={'Select the type of jitsi server you want to use.'}
+                        />
+                    }
                 />
                 <hr style={{height: '3px'}}/>
                 {mode === JAAS_MODE ? jaasSection : jitsiSection}

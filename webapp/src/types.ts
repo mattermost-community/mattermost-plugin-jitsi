@@ -18,3 +18,10 @@ export type GlobalState = ReduxGlobalState & {
 }
 
 export type InputFieldType = HTMLInputElement | HTMLTextAreaElement;
+
+export type RadioOptionsType = {
+    value: string;
+    checked: boolean;
+    id: string;
+    message: string;
+}

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useMemo} from 'react';
+import {FormattedMessage} from 'react-intl';
 
 import {InputFieldType} from 'types';
-import {InputField} from '../InputField';
+import {TextInput} from '../InputField';
 import {RadioField} from '../RadioField';
 
 type Props = {
@@ -19,117 +20,128 @@ type Props = {
 };
 
 const JaaSSection = ({disable, onApiKeyIDChange, onAppIDChange, onPrivateKeyChange, onEmbeddedChange, onCompatibilityChange, apiKey, appID, privateKey, embedded, compatibilityMode}: Props) => {
-    const EMBED_JAAS_VIDEO_INSIDE_MATTERMOST_OPTIONS = [
+    const EMBED_JAAS_VIDEO_INSIDE_MATTERMOST_OPTIONS = useMemo(() => [
         {
             value: 'true',
             checked: embedded,
-            id: 'jaas.embed-enable',
+            id: 'jitsi.true',
             message: 'true'
         },
         {
             value: 'false',
             checked: !embedded,
-            id: 'jaas.embed-disable',
+            id: 'jitsi.false',
             message: 'false'
         }
-    ];
+    ], [embedded]);
 
-    const JAAS_COMPATIBILITY_OPTIONS = [
+    const JAAS_COMPATIBILITY_OPTIONS = useMemo(() => [
         {
             value: 'true',
             checked: compatibilityMode,
-            id: 'jaas.compatibility-enable',
+            id: 'jitsi.true',
             message: 'true'
         },
         {
             value: 'false',
             checked: !compatibilityMode,
-            id: 'jaas.compatibility-disable',
+            id: 'jitsi.false',
             message: 'false'
         }
-    ];
+    ], [compatibilityMode]);
 
     return (
         <div>
             <RadioField
-                heading={{
-                    id: 'jaas.embed-meeting',
-                    message: 'Embed JaaS video inside Mattermost:'
-                }}
-                radioInline={'radio-inline'}
+                heading={
+                    <FormattedMessage
+                        id='jaas.embed-meeting'
+                        defaultMessage={'Embed JaaS video inside Mattermost:'}
+                    />
+                }
+                isInline={true}
                 options={EMBED_JAAS_VIDEO_INSIDE_MATTERMOST_OPTIONS}
                 onChange={onEmbeddedChange}
-                description={{
-                    id: 'jaas.embed-meeting-description',
-                    message: '(Experimental) When true, JaaS video is embedded as a floating window inside Mattermost by default.'
-                }}
+                description={
+                    <FormattedMessage
+                        id='jaas.embed-meeting-description'
+                        defaultMessage={'(Experimental) When true, JaaS video is embedded as a floating window inside Mattermost by default.'}
+                    />
+                }
             />
             <RadioField
-                heading={{
-                    id: 'jaas.enable-compatibility-mode',
-                    message: 'Enable Compatibility Mode:'
-                }}
-                radioInline={'radio-inline'}
+                heading={
+                    <FormattedMessage
+                        id='jaas.enable-compatibility-mod'
+                        defaultMessage={'Enable Compatibility Mode:'}
+                    />
+                }
+                isInline={true}
                 options={JAAS_COMPATIBILITY_OPTIONS}
                 onChange={onCompatibilityChange}
-                description={{
-                    id: 'jaas.enable-compatibility-mode-description',
-                    message: '(Insecure) If your JaaS server is not compatible with this plugin, include the JavaScript API hosted on your Jaas server directly in Mattermost instead of the default API version provided by the plugin. WARNING: Enabling this setting can compromise the security of your Mattermost system, if your JaaS server is not fully trusted and allows direct modification of program files. Use with caution.'
-                }}
+                description={
+                    <FormattedMessage
+                        id='jaas.enable-compatibility-mode-description'
+                        defaultMessage={'(Insecure) If your JaaS server is not compatible with this plugin, include the JavaScript API hosted on your Jaas server directly in Mattermost instead of the default API version provided by the plugin. WARNING: Enabling this setting can compromise the security of your Mattermost system, if your JaaS server is not fully trusted and allows direct modification of program files. Use with caution.'}
+                    />
+                }
             />
-            <InputField
-                heading={{
-                    id: 'jaas.app-id',
-                    message: 'AppID for JaaS Authentication:'
-                }}
+            <TextInput
+                heading={
+                    <FormattedMessage
+                        id='jaas.app-id'
+                        defaultMessage={'AppID for JaaS Authentication:'}
+                    />
+                }
                 tagType={'input'}
-                input={{
-                    type: 'input',
-                    maxLength: -1,
-                    onChange: onAppIDChange,
-                    value: appID,
-                    disabled: disable
-                }}
-                description={{
-                    id: 'jaas.app-id-description',
-                    message: 'Specify your JaaS AppID. You can get the AppID from https://jaas.8x8.vc/#/apikeys.'
-                }}
+                type={'input'}
+                onChange={onAppIDChange}
+                value={appID}
+                disabled={disable}
+                description={
+                    <FormattedMessage
+                        id='jaas.app-id-description'
+                        defaultMessage={'Specify your JaaS AppID. You can get the AppID from https://jaas.8x8.vc/#/apikeys.'}
+                    />
+                }
             />
-            <InputField
-                heading={{
-                    id: 'jaas.api-key-id',
-                    message: 'Api key ID for JaaS Authentication:'
-                }}
+            <TextInput
+                heading={
+                    <FormattedMessage
+                        id='jaas.api-key-id'
+                        defaultMessage={'Api key ID for JaaS Authentication:'}
+                    />
+                }
                 tagType={'input'}
-                input={{
-                    type: 'input',
-                    maxLength: -1,
-                    onChange: onApiKeyIDChange,
-                    value: apiKey,
-                    disabled: disable
-                }}
-                description={{
-                    id: 'jaas.api-key-id-description',
-                    message: 'Specify your JaaS Api key ID. You can get the Api key ID from https://jaas.8x8.vc/#/apikeys.'
-                }}
+                type={'input'}
+                onChange={onApiKeyIDChange}
+                value={apiKey}
+                disabled={disable}
+                description={
+                    <FormattedMessage
+                        id='jaas.api-key-id-description'
+                        defaultMessage={'Specify your JaaS Api key ID. You can get the Api key ID from https://jaas.8x8.vc/#/apikeys.'}
+                    />
+                }
             />
-            <InputField
-                heading={{
-                    id: 'jaas.rsa-key',
-                    message: 'RSA Private key for JaaS Authentication:'
-                }}
+            <TextInput
+                heading={
+                    <FormattedMessage
+                        id='jaas.rsa-key'
+                        defaultMessage={'RSA Private key for JaaS Authentication:'}
+                    />
+                }
                 tagType={'textarea'}
-                input={{
-                    maxLength: -1,
-                    rows: 5,
-                    onChange: onPrivateKeyChange,
-                    value: privateKey,
-                    disabled: disable
-                }}
-                description={{
-                    id: 'jaas.rsa-key-description',
-                    message: 'Specify your JaaS private key. You can get the private key by generating an API key pair from https://jaas.8x8.vc/#/apikeys OR from https://jaas.8x8.vc/#/start-guide in the "Api Key" section. (NOTE: While generating the key manually make sure to set the size to be 2048 and not 4096).'
-                }}
+                rows={5}
+                onChange={onPrivateKeyChange}
+                value={privateKey}
+                disabled={disable}
+                description={
+                    <FormattedMessage
+                        id='jaas.rsa-key-description'
+                        defaultMessage={'Specify your JaaS private key. You can get the private key by generating an API key pair from https://jaas.8x8.vc/#/apikeys OR from https://jaas.8x8.vc/#/start-guide in the "Api Key" section. (NOTE: While generating the key manually make sure to set the size to be 2048 and not 4096).'}
+                    />
+                }
             />
         </div>
     );

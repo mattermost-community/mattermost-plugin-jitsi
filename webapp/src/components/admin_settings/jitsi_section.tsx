@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useMemo} from 'react';
+import {FormattedMessage} from 'react-intl';
 
 import {InputFieldType} from 'types';
-import {InputField} from '../InputField';
+import {TextInput} from '../InputField';
 import {RadioField} from '../RadioField';
 
 type Props = {
@@ -32,22 +33,22 @@ export const JITSI_NAMING_SCHEME = {
 };
 
 const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeetingLinkExpChange, onJitsiMeetingNamesChange, onJitsiJwtAuthChange, onJitsiAppSecretChange, onJitsiCompatibilityChange, onJitsiURLChange, serverUrl, embedded, namingScheme, jwtEnabled, appID, appSecret, meetingLinkExpire, compatibilityMode}: Props) => {
-    const EMBED_JITSI_VIDEO_INSIDE_MATTERMOST_OPTIONS = [
+    const EMBED_JITSI_VIDEO_INSIDE_MATTERMOST_OPTIONS = useMemo(() => [
         {
             value: 'true',
             checked: embedded,
-            id: 'jitsi.embed-enable',
+            id: 'jitsi.true',
             message: 'true'
         },
         {
             value: 'false',
             checked: !embedded,
-            id: 'jitsi.embed-disable',
+            id: 'jitsi.false',
             message: 'false'
         }
-    ];
+    ], [embedded]);
 
-    const JITSI_MEETING_NAMES_OPTIONS = [
+    const JITSI_MEETING_NAMES_OPTIONS = useMemo(() => [
         {
             value: JITSI_NAMING_SCHEME.WORDS,
             checked: namingScheme === JITSI_NAMING_SCHEME.WORDS,
@@ -72,161 +73,182 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
             id: 'jitsi.allow-user',
             message: 'Allow user to select meeting name'
         }
-    ];
+    ], [namingScheme]);
 
-    const JITSI_USE_JWT_OPTIONS = [
+    const JITSI_USE_JWT_OPTIONS = useMemo(() => [
         {
             value: 'true',
             checked: jwtEnabled,
-            id: 'jitsi.jwt-enable',
+            id: 'jitsi.true',
             message: 'true'
         },
         {
             value: 'false',
             checked: !jwtEnabled,
-            id: 'jitsi.jwt-disable',
+            id: 'jitsi.false',
             message: 'false'
         }
-    ];
+    ], [jwtEnabled]);
 
-    const JITSI_COMPATIBILITY_OPTIONS = [
+    const JITSI_COMPATIBILITY_OPTIONS = useMemo(() => [
         {
             value: 'true',
             checked: compatibilityMode,
-            id: 'jitsi.compatibility-enable',
+            id: 'jitsi.true',
             message: 'true'
         },
         {
             value: 'false',
             checked: !compatibilityMode,
-            id: 'jitsi.compatibility-disable',
+            id: 'jitsi.false',
             message: 'false'
         }
-    ];
+    ], [compatibilityMode]);
 
     return (
         <div>
-            <InputField
-                heading={{
-                    id: 'jitsi.server-url',
-                    message: 'Jitsi Server URL:'
-                }}
+            <TextInput
+                heading={
+                    <FormattedMessage
+                        id='jitsi.server-url'
+                        defaultMessage={'Jitsi Server URL:'}
+                    />
+                }
                 tagType={'input'}
-                input={{
-                    type: 'input',
-                    placeholder: 'https://meet.jit.si',
-                    maxLength: -1,
-                    onChange: onJitsiURLChange,
-                    value: serverUrl
-                }}
-                description={{
-                    id: 'jitsi.server-url-description',
-                    message: 'The url for your Jitsi server, for example https://jitsi.example.com. Defaults to https://meet.jit.si, which is the public server provided by Jitsi.'
-                }}
+                type={'input'}
+                placeholder={'https://meet.jit.si'}
+                onChange={onJitsiURLChange}
+                value={serverUrl}
+                description={
+                    <FormattedMessage
+                        id='jitsi.server-url-description'
+                        defaultMessage={'The url for your Jitsi server, for example https://jitsi.example.com. Defaults to https://meet.jit.si, which is the public server provided by Jitsi.'}
+                    />
+                }
             />
             <RadioField
-                heading={{
-                    id: 'jitsi.embed-video',
-                    message: 'Embed Jitsi video inside Mattermost:'
-                }}
-                radioInline={'radio-inline'}
+                heading={
+                    <FormattedMessage
+                        id='jitsi.embed-video'
+                        defaultMessage={'Embed Jitsi video inside Mattermost:'}
+                    />
+                }
+                isInline={true}
                 options={EMBED_JITSI_VIDEO_INSIDE_MATTERMOST_OPTIONS}
                 onChange={onJitsiEmbeddedChange}
-                description={{
-                    id: 'jitsi.embed-video-description',
-                    message: '(Experimental) When true, Jitsi video is embedded as a floating window inside Mattermost by default. Users can override this setting with \'/jitsi settings\'.'
-                }}
+                description={
+                    <FormattedMessage
+                        id='jitsi.embed-video-description'
+                        defaultMessage={'(Experimental) When true, Jitsi video is embedded as a floating window inside Mattermost by default. Users can override this setting with \'/jitsi settings\'.'}
+                    />
+                }
             />
             <RadioField
-                heading={{
-                    id: 'jitsi.meeting-names',
-                    message: 'Jitsi Meeting Names:'
-                }}
-                radioGlobal={'radio'}
+                heading={
+                    <FormattedMessage
+                        id='jitsi.meeting-names'
+                        defaultMessage={'Jitsi Meeting Names:'}
+                    />
+                }
+                isInline={false}
                 options={JITSI_MEETING_NAMES_OPTIONS}
                 onChange={onJitsiMeetingNamesChange}
-                description={{
-                    id: 'jitsi.meeting-names-description',
-                    message: 'Select how meeting names are generated by default. Users can override this setting with \'/jitsi settings\'.'
-                }}
+                description={
+                    <FormattedMessage
+                        id='jitsi.meeting-names-description'
+                        defaultMessage={'Select how meeting names are generated by default. Users can override this setting with \'/jitsi settings\'.'}
+                    />
+                }
             />
             <RadioField
-                heading={{
-                    id: 'jitsi.use-jwt',
-                    message: 'Use JWT Authentication for Jitsi:'
-                }}
-                radioInline={'radio-inline'}
+                heading={
+                    <FormattedMessage
+                        id='jitsi.use-jwt'
+                        defaultMessage={'Use JWT Authentication for Jitsi:'}
+                    />
+                }
+                isInline={true}
                 options={JITSI_USE_JWT_OPTIONS}
                 onChange={onJitsiJwtAuthChange}
-                description={{
-                    id: 'jitsi.use-jwt-description',
-                    message: '(Optional) If your Jitsi server uses JSON Web Tokens (JWT) for authentication, set this value to true.'
-                }}
+                description={
+                    <FormattedMessage
+                        id='jitsi.use-jwt-description'
+                        defaultMessage={'(Optional) If your Jitsi server uses JSON Web Tokens (JWT) for authentication, set this value to true.'}
+                    />
+                }
             />
-            <InputField
-                heading={{
-                    id: 'jitsi.app-id',
-                    message: 'App ID for JWT Authentication:'
-                }}
+            <TextInput
+                heading={
+                    <FormattedMessage
+                        id='jitsi.app-id'
+                        defaultMessage={'App ID for JWT Authentication:'}
+                    />
+                }
                 tagType={'input'}
-                input={{
-                    type: 'input',
-                    maxLength: -1,
-                    onChange: onJitsiAppIDChange,
-                    value: appID
-                }}
-                description={{
-                    id: 'jitsi.app-id-description',
-                    message: '(Optional) The app ID used for authentication by the Jitsi server and JWT token generator.'
-                }}
+                type={'input'}
+                onChange={onJitsiAppIDChange}
+                value={appID}
+                description={
+                    <FormattedMessage
+                        id='jitsi.app-id-description'
+                        defaultMessage={'(Optional) The app ID used for authentication by the Jitsi server and JWT token generator.'}
+                    />
+                }
             />
-            <InputField
-                heading={{
-                    id: 'jitsi.app-secret',
-                    message: 'App Secret for JWT Authentication:'
-                }}
+            <TextInput
+                heading={
+                    <FormattedMessage
+                        id='jitsi.app-secret'
+                        defaultMessage={'App Secret for JWT Authentication:'}
+                    />
+                }
                 tagType={'input'}
-                input={{
-                    type: 'input',
-                    maxLength: -1,
-                    onChange: onJitsiAppSecretChange,
-                    value: appSecret
-                }}
-                description={{
-                    id: 'jitsi.app-secret-description',
-                    message: '(Optional) The app secret used for authentication by the Jitsi server and JWT token generator.'
-                }}
+                type={'input'}
+                onChange={onJitsiAppSecretChange}
+                value={appSecret}
+                description={
+                    <FormattedMessage
+                        id='jitsi.app-secret-description'
+                        defaultMessage={'(Optional) The app secret used for authentication by the Jitsi server and JWT token generator.'}
+                    />
+                }
             />
-            <InputField
-                heading={{
-                    id: 'jitsi.link-expiry-time',
-                    message: 'Meeting Link Expiry Time (minutes):'
-                }}
+            <TextInput
+                heading={
+                    <FormattedMessage
+                        id='jitsi.link-expiry-time'
+                        defaultMessage={'Meeting Link Expiry Time (minutes):'}
+                    />
+                }
                 tagType={'input'}
-                input={{
-                    type: 'number',
-                    min: 1,
-                    defaultValue: 30,
-                    onChange: onJitsiMeetingLinkExpChange,
-                    value: meetingLinkExpire
-                }}
-                description={{
-                    id: 'jitsi.link-expiry-time-description',
-                    message: '(Optional) The number of minutes from when the meeting link is created to when it becomes invalid. Minimum is 1 minute. Only applies if using JWT authentication for your Jitsi server.'
-                }}
+                type={'number'}
+                min={1}
+                defaultValue={30}
+                onChange={onJitsiMeetingLinkExpChange}
+                value={meetingLinkExpire}
+                description={
+                    <FormattedMessage
+                        id='jitsi.link-expiry-time-description'
+                        defaultMessage={'(Optional) The number of minutes from when the meeting link is created to when it becomes invalid. Minimum is 1 minute. Only applies if using JWT authentication for your Jitsi server.'}
+                    />
+                }
             />
             <RadioField
-                heading={{
-                    id: 'jitsi.enable-compatibility-mode',
-                    message: 'Enable Compatibility Mode:'
-                }}
-                radioInline={'radio-inline'}
+                heading={
+                    <FormattedMessage
+                        id='jitsi.enable-compatibility-mode'
+                        defaultMessage={'Enable Compatibility Mode:'}
+                    />
+                }
+                isInline={true}
                 options={JITSI_COMPATIBILITY_OPTIONS}
                 onChange={onJitsiCompatibilityChange}
-                description={{
-                    id: 'jitsi.enable-compatibility-mode-description',
-                    message: '(Insecure) If your Jitsi server is not compatible with this plugin, include the JavaScript API hosted on your Jitsi server directly in Mattermost instead of the default API version provided by the plugin. WARNING: Enabling this setting can compromise the security of your Mattermost system, if your Jitsi server is not fully trusted and allows direct modification of program files. Use with caution.'
-                }}
+                description={
+                    <FormattedMessage
+                        id='jitsi.enable-compatibility-mode-description'
+                        defaultMessage={'(Insecure) If your Jitsi server is not compatible with this plugin, include the JavaScript API hosted on your Jitsi server directly in Mattermost instead of the default API version provided by the plugin. WARNING: Enabling this setting can compromise the security of your Mattermost system, if your Jitsi server is not fully trusted and allows direct modification of program files. Use with caution.'}
+                    />
+                }
             />
         </div>
     );
