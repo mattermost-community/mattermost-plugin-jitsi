@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {FormattedMessage} from 'react-intl';
 
-import {InputFieldType} from 'types';
+import {InputFieldType, Types} from 'types';
 import {TextInput} from '../InputField';
 import {RadioField} from '../RadioField';
 
@@ -114,8 +114,7 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
                         defaultMessage={'Jitsi Server URL:'}
                     />
                 }
-                tagType={'input'}
-                type={'input'}
+                type={Types.text}
                 placeholder={'https://meet.jit.si'}
                 onChange={onJitsiURLChange}
                 value={serverUrl}
@@ -184,8 +183,7 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
                         defaultMessage={'App ID for JWT Authentication:'}
                     />
                 }
-                tagType={'input'}
-                type={'input'}
+                type={Types.text}
                 onChange={onJitsiAppIDChange}
                 value={appID}
                 description={
@@ -202,8 +200,7 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
                         defaultMessage={'App Secret for JWT Authentication:'}
                     />
                 }
-                tagType={'input'}
-                type={'input'}
+                type={Types.text}
                 onChange={onJitsiAppSecretChange}
                 value={appSecret}
                 description={
@@ -220,8 +217,7 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
                         defaultMessage={'Meeting Link Expiry Time (minutes):'}
                     />
                 }
-                tagType={'input'}
-                type={'number'}
+                type={Types.number}
                 min={1}
                 defaultValue={30}
                 onChange={onJitsiMeetingLinkExpChange}

@@ -4,11 +4,11 @@ import {FormattedMessage} from 'react-intl';
 import {RadioOptionsType} from 'types';
 
 type Props = {
-    heading: ReactNode;
+    heading: string | ReactNode;
     isInline: boolean;
     options: RadioOptionsType[];
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    description: ReactNode;
+    description: string | ReactNode;
 }
 
 export const RadioField = ({heading, isInline, options, onChange, description}: Props) => {
@@ -18,10 +18,10 @@ export const RadioField = ({heading, isInline, options, onChange, description}: 
                 {heading}
             </label>
             <div className='col-sm-8'>
-                <div className={`${isInline ? '' : 'radio'}`}>
+                <div className={`${!isInline && 'radio'}`}>
                     {options.map((option) => (
                         <label
-                            className={`pt-0 ${isInline ? 'radio-inline' : ''}`}
+                            className={`pt-0 ${isInline && 'radio-inline'}`}
                             key={option.value}
                         >
                             <input

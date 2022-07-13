@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {FormattedMessage} from 'react-intl';
 
-import {InputFieldType} from 'types';
+import {InputFieldType, Types} from 'types';
 import {TextInput} from '../InputField';
 import {RadioField} from '../RadioField';
 
@@ -93,8 +93,7 @@ const JaaSSection = ({disabled, onApiKeyIDChange, onAppIDChange, onPrivateKeyCha
                         defaultMessage={'AppID for JaaS Authentication:'}
                     />
                 }
-                tagType={'input'}
-                type={'input'}
+                type={Types.text}
                 onChange={onAppIDChange}
                 value={appID}
                 disabled={disabled}
@@ -112,8 +111,7 @@ const JaaSSection = ({disabled, onApiKeyIDChange, onAppIDChange, onPrivateKeyCha
                         defaultMessage={'Api key ID for JaaS Authentication:'}
                     />
                 }
-                tagType={'input'}
-                type={'input'}
+                type={Types.text}
                 onChange={onApiKeyIDChange}
                 value={apiKey}
                 disabled={disabled}
@@ -131,7 +129,7 @@ const JaaSSection = ({disabled, onApiKeyIDChange, onAppIDChange, onPrivateKeyCha
                         defaultMessage={'RSA Private key for JaaS Authentication:'}
                     />
                 }
-                tagType={'textarea'}
+                type={Types.textArea}
                 rows={5}
                 onChange={onPrivateKeyChange}
                 value={privateKey}

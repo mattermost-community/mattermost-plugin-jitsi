@@ -1,22 +1,21 @@
 import React, {ReactNode} from 'react';
 
-import {InputFieldType} from 'types';
+import {InputFieldType, Types} from 'types';
 
 type Props = {
-    heading: ReactNode;
-    tagType: string;
-    type?: string;
+    heading: string | ReactNode;
+    type: Types;
     placeholder?: string;
     min?: number;
     rows?: number;
-    defaultValue?: number;
+    defaultValue?: number | string;
     onChange: (e: React.ChangeEvent<InputFieldType>) => void;
     value: string | number;
     disabled?: boolean;
-    description: ReactNode;
+    description: string | ReactNode;
 }
 
-export const TextInput = ({heading, tagType, type, placeholder, min, rows, defaultValue, onChange, value, disabled, description}: Props) => {
+export const TextInput = ({heading, type, placeholder, min, rows, defaultValue, onChange, value, disabled, description}: Props) => {
     return (
         <>
             <div className='form-group'>
@@ -24,7 +23,15 @@ export const TextInput = ({heading, tagType, type, placeholder, min, rows, defau
                     {heading}
                 </label>
                 <div className='col-sm-8'>
-                    {tagType === 'input' ? (
+                    {type === Types.textArea ? (
+                        <textarea
+                            className='form-control'
+                            rows={rows}
+                            onChange={onChange}
+                            value={value}
+                            disabled={disabled}
+                        />
+                    ) : (
                         <input
                             className='form-control'
                             type={type}
@@ -34,14 +41,6 @@ export const TextInput = ({heading, tagType, type, placeholder, min, rows, defau
                             disabled={disabled}
                             min={min}
                             defaultValue={defaultValue}
-                        />
-                    ) : (
-                        <textarea
-                            className='form-control'
-                            rows={rows}
-                            onChange={onChange}
-                            value={value}
-                            disabled={disabled}
                         />
                     )}
                     <div className='help-text'>

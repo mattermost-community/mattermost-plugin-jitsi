@@ -25,3 +25,9 @@ export type RadioOptionsType = {
     id: string;
     message: string;
 }
+
+export enum Types {
+    text = 'text',
+    number = 'number',
+    textArea = 'textarea',
+}
