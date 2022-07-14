@@ -1,20 +1,20 @@
 import React, {useMemo} from 'react';
 import {FormattedMessage} from 'react-intl';
 
-import {InputFieldType, Types} from 'types';
+import {InputElementType, InputTypes} from 'types';
 import {TextInput} from '../InputField';
 import {RadioField} from '../RadioField';
 
 type Props = {
     disabled: boolean,
-    onJitsiURLChange: (e: React.ChangeEvent<InputFieldType>) => void,
-    onJitsiEmbeddedChange: (e: React.ChangeEvent<InputFieldType>) => void,
-    onJitsiMeetingNamesChange: (e: React.ChangeEvent<InputFieldType>) => void,
-    onJitsiJwtAuthChange: (e: React.ChangeEvent<InputFieldType>) => void,
-    onJitsiAppIDChange: (e: React.ChangeEvent<InputFieldType>) => void,
-    onJitsiAppSecretChange: (e: React.ChangeEvent<InputFieldType>) => void,
-    onJitsiMeetingLinkExpChange: (e: React.ChangeEvent<InputFieldType>) => void,
-    onJitsiCompatibilityChange: (e: React.ChangeEvent<InputFieldType>) => void,
+    onJitsiURLChange: (e: React.ChangeEvent<InputElementType>) => void,
+    onJitsiEmbeddedChange: (e: React.ChangeEvent<InputElementType>) => void,
+    onJitsiMeetingNamesChange: (e: React.ChangeEvent<InputElementType>) => void,
+    onJitsiJwtAuthChange: (e: React.ChangeEvent<InputElementType>) => void,
+    onJitsiAppIDChange: (e: React.ChangeEvent<InputElementType>) => void,
+    onJitsiAppSecretChange: (e: React.ChangeEvent<InputElementType>) => void,
+    onJitsiMeetingLinkExpChange: (e: React.ChangeEvent<InputElementType>) => void,
+    onJitsiCompatibilityChange: (e: React.ChangeEvent<InputElementType>) => void,
     serverUrl: string,
     embedded: boolean,
     namingScheme: string,
@@ -37,14 +37,22 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
         {
             value: 'true',
             checked: embedded,
-            id: 'jitsi.true',
-            message: 'true'
+            label: (
+                <FormattedMessage
+                    id='jitsi.true'
+                    defaultMessage={'true'}
+                />
+            )
         },
         {
             value: 'false',
             checked: !embedded,
-            id: 'jitsi.false',
-            message: 'false'
+            label: (
+                <FormattedMessage
+                    id='jitsi.false'
+                    defaultMessage={'false'}
+                />
+            )
         }
     ], [embedded]);
 
@@ -52,26 +60,42 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
         {
             value: JITSI_NAMING_SCHEME.WORDS,
             checked: namingScheme === JITSI_NAMING_SCHEME.WORDS,
-            id: 'jitsi.random-english-words',
-            message: 'Random English words in title case (e.g. PlayfulDragonsObserveCuriously)'
+            label: (
+                <FormattedMessage
+                    id='jitsi.random-english-words'
+                    defaultMessage={'Random English words in title case (e.g. PlayfulDragonsObserveCuriously)'}
+                />
+            )
         },
         {
             value: JITSI_NAMING_SCHEME.UUID,
             checked: namingScheme === JITSI_NAMING_SCHEME.UUID,
-            id: 'jitsi.uuid',
-            message: 'UUID (universally unique identifier)'
+            label: (
+                <FormattedMessage
+                    id='jitsi.uuid'
+                    defaultMessage={'UUID (universally unique identifier)'}
+                />
+            )
         },
         {
             value: JITSI_NAMING_SCHEME.MATTERMOST,
             checked: namingScheme === JITSI_NAMING_SCHEME.MATTERMOST,
-            id: 'jitsi.context-specific',
-            message: 'Mattermost context specific names. Combination of team name, channel name, and random text in Public and Private channels; personal meeting name in Direct and Group Message channels.'
+            label: (
+                <FormattedMessage
+                    id='jitsi.context-specific'
+                    defaultMessage={'Mattermost context specific names. Combination of team name, channel name, and random text in Public and Private channels; personal meeting name in Direct and Group Message channels.'}
+                />
+            )
         },
         {
             value: JITSI_NAMING_SCHEME.ASK,
             checked: namingScheme === JITSI_NAMING_SCHEME.ASK,
-            id: 'jitsi.allow-user',
-            message: 'Allow user to select meeting name'
+            label: (
+                <FormattedMessage
+                    id='jitsi.allow-user'
+                    defaultMessage={'Allow user to select meeting name'}
+                />
+            )
         }
     ], [namingScheme]);
 
@@ -79,14 +103,22 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
         {
             value: 'true',
             checked: jwtEnabled,
-            id: 'jitsi.true',
-            message: 'true'
+            label: (
+                <FormattedMessage
+                    id='jitsi.true'
+                    defaultMessage={'true'}
+                />
+            )
         },
         {
             value: 'false',
             checked: !jwtEnabled,
-            id: 'jitsi.false',
-            message: 'false'
+            label: (
+                <FormattedMessage
+                    id='jitsi.false'
+                    defaultMessage={'false'}
+                />
+            )
         }
     ], [jwtEnabled]);
 
@@ -94,14 +126,22 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
         {
             value: 'true',
             checked: compatibilityMode,
-            id: 'jitsi.true',
-            message: 'true'
+            label: (
+                <FormattedMessage
+                    id='jitsi.true'
+                    defaultMessage={'true'}
+                />
+            )
         },
         {
             value: 'false',
             checked: !compatibilityMode,
-            id: 'jitsi.false',
-            message: 'false'
+            label: (
+                <FormattedMessage
+                    id='jitsi.false'
+                    defaultMessage={'false'}
+                />
+            )
         }
     ], [compatibilityMode]);
 
@@ -114,7 +154,7 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
                         defaultMessage={'Jitsi Server URL:'}
                     />
                 }
-                type={Types.text}
+                type={InputTypes.Text}
                 placeholder={'https://meet.jit.si'}
                 onChange={onJitsiURLChange}
                 value={serverUrl}
@@ -183,7 +223,7 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
                         defaultMessage={'App ID for JWT Authentication:'}
                     />
                 }
-                type={Types.text}
+                type={InputTypes.Text}
                 onChange={onJitsiAppIDChange}
                 value={appID}
                 description={
@@ -200,7 +240,7 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
                         defaultMessage={'App Secret for JWT Authentication:'}
                     />
                 }
-                type={Types.text}
+                type={InputTypes.Text}
                 onChange={onJitsiAppSecretChange}
                 value={appSecret}
                 description={
@@ -217,7 +257,7 @@ const JitsiSection = ({onJitsiAppIDChange, onJitsiEmbeddedChange, onJitsiMeeting
                         defaultMessage={'Meeting Link Expiry Time (minutes):'}
                     />
                 }
-                type={Types.number}
+                type={InputTypes.Number}
                 min={1}
                 defaultValue={30}
                 onChange={onJitsiMeetingLinkExpChange}

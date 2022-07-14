@@ -1,15 +1,15 @@
 import React, {ReactNode} from 'react';
 
-import {InputFieldType, Types} from 'types';
+import {InputElementType, InputTypes} from 'types';
 
 type Props = {
     heading: string | ReactNode;
-    type: Types;
+    type: InputTypes;
     placeholder?: string;
     min?: number;
     rows?: number;
     defaultValue?: number | string;
-    onChange: (e: React.ChangeEvent<InputFieldType>) => void;
+    onChange: (e: React.ChangeEvent<InputElementType>) => void;
     value: string | number;
     disabled?: boolean;
     description: string | ReactNode;
@@ -23,7 +23,7 @@ export const TextInput = ({heading, type, placeholder, min, rows, defaultValue, 
                     {heading}
                 </label>
                 <div className='col-sm-8'>
-                    {type === Types.textArea ? (
+                    {type === InputTypes.TextArea ? (
                         <textarea
                             className='form-control'
                             rows={rows}

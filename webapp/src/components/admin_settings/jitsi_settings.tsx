@@ -7,7 +7,7 @@ import I18nProvider from 'components/i18n_provider';
 import JaaSSection from './jaas_section';
 import {RadioField} from '../RadioField';
 import JitsiSection, {JITSI_NAMING_SCHEME} from './jitsi_section';
-import {InputFieldType} from 'types';
+import {InputElementType} from 'types';
 
 type Props = {
     id: string,
@@ -83,14 +83,22 @@ const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: P
         {
             value: JITSI_MODE,
             checked: mode === JITSI_MODE,
-            id: 'jitsi.input-enable-jitsi',
-            message: 'Jitsi'
+            label: (
+                <FormattedMessage
+                    id='jitsi.input-enable-jitsi'
+                    defaultMessage={'Jitsi'}
+                />
+            )
         },
         {
             value: JAAS_MODE,
             checked: mode === JAAS_MODE,
-            id: 'jitsi.input-enable-jass',
-            message: 'JasS'
+            label: (
+                <FormattedMessage
+                    id='jitsi.input-enable-jass'
+                    defaultMessage={'JasS'}
+                />
+            )
         }
     ], [mode]);
 
@@ -114,56 +122,56 @@ const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: P
         });
     }, [settings]);
 
-    const onJaaSApiKeyChanged = useCallback((e: ChangeEvent<InputFieldType>) => {
+    const onJaaSApiKeyChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jaasapikey', e.target.value);
     }, [updateSettingsState]);
 
-    const onJaaSAppIDChanged = useCallback((e: ChangeEvent<InputFieldType>) => {
+    const onJaaSAppIDChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jaasappid', e.target.value);
     }, [updateSettingsState]);
 
-    const onJaaSPrivateKeyChanged = useCallback((e: ChangeEvent<InputFieldType>) => {
+    const onJaaSPrivateKeyChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jaasprivatekey', e.target.value);
     }, [updateSettingsState]);
 
     // We reuse some of the Jitsi settings for JaaS
-    const onJaaSEmbeddedChanged = useCallback((e: ChangeEvent<InputFieldType>) => {
+    const onJaaSEmbeddedChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsiembedded', e.target.value === 'true');
     }, [updateSettingsState]);
 
-    const onJaaSCompatibilityChange = useCallback((e: ChangeEvent<InputFieldType>) => {
+    const onJaaSCompatibilityChange = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsicompatibilitymode', e.target.value === 'true');
     }, [updateSettingsState]);
 
-    const onJitsiAppIDChanged = useCallback((e: ChangeEvent<InputFieldType>) => {
+    const onJitsiAppIDChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsiappid', e.target.value);
     }, [updateSettingsState]);
 
-    const onJitsiAppSecretChanged = useCallback((e: ChangeEvent<InputFieldType>) => {
+    const onJitsiAppSecretChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsiappsecret', e.target.value);
     }, [updateSettingsState]);
 
-    const onJitsiCompatibilityChanged = useCallback((e: ChangeEvent<InputFieldType>) => {
+    const onJitsiCompatibilityChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsicompatibilitymode', e.target.value === 'true');
     }, [updateSettingsState]);
 
-    const onJitsiEmbeddedChanged = useCallback((e: ChangeEvent<InputFieldType>) => {
+    const onJitsiEmbeddedChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsiembedded', e.target.value === 'true');
     }, [updateSettingsState]);
 
-    const onJitsiAuthChanged = useCallback((e: ChangeEvent<InputFieldType>) => {
+    const onJitsiAuthChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsijwt', e.target.value === 'true');
     }, [updateSettingsState]);
 
-    const onJitsiMeetingLinkExpChanged = useCallback((e: ChangeEvent<InputFieldType>) => {
+    const onJitsiMeetingLinkExpChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsilinkvalidtime', e.target.value);
     }, [updateSettingsState]);
 
-    const onJitsiMeetingNamesChanged = useCallback((e: ChangeEvent<InputFieldType>) => {
+    const onJitsiMeetingNamesChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsinamingscheme', e.target.value);
     }, [updateSettingsState]);
 
-    const onJitsiURLChanged = useCallback((e: ChangeEvent<InputFieldType>) => {
+    const onJitsiURLChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsiurl', e.target.value);
     }, [updateSettingsState]);
 

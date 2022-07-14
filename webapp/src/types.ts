@@ -1,3 +1,5 @@
+import {ReactNode} from 'react';
+
 import {GlobalState as ReduxGlobalState} from 'mattermost-redux/types/store';
 import {Post} from 'mattermost-redux/types/posts';
 
@@ -17,17 +19,16 @@ export type GlobalState = ReduxGlobalState & {
     }
 }
 
-export type InputFieldType = HTMLInputElement | HTMLTextAreaElement;
+export type InputElementType = HTMLInputElement | HTMLTextAreaElement;
 
 export type RadioOptionsType = {
     value: string;
     checked: boolean;
-    id: string;
-    message: string;
+    label: string | ReactNode;
 }
 
-export enum Types {
-    text = 'text',
-    number = 'number',
-    textArea = 'textarea',
+export enum InputTypes {
+    Text = 'text',
+    Number = 'number',
+    TextArea = 'textarea',
 }

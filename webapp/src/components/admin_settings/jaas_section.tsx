@@ -1,17 +1,17 @@
 import React, {useMemo} from 'react';
 import {FormattedMessage} from 'react-intl';
 
-import {InputFieldType, Types} from 'types';
+import {InputElementType, InputTypes} from 'types';
 import {TextInput} from '../InputField';
 import {RadioField} from '../RadioField';
 
 type Props = {
     disabled: boolean,
-    onAppIDChange: (e: React.ChangeEvent<InputFieldType>) => void,
-    onApiKeyIDChange: (e: React.ChangeEvent<InputFieldType>) => void,
-    onPrivateKeyChange: (e: React.ChangeEvent<InputFieldType>) => void,
-    onEmbeddedChange: (e: React.ChangeEvent<InputFieldType>) => void,
-    onCompatibilityChange: (e: React.ChangeEvent<InputFieldType>) => void,
+    onAppIDChange: (e: React.ChangeEvent<InputElementType>) => void,
+    onApiKeyIDChange: (e: React.ChangeEvent<InputElementType>) => void,
+    onPrivateKeyChange: (e: React.ChangeEvent<InputElementType>) => void,
+    onEmbeddedChange: (e: React.ChangeEvent<InputElementType>) => void,
+    onCompatibilityChange: (e: React.ChangeEvent<InputElementType>) => void,
     apiKey: string,
     appID: string,
     privateKey: string
@@ -24,14 +24,22 @@ const JaaSSection = ({disabled, onApiKeyIDChange, onAppIDChange, onPrivateKeyCha
         {
             value: 'true',
             checked: embedded,
-            id: 'jitsi.true',
-            message: 'true'
+            label: (
+                <FormattedMessage
+                    id='jitsi.true'
+                    defaultMessage={'true'}
+                />
+            )
         },
         {
             value: 'false',
             checked: !embedded,
-            id: 'jitsi.false',
-            message: 'false'
+            label: (
+                <FormattedMessage
+                    id='jitsi.false'
+                    defaultMessage={'false'}
+                />
+            )
         }
     ], [embedded]);
 
@@ -39,14 +47,22 @@ const JaaSSection = ({disabled, onApiKeyIDChange, onAppIDChange, onPrivateKeyCha
         {
             value: 'true',
             checked: compatibilityMode,
-            id: 'jitsi.true',
-            message: 'true'
+            label: (
+                <FormattedMessage
+                    id='jitsi.true'
+                    defaultMessage={'true'}
+                />
+            )
         },
         {
             value: 'false',
             checked: !compatibilityMode,
-            id: 'jitsi.false',
-            message: 'false'
+            label: (
+                <FormattedMessage
+                    id='jitsi.false'
+                    defaultMessage={'false'}
+                />
+            )
         }
     ], [compatibilityMode]);
 
@@ -93,7 +109,7 @@ const JaaSSection = ({disabled, onApiKeyIDChange, onAppIDChange, onPrivateKeyCha
                         defaultMessage={'AppID for JaaS Authentication:'}
                     />
                 }
-                type={Types.text}
+                type={InputTypes.Text}
                 onChange={onAppIDChange}
                 value={appID}
                 disabled={disabled}
@@ -111,7 +127,7 @@ const JaaSSection = ({disabled, onApiKeyIDChange, onAppIDChange, onPrivateKeyCha
                         defaultMessage={'Api key ID for JaaS Authentication:'}
                     />
                 }
-                type={Types.text}
+                type={InputTypes.Text}
                 onChange={onApiKeyIDChange}
                 value={apiKey}
                 disabled={disabled}
@@ -129,7 +145,7 @@ const JaaSSection = ({disabled, onApiKeyIDChange, onAppIDChange, onPrivateKeyCha
                         defaultMessage={'RSA Private key for JaaS Authentication:'}
                     />
                 }
-                type={Types.textArea}
+                type={InputTypes.TextArea}
                 rows={5}
                 onChange={onPrivateKeyChange}
                 value={privateKey}

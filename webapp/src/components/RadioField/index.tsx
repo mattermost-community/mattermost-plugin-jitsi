@@ -1,5 +1,4 @@
 import React, {ReactNode} from 'react';
-import {FormattedMessage} from 'react-intl';
 
 import {RadioOptionsType} from 'types';
 
@@ -30,10 +29,7 @@ export const RadioField = ({heading, isInline, options, onChange, description}: 
                                 checked={option.checked}
                                 onChange={onChange}
                             />
-                            <FormattedMessage
-                                id={option.id}
-                                defaultMessage={option.message}
-                            />
+                            {option.label}
                         </label>
                     ))}
                 </div>
