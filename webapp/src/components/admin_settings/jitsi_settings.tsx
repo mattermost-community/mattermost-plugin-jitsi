@@ -5,7 +5,9 @@ import {AdminConfig} from 'mattermost-redux/types/config';
 import {id as pluginId} from 'manifest';
 import I18nProvider from 'components/i18n_provider';
 import JaaSSection from './jaas_section';
+import {RadioField} from '../RadioField';
 import JitsiSection, {JITSI_NAMING_SCHEME} from './jitsi_section';
+import {InputElementType} from 'types';
 
 type Props = {
     id: string,
@@ -77,6 +79,29 @@ const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: P
     const [settings, setSettings] = useState(value ?? selectedSettings);
     const [mode, setMode] = useState(selectedMode);
 
+    const JITSI_SERVER_OPTIONS = useMemo(() => [
+        {
+            value: JITSI_MODE,
+            checked: mode === JITSI_MODE,
+            label: (
+                <FormattedMessage
+                    id='jitsi.input-enable-jitsi'
+                    defaultMessage={'Jitsi'}
+                />
+            )
+        },
+        {
+            value: JAAS_MODE,
+            checked: mode === JAAS_MODE,
+            label: (
+                <FormattedMessage
+                    id='jitsi.input-enable-jass'
+                    defaultMessage={'JasS'}
+                />
+            )
+        }
+    ], [mode]);
+
     useEffect(() => {
         onChange(id, settings);
         setSaveNeeded();
@@ -97,56 +122,56 @@ const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: P
         });
     }, [settings]);
 
-    const onJaaSApiKeyChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const onJaaSApiKeyChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jaasapikey', e.target.value);
     }, [updateSettingsState]);
 
-    const onJaaSAppIDChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const onJaaSAppIDChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jaasappid', e.target.value);
     }, [updateSettingsState]);
 
-    const onJaaSPrivateKeyChanged = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
+    const onJaaSPrivateKeyChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jaasprivatekey', e.target.value);
     }, [updateSettingsState]);
 
     // We reuse some of the Jitsi settings for JaaS
-    const onJaaSEmbeddedChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const onJaaSEmbeddedChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsiembedded', e.target.value === 'true');
     }, [updateSettingsState]);
 
-    const onJaaSCompatibilityChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const onJaaSCompatibilityChange = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsicompatibilitymode', e.target.value === 'true');
     }, [updateSettingsState]);
 
-    const onJitsiAppIDChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const onJitsiAppIDChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsiappid', e.target.value);
     }, [updateSettingsState]);
 
-    const onJitsiAppSecretChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const onJitsiAppSecretChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsiappsecret', e.target.value);
     }, [updateSettingsState]);
 
-    const onJitsiCompatibilityChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const onJitsiCompatibilityChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsicompatibilitymode', e.target.value === 'true');
     }, [updateSettingsState]);
 
-    const onJitsiEmbeddedChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const onJitsiEmbeddedChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsiembedded', e.target.value === 'true');
     }, [updateSettingsState]);
 
-    const onJitsiAuthChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const onJitsiAuthChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsijwt', e.target.value === 'true');
     }, [updateSettingsState]);
 
-    const onJitsiMeetingLinkExpChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const onJitsiMeetingLinkExpChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsilinkvalidtime', e.target.value);
     }, [updateSettingsState]);
 
-    const onJitsiMeetingNamesChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const onJitsiMeetingNamesChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsinamingscheme', e.target.value);
     }, [updateSettingsState]);
 
-    const onJitsiURLChanged = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const onJitsiURLChanged = useCallback((e: ChangeEvent<InputElementType>) => {
         updateSettingsState('jitsiurl', e.target.value);
     }, [updateSettingsState]);
 
@@ -191,48 +216,23 @@ const JitsiSettings = ({id, value, disabled, config, onChange, setSaveNeeded}: P
     return (
         <I18nProvider>
             <div>
-                <div className='form-group'>
-                    <label className='col-sm-4'>
+                <RadioField
+                    heading={
                         <FormattedMessage
                             id='jitsi.server'
                             defaultMessage={'Server:'}
                         />
-                    </label>
-                    <div className='col-sm-8'>
-                        <label className='radio-inline pt-0'>
-                            <input
-                                type='radio'
-                                checked={mode === JITSI_MODE}
-                                onChange={onModeSelected}
-                                value={JITSI_MODE}
-                            />
-                            <FormattedMessage
-                                id='jitsi.input-enable-jitsi'
-                                defaultMessage='Jitsi'
-                            />
-                        </label>
-                        <label className='radio-inline pt-0'>
-                            <input
-                                type='radio'
-                                checked={mode === JAAS_MODE}
-                                onChange={onModeSelected}
-                                value={JAAS_MODE}
-                            />
-                            <FormattedMessage
-                                id='jitsi.input-enable-jass'
-                                defaultMessage='JasS'
-                            />
-                        </label>
-                        <div className='help-text'>
-                            <span>
-                                <FormattedMessage
-                                    id='jitsi.server-description'
-                                    defaultMessage={'Select the type of jitsi server you want to use.'}
-                                />
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                    }
+                    isInline={true}
+                    options={JITSI_SERVER_OPTIONS}
+                    onChange={onModeSelected}
+                    description={
+                        <FormattedMessage
+                            id='jitsi.serever-description'
+                            defaultMessage={'Select the type of jitsi server you want to use.'}
+                        />
+                    }
+                />
                 <hr style={{height: '3px'}}/>
                 {mode === JAAS_MODE ? jaasSection : jitsiSection}
             </div>

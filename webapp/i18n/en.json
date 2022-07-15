@@ -42,5 +42,7 @@
   "jitsi.server-url-description": "The url for your Jitsi server, for example https://jitsi.example.com. Defaults to https://meet.jit.si, which is the public server provided by Jitsi.",
   "jitsi.use-jwt": "Use JWT Authentication for Jitsi:",
   "jitsi.use-jwt-description": "(Optional) If your Jitsi server uses JSON Web Tokens (JWT) for authentication, set this value to true.",
-  "jitsi.uuid": "UUID (universally unique identifier)"
+  "jitsi.uuid": "UUID (universally unique identifier)",
+  "jitsi.true": "true",
+  "jitsi.false": "false"
 }
