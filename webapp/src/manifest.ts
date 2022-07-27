@@ -7,9 +7,9 @@ const manifest = JSON.parse(`
     "description": "Jitsi audio and video conferencing plugin for Mattermost.",
     "homepage_url": "https://github.com/mattermost/mattermost-plugin-jitsi",
     "support_url": "https://github.com/mattermost/mattermost-plugin-jitsi/issues",
-    "release_notes_url": "https://github.com/mattermost/mattermost-plugin-jitsi/releases/tag/v2.0.0",
+    "release_notes_url": "https://github.com/mattermost/mattermost-plugin-jitsi/releases/tag/v2.1.0",
     "icon_path": "assets/icon.svg",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "min_server_version": "5.2.0",
     "server": {
         "executables": {
