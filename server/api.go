@@ -17,7 +17,7 @@ import (
 )
 
 const externalAPICacheTTL = 3600000
-const mattermostUserID = "Mattermost-User-Id"
+const mattermostUserIDHeader = "Mattermost-User-Id"
 
 var externalAPICache []byte
 var externalAPILastUpdate int64
@@ -26,7 +26,6 @@ var externalAPICacheMutex sync.Mutex
 type StartMeetingRequest struct {
 	ChannelID string `json:"channel_id"`
 	Topic     string `json:"topic"`
-	Personal  bool   `json:"personal"`
 	MeetingID int    `json:"meeting_id"`
 }
 
@@ -36,7 +35,6 @@ type StartMeetingFromAction struct {
 		MeetingID    string `json:"meeting_id"`
 		MeetingTopic string `json:"meeting_topic"`
 		RootID       string `json:"root_id"`
-		Personal     bool   `json:"personal"`
 	} `json:"context"`
 }
 
@@ -51,34 +49,36 @@ func (p *Plugin) InitAPI() *mux.Router {
 	apiRouter := r.PathPrefix("/api/v1").Subrouter()
 
 	r.HandleFunc("/jitsi_meet_external_api.js", p.handleExternalAPIjs)
-	r.HandleFunc("/jaas-main.js", p.handleJaaSBundle)
-	r.HandleFunc("{anything:.*}", http.NotFound)
-	apiRouter.HandleFunc("/meetings/enrich", p.handleEnrichMeetingJwt).Methods(http.MethodPost)
-	apiRouter.HandleFunc("/meetings", p.handleStartMeeting).Methods(http.MethodPost)
-	apiRouter.HandleFunc("/config", p.handleConfig).Methods(http.MethodPost)
+	apiRouter.HandleFunc("/meetings/enrich", p.checkAuth(p.handleEnrichMeetingJwt)).Methods(http.MethodPost)
+	apiRouter.HandleFunc("/meetings", p.checkAuth(p.handleStartMeeting)).Methods(http.MethodPost)
+	apiRouter.HandleFunc("/config", p.checkAuth(p.handleConfig)).Methods(http.MethodPost)
 	apiRouter.HandleFunc("/meetings/jaas/settings", p.handleJaaSSettings)
-	apiRouter.HandleFunc("/meetings/{apiid}/{roomname}", p.handleJaaSWindow)
+	r.HandleFunc("{anything:.*}", http.NotFound)
 
 	return r
+}
+
+func (p *Plugin) checkAuth(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		mattermostUserID := r.Header.Get(mattermostUserIDHeader)
+		if mattermostUserID == "" {
+			http.Error(w, "Not authorized", http.StatusUnauthorized)
+			return
+		}
+
+		handler(w, r)
+	}
 }
 
 func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Request) {
 	p.router.ServeHTTP(w, r)
 }
 
-func (p *Plugin) handleJaaSWindow(w http.ResponseWriter, r *http.Request) {
-	if p.getConfiguration().UseJaaS {
-		if p.isJaaSMeeting(r.URL.Path) {
-			p.handleOpenJaaSMeeting(w, r)
-			return
-		}
-	}
-}
-
 func (p *Plugin) handleJaaSSettings(w http.ResponseWriter, r *http.Request) {
 	if !p.getConfiguration().UseJaaS {
-		mlog.Error("Error JaaS requested while disabled")
-		http.NotFound(w, r)
+		errString := "Error JaaS requested while disabled"
+		mlog.Error(errString)
+		http.Error(w, errString, http.StatusBadRequest)
 		return
 	}
 
@@ -89,21 +89,15 @@ func (p *Plugin) handleJaaSSettings(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var jaasSettingsFromAction JaaSSettingsFromAction
-	bodyData, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		mlog.Debug("Unable to read request body", mlog.Err(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	if err = json.NewDecoder(bytes.NewReader(bodyData)).Decode(&jaasSettingsFromAction); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&jaasSettingsFromAction); err != nil {
 		mlog.Debug("Unable to decode the request content as start meeting request or start meeting action")
 		http.Error(w, "Unable to decode your request", http.StatusBadRequest)
 		return
 	}
+	r.Body.Close()
 
 	var user *model.User
-	userID := r.Header.Get(mattermostUserID)
+	userID := r.Header.Get(mattermostUserIDHeader)
 	if userID != "" {
 		// Handle moderator
 		userResult, appErr := p.API.GetUser(userID)
@@ -137,80 +131,11 @@ func (p *Plugin) handleJaaSSettings(w http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Plugin) isJaaSMeeting(path string) bool {
-	return p.jaasURLCheckRegExp.MatchString(path)
-}
-
-func (p *Plugin) handleJaaSBundle(w http.ResponseWriter, r *http.Request) {
-	if !p.getConfiguration().UseJaaS {
-		http.Error(w, "Not found", http.StatusNotFound)
-		return
-	}
-
-	bundlePath, err := p.API.GetBundlePath()
-	if err != nil {
-		mlog.Error("Failed to get the bundle path")
-		http.Error(w, "Failed to get the bundle path", http.StatusInternalServerError)
-		return
-	}
-
-	jaasPath := filepath.Join(bundlePath, "webapp", "dist", "jaas", "jaas-main.js")
-	jaasFile, err := os.Open(jaasPath)
-	if err != nil {
-		mlog.Error("Error opening file", mlog.String("path", jaasPath), mlog.Err(err))
-		http.Error(w, "Error opening file", http.StatusInternalServerError)
-		return
-	}
-
-	code, err := ioutil.ReadAll(jaasFile)
-	if err != nil {
-		mlog.Error("Error reading file content", mlog.String("path", jaasPath), mlog.Err(err))
-		http.Error(w, "Error reading file content", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/javascript")
-	_, err = w.Write(code)
-	if err != nil {
-		mlog.Warn("Unable to write response body", mlog.String("handler", "jaas-main.js"), mlog.Err(err))
-	}
-}
-
-func (p *Plugin) handleOpenJaaSMeeting(w http.ResponseWriter, r *http.Request) {
-	bundlePath, err := p.API.GetBundlePath()
-	if err != nil {
-		mlog.Error("Failed to get the bundle path")
-		http.Error(w, "Failed to get the bundle path", http.StatusInternalServerError)
-		return
-	}
-
-	jaasPath := filepath.Join(bundlePath, "webapp", "dist", "jaas", "index.html")
-	jaasFile, err := os.Open(jaasPath)
-	if err != nil {
-		mlog.Error("Error opening file", mlog.String("path", jaasPath), mlog.Err(err))
-		http.Error(w, "Error opening file", http.StatusInternalServerError)
-		return
-	}
-	code, err := ioutil.ReadAll(jaasFile)
-	if err != nil {
-		mlog.Error("Error reading file content", mlog.String("path", jaasPath), mlog.Err(err))
-		http.Error(w, "Error reading file content", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "text/html; charset=UTF-8")
-	_, err = w.Write(code)
-	if err != nil {
-		mlog.Warn("Unable to write response body", mlog.String("handler", "handleJaaSMeeting"), mlog.Err(err))
-	}
+	return jaasURLCheckRegExp.MatchString(path)
 }
 
 func (p *Plugin) handleConfig(w http.ResponseWriter, r *http.Request) {
-	userID := r.Header.Get(mattermostUserID)
-
-	if userID == "" {
-		http.Error(w, "Not authorized", http.StatusUnauthorized)
-		return
-	}
+	userID := r.Header.Get(mattermostUserIDHeader)
 
 	config, err := p.getUserConfig(userID)
 	if err != nil {
@@ -318,8 +243,8 @@ func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		mlog.Error("Error reading the content", mlog.String("url", p.getConfiguration().GetJitsiURL()+"/external_api.js"), mlog.Err(err))
-		http.Error(w, "Error reading the content", http.StatusInternalServerError)
+		mlog.Error("Error reading external_api.js file", mlog.String("url", p.getConfiguration().GetJitsiURL()+"/external_api.js"), mlog.Err(err))
+		http.Error(w, "Error reading external_api.js file", http.StatusInternalServerError)
 		return
 	}
 	externalAPICache = body
@@ -338,12 +263,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID := r.Header.Get(mattermostUserID)
-
-	if userID == "" {
-		http.Error(w, "Not authorized", http.StatusUnauthorized)
-		return
-	}
+	userID := r.Header.Get(mattermostUserIDHeader)
 
 	user, appErr := p.API.GetUser(userID)
 	if appErr != nil {
@@ -410,7 +330,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 
 	var meetingID string
 	if userConfig.NamingScheme == jitsiNameSchemeAsk && action.PostId != "" {
-		meetingID, err = p.startMeeting(user, channel, action.Context.MeetingID, action.Context.MeetingTopic, action.Context.Personal, "")
+		meetingID, err = p.startMeeting(user, channel, action.Context.MeetingID, action.Context.MeetingTopic, "")
 		if err != nil {
 			mlog.Error("Error starting a new meeting from ask response", mlog.Err(err))
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -418,7 +338,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 		}
 		p.deleteEphemeralPost(action.UserId, action.PostId)
 	} else {
-		meetingID, err = p.startMeeting(user, channel, "", req.Topic, req.Personal, action.Context.RootID)
+		meetingID, err = p.startMeeting(user, channel, "", req.Topic, action.Context.RootID)
 		if err != nil {
 			mlog.Error("Error starting a new meeting", mlog.Err(err))
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -447,11 +367,7 @@ func (p *Plugin) handleEnrichMeetingJwt(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	userID := r.Header.Get(mattermostUserID)
-	if userID == "" {
-		http.Error(w, "Not authorized", http.StatusUnauthorized)
-		return
-	}
+	userID := r.Header.Get(mattermostUserIDHeader)
 
 	var req EnrichMeetingJwtRequest
 

@@ -7,6 +7,7 @@ import (
 type UserConfig struct {
 	NamingScheme string `json:"naming_scheme"`
 	Embedded     bool   `json:"embedded"`
+	UseJaas      bool   `json:"use_jaas"`
 }
 
 type User struct {
@@ -32,7 +33,6 @@ type Claims struct {
 	Room    string  `json:"room,omitempty"`
 }
 
-// JaaSUser ...
 type JaaSUser struct {
 	Avatar    string `json:"avatar"`
 	Name      string `json:"name"`
@@ -41,7 +41,6 @@ type JaaSUser struct {
 	Moderator string `json:"moderator,omitempty"`
 }
 
-// JaaSFeatures ...
 type JaaSFeatures struct {
 	LiveStreaming string `json:"livestreaming"`
 	Recording     string `json:"recording"`
@@ -49,13 +48,11 @@ type JaaSFeatures struct {
 	Transcription string `json:"transcription"`
 }
 
-// JaaSContext ...
 type JaaSContext struct {
 	User     JaaSUser     `json:"user"`
 	Features JaaSFeatures `json:"features"`
 }
 
-// JaaSClaims ...
 type JaaSClaims struct {
 	Context  JaaSContext `json:"context"`
 	Audience string      `json:"aud,omitempty"`
@@ -66,7 +63,6 @@ type JaaSClaims struct {
 	Nbf      int64       `json:"nbf,omitempty"`
 }
 
-// JaaSSettings ...
 type JaaSSettings struct {
 	Jwt  string `json:"jaasJwt"`
 	Room string `json:"jaasRoom"`

@@ -3,9 +3,9 @@ import {ThunkAction} from 'redux-thunk';
 import {Client4} from 'mattermost-redux/client';
 
 import {id} from '../../manifest';
-import {JaaSActionTypes} from '../action_types';
+import ActionTypes from '../action_types';
 
-export interface StartMeetingWindowAction extends Action<JaaSActionTypes.START_MEETING_WINDOW> {
+export interface StartMeetingWindowAction extends Action<typeof ActionTypes.START_MEETING_WINDOW> {
     data: {
         jaasJwt?: string
         jaasRoom?: string
@@ -33,7 +33,7 @@ function startMeetingWindowAction(jwt: string | null, path: string | null) {
                 }).
                 then((result) => {
                     const startMeetingAction: StartMeetingWindowAction = {
-                        type: JaaSActionTypes.START_MEETING_WINDOW,
+                        type: ActionTypes.START_MEETING_WINDOW,
                         data: {
                             jaasJwt: result.jaasJwt,
                             jaasRoom: result.jaasRoom

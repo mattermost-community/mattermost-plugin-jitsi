@@ -13,8 +13,10 @@ export type GlobalState = ReduxGlobalState & {
         openMeetingJwt: string | null,
         config: {
             embedded?: boolean,
-            // eslint-disable-next-line camelcase
-            naming_scheme?: 'ask' | 'words' | 'mattermost' | 'uuid'
+            /* eslint-disable camelcase */
+            naming_scheme?: 'ask' | 'words' | 'mattermost' | 'uuid',
+            use_jaas?: boolean
+            /* eslint-enable camelcase */
         }
     }
 }

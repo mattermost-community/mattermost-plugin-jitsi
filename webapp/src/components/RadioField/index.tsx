@@ -17,10 +17,10 @@ export const RadioField = ({heading, isInline, options, onChange, description}: 
                 {heading}
             </label>
             <div className='col-sm-8'>
-                <div className={`${!isInline && 'radio'}`}>
+                <div className={isInline ? '' : 'radio'}>
                     {options.map((option) => (
                         <label
-                            className={`pt-0 ${isInline && 'radio-inline'}`}
+                            className={isInline ? 'pt-0 radio-inline' : 'pt-0'}
                             key={option.value}
                         >
                             <input

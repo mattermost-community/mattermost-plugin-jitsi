@@ -18,9 +18,7 @@ import (
 func TestCommandHelp(t *testing.T) {
 	p := Plugin{
 		configuration: &configuration{
-			JitsiSettings: jitsisettings{
-				JitsiURL: "http://test",
-			},
+			JitsiURL: "http://test",
 		},
 		botID: "test-bot-id",
 	}
@@ -63,11 +61,9 @@ func TestCommandHelp(t *testing.T) {
 func TestCommandSettings(t *testing.T) {
 	p := Plugin{
 		configuration: &configuration{
-			JitsiSettings: jitsisettings{
-				JitsiURL:          "http://test",
-				JitsiEmbedded:     false,
-				JitsiNamingScheme: "mattermost",
-			},
+			JitsiURL:          "http://test",
+			JitsiEmbedded:     false,
+			JitsiNamingScheme: "mattermost",
 		},
 		botID: "test-bot-id",
 	}
@@ -151,9 +147,7 @@ func TestCommandSettings(t *testing.T) {
 func TestCommandStartMeeting(t *testing.T) {
 	p := Plugin{
 		configuration: &configuration{
-			JitsiSettings: jitsisettings{
-				JitsiURL: "http://test",
-			},
+			JitsiURL: "http://test",
 		},
 	}
 

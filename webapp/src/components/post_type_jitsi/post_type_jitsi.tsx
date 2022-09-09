@@ -4,23 +4,28 @@ import {Post} from 'mattermost-redux/types/posts';
 import {Theme} from 'mattermost-redux/types/preferences';
 import {ActionResult} from 'mattermost-redux/types/actions';
 import Constants from 'mattermost-redux/constants/general';
-import {UserProfile} from 'mattermost-redux/types/users';
-import {getFullName} from 'mattermost-redux/utils/user_utils';
 import {makeStyleFromTheme} from 'mattermost-redux/utils/theme_utils';
 
 import Svgs from 'constants/svgs';
+import {isMeetingLinkServerTypeJaaS} from 'utils/user_utils';
+import constants from '../../constants';
 
 export type Props = {
     post?: Post,
     theme: Theme,
-    currentUser: UserProfile,
+    currentUserId: string,
+    isCurrentUserSysAdmin: boolean,
+    currentUserFullName: string,
+    currentChannelId:string,
     creatorName: string,
     useMilitaryTime: boolean,
     meetingEmbedded: boolean,
+    useJaas: boolean,
     actions: {
         enrichMeetingJwt: (jwt: string) => Promise<ActionResult>,
         openJitsiMeeting: (post: Post | null, jwt: string | null) => ActionResult,
         setUserStatus: (userId: string, status: string) => Promise<ActionResult>,
+        sendEphemeralPost: (message: string, channelID: string, userID: string)=> ActionResult,
     }
 }
 
@@ -51,14 +56,18 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
             e.preventDefault();
             if (this.props.post) {
                 // could be improved by using an enum in the future for the status
-                this.props.actions.setUserStatus(this.props.currentUser.id, Constants.DND);
+                this.props.actions.setUserStatus(this.props.currentUserId, Constants.DND);
                 this.props.actions.openJitsiMeeting(this.props.post, this.state.meetingJwt || this.props.post.props.meeting_jwt || null);
             }
         } else if (this.state.meetingJwt) {
             e.preventDefault();
             if (this.props.post) {
                 const props = this.props.post.props;
-                let meetingLink = props.meeting_link + '?jwt=' + (this.state.meetingJwt);
+                if (isMeetingLinkServerTypeJaaS(props.meeting_link, this.props.useJaas)) {
+                    this.props.actions.sendEphemeralPost(this.props.isCurrentUserSysAdmin ? constants.JAAS_ADMIN_EPHEMERAL_MESSAGE : constants.JAAS_EPHEMERAL_MESSAGE, this.props.currentChannelId, this.props.currentUserId);
+                    return;
+                }
+                let meetingLink = props.meeting_link + (this.props.useJaas ? '&jwt=' : '?jwt=') + this.state.meetingJwt;
                 meetingLink += `#config.callDisplayName="${props.meeting_topic || props.default_meeting_topic}"`;
                 window.open(meetingLink, '_blank');
             }
@@ -102,7 +111,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
         }
 
         meetingLink += `#config.callDisplayName="${props.meeting_topic || props.default_meeting_topic}"`;
-        meetingLink += `&userInfo.displayName="${getFullName(this.props.currentUser)}"`;
+        meetingLink += `&userInfo.displayName="${this.props.currentUserFullName}"`;
 
         const preText = (
             <FormattedMessage
@@ -154,7 +163,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
                                     onClick={this.openJitsiMeeting}
                                     href={meetingLink}
                                 >
-                                    {props.meeting_id_label}
+                                    {props.meeting_id}
                                 </a>
                             </span>
                             <div>

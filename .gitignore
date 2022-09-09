@@ -7,3 +7,5 @@ dist
 .vscode
 
 assets/i18n/translate.*.json
+
+public/jaas

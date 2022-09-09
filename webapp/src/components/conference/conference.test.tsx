@@ -28,7 +28,7 @@ describe('Conference', () => {
             jwt_meeting: true,
             meeting_jwt: 'xxxxxxxxxxxx',
             meeting_topic: 'Test topic',
-            meeting_id: 'test_meeting_id_label',
+            meeting_id: 'test_meeting_id',
             meeting_personal: false
         }
     };

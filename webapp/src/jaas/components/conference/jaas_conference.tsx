@@ -1,6 +1,7 @@
 import React from 'react';
 import {id as pluginId} from '../../../manifest';
 import {StartMeetingWindowAction} from 'jaas/actions';
+import constants from '../../../constants';
 
 type Props = {
     actions: {
@@ -26,9 +27,6 @@ export default class JaaSConference extends React.PureComponent<Props, State> {
     }
 
     initJaaS(jwt: string, room: string) {
-        const url = new URL(window.location.href);
-        const noSSL = url.protocol === 'https:';
-
         const ws = Math.max(document.documentElement.clientWidth ?? 0, window?.innerWidth ?? 0);
         const hs = Math.max(document.documentElement.clientHeight ?? 0, window?.innerHeight ?? 0);
         const options = {
@@ -36,7 +34,6 @@ export default class JaaSConference extends React.PureComponent<Props, State> {
             height: hs,
             roomName: room,
             jwt,
-            noSSL,
             parentNode: document.querySelector('#jitsiMeet')
         };
 
@@ -48,18 +45,16 @@ export default class JaaSConference extends React.PureComponent<Props, State> {
             const script = document.createElement('script');
             script.type = 'text/javascript';
             script.onload = () => {
-                if (!this.state.jaasRoom) {
-                    const params = new URLSearchParams(window.location.search);
-                    const jwt = params.get(JWT);
-                    const path = window.location.pathname;
-                    this.props.actions.startJaaSMeetingWindow(jwt, path).
-                        then((response) => {
-                            this.setState({
-                                jaasRoom: response.data.jaasRoom,
-                                jaasJwt: response.data.jaasJwt
-                            });
+                const params = new URLSearchParams(window.location.search);
+                const jwt = params.get(JWT);
+                const meetingId = params.get(constants.MEETING_ID);
+                this.props.actions.startJaaSMeetingWindow(jwt, meetingId).
+                    then((response) => {
+                        this.setState({
+                            jaasRoom: response.data.jaasRoom,
+                            jaasJwt: response.data.jaasJwt
                         });
-                }
+                    });
             };
             script.src = `${(window as any).location.origin}/plugins/${pluginId}/jitsi_meet_external_api.js`;
             document.head.appendChild(script);

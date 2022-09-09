@@ -1,3 +1,6 @@
-export enum JaaSActionTypes {
-    START_MEETING_WINDOW = 'jaas/START_MEETING_WINDOW'
-}
+
+import {id as pluginId} from '../../manifest';
+
+export default {
+    START_MEETING_WINDOW: pluginId + '_jaas/START_MEETING_WINDOW'
+};

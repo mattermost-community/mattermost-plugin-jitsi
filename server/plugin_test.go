@@ -51,9 +51,7 @@ func TestSignClaims(t *testing.T) {
 func TestStartMeeting(t *testing.T) {
 	p := Plugin{
 		configuration: &configuration{
-			JitsiSettings: jitsisettings{
-				JitsiURL: "http://test",
-			},
+			JitsiURL: "http://test",
 		},
 	}
 	apiMock := plugintest.API{}
@@ -79,7 +77,7 @@ func TestStartMeeting(t *testing.T) {
 		b, _ := json.Marshal(UserConfig{Embedded: false, NamingScheme: "mattermost"})
 		apiMock.On("KVGet", "config_test-id", mock.Anything).Return(b, nil)
 
-		meetingID, err := p.startMeeting(&testUser, &testChannel, "", "", false, "")
+		meetingID, err := p.startMeeting(&testUser, &testChannel, "", "", "")
 		require.Nil(t, err)
 		require.Regexp(t, "^test-username-", meetingID)
 	})
@@ -91,7 +89,7 @@ func TestStartMeeting(t *testing.T) {
 		b, _ := json.Marshal(UserConfig{Embedded: false, NamingScheme: "mattermost"})
 		apiMock.On("KVGet", "config_test-id", mock.Anything).Return(b, nil)
 
-		meetingID, err := p.startMeeting(&testUser, &testChannel, "", "Test topic", false, "")
+		meetingID, err := p.startMeeting(&testUser, &testChannel, "", "Test topic", "")
 		require.Nil(t, err)
 		require.Regexp(t, "^Test-topic-", meetingID)
 	})
@@ -103,7 +101,7 @@ func TestStartMeeting(t *testing.T) {
 		b, _ := json.Marshal(UserConfig{Embedded: false, NamingScheme: "mattermost"})
 		apiMock.On("KVGet", "config_test-id", mock.Anything).Return(b, nil)
 
-		meetingID, err := p.startMeeting(&testUser, &testChannel, "test-id", "", false, "")
+		meetingID, err := p.startMeeting(&testUser, &testChannel, "test-id", "", "")
 		require.Nil(t, err)
 		require.Regexp(t, "^test-username-", meetingID)
 	})
@@ -118,7 +116,7 @@ func TestStartMeeting(t *testing.T) {
 		b, _ := json.Marshal(UserConfig{Embedded: false, NamingScheme: "mattermost"})
 		apiMock.On("KVGet", "config_test-id", mock.Anything).Return(b, nil)
 
-		meetingID, err := p.startMeeting(&testUser, &testChannel, "test-id", "Test topic", false, "")
+		meetingID, err := p.startMeeting(&testUser, &testChannel, "test-id", "Test topic", "")
 		require.Nil(t, err)
 		require.Equal(t, "test-id", meetingID)
 	})

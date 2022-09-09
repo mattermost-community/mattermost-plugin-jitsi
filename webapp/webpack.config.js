@@ -48,8 +48,8 @@ module.exports = [
             extensions: ['*', '.js', '.jsx', '.ts', '.tsx']
         },
         output: {
-            path: path.join(__dirname, '/dist/jaas'),
-            publicPath: '/plugins/jitsi/',
+            path: path.join(__dirname, '../public/jaas'),
+            publicPath: '/plugins/jitsi/public/jaas',
             filename: 'jaas-main.js'
         },
         module: {
@@ -64,7 +64,7 @@ module.exports = [
         plugins: [
             new HtmlWebPackPlugin({
                 template: './src/jaas/index.html',
-                filename: 'index.html',
+                filename: 'jaas.html',
                 inject: true
             })
         ]
