@@ -38,8 +38,6 @@ const DefaultValidityOfMeetingLinkInMinutes = 120
 const typeUser = "user"
 const typeGuest = "guest"
 
-var jaasURLCheckRegExp = regexp.MustCompile(`(vpaas-magic-cookie-[a-f0-9]{32}\/.+)`)
-
 type Plugin struct {
 	plugin.MattermostPlugin
 

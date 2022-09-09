@@ -130,10 +130,6 @@ func (p *Plugin) handleJaaSSettings(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (p *Plugin) isJaaSMeeting(path string) bool {
-	return jaasURLCheckRegExp.MatchString(path)
-}
-
 func (p *Plugin) handleConfig(w http.ResponseWriter, r *http.Request) {
 	userID := r.Header.Get(mattermostUserIDHeader)
 
