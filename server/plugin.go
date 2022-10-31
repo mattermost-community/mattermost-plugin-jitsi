@@ -80,7 +80,7 @@ func (p *Plugin) OnActivate() error {
 
 	botID, ensureBotError := p.Helpers.EnsureBot(jitsiBot, options...)
 	if ensureBotError != nil {
-		return errors.Wrap(ensureBotError, "failed to ensure jitsi bot user.")
+		return errors.Wrap(ensureBotError, "failed to ensure jitsi bot user")
 	}
 
 	p.botID = botID
