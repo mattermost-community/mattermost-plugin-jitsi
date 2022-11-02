@@ -30,7 +30,7 @@ func TestCommandHelp(t *testing.T) {
 	require.Nil(t, err)
 	p.i18nBundle = i18nBundle
 
-	helpText := strings.Replace(`###### Mattermost Jitsi Plugin - Slash Command help
+	helpText := strings.ReplaceAll(`###### Mattermost Jitsi Plugin - Slash Command help
 * |/jitsi| - Create a new meeting
 * |/jitsi [topic]| - Create a new meeting with specified topic
 * |/jitsi help| - Show this help text
@@ -43,7 +43,7 @@ func TestCommandHelp(t *testing.T) {
     * |words|: Random English words in title case (e.g. PlayfulDragonsObserveCuriously)
     * |uuid|: UUID (universally unique identifier)
     * |mattermost|: Mattermost specific names. Combination of team name, channel name and random text in public and private channels; personal meeting name in direct and group messages channels.
-    * |ask|: The plugin asks you to select the name every time you start a meeting`, "|", "`", -1)
+    * |ask|: The plugin asks you to select the name every time you start a meeting`, "|", "`")
 
 	apiMock.On("SendEphemeralPost", "test-user", &model.Post{
 		UserId:    "test-bot-id",
