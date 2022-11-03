@@ -12,6 +12,14 @@ type Props = {
     children: React.ReactNode,
 }
 
+export class InjectionProvider extends React.Component<any> {
+    public render(): JSX.Element {
+        const stores = {...this.props};
+        delete stores.children;
+        return React.createElement(Provider as any, stores, this.props.children);
+    }
+}
+
 export default class RootPortal {
     el: HTMLElement;
     store: any;
@@ -38,11 +46,11 @@ export default class RootPortal {
         const rootPortal = document.getElementById('root-portal');
         if (rootPortal) {
             ReactDOM.render((
-                <Provider store={this.store}>
+                <InjectionProvider store={this.store}>
                     <I18nProvider>
                         <Conference/>
                     </I18nProvider>
-                </Provider>
+                </InjectionProvider>
             ), this.el);
         }
     }

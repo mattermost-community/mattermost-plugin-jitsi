@@ -70,7 +70,7 @@ func (p *Plugin) OnActivate() error {
 
 	botID, ensureBotError := p.Helpers.EnsureBot(jitsiBot, options...)
 	if ensureBotError != nil {
-		return errors.Wrap(ensureBotError, "failed to ensure jitsi bot user.")
+		return errors.Wrap(ensureBotError, "failed to ensure jitsi bot user")
 	}
 
 	p.botID = botID
@@ -356,7 +356,7 @@ func (c Claims) MarshalBinary() (data []byte, err error) {
 
 func encodeJitsiMeetingID(meeting string) string {
 	reg := regexp.MustCompile("[^a-zA-Z0-9-_]+")
-	meeting = strings.Replace(meeting, " ", "-", -1)
+	meeting = strings.ReplaceAll(meeting, " ", "-")
 	return reg.ReplaceAllString(meeting, "")
 }
 
