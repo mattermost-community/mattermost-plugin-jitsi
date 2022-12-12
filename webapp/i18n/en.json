@@ -7,6 +7,7 @@
   "jaas.embed-meeting-description": "(Experimental) When true, JaaS video is embedded as a floating window inside Mattermost by default.",
   "jaas.rsa-key": "RSA Private key for JaaS Authentication:",
   "jaas.rsa-key-description": "Specify your JaaS private key. You can get the private key by generating an API key pair from https://jaas.8x8.vc/#/apikeys OR from https://jaas.8x8.vc/#/start-guide in the \"Api Key\" section. (NOTE: While generating the key manually make sure to set the size to be 2048 and not 4096).",
+  "jaas.default-title": "JaaS Meeting",
   "jitsi.allow-user": "Allow user to select meeting name",
   "jitsi.app-id": "App ID for JWT Authentication:",
   "jitsi.app-id-description": "(Optional) The app ID used for authentication by the Jitsi server and JWT token generator.",

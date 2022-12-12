@@ -184,7 +184,7 @@ func signClaimsJaaS(apiKeyJaaS string, privateKeyJaaS string, claimsJaaS *JaaSCl
 	var privateKey *rsa.PrivateKey
 	privateKey, success = parsedKey.(*rsa.PrivateKey)
 	if !success {
-		mlog.Error("Error converting JaaS private Key", mlog.Err(err))
+		mlog.Error("Error converting JaaS private Key")
 		return "", errors.New("error converting JaaS private Key")
 	}
 
