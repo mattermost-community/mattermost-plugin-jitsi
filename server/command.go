@@ -81,7 +81,7 @@ func getAutocompleteData() *model.AutocompleteData {
 		HelpText: "Pre-join page on Jitsi meeting will be displayed",
 		Item:     valueTrue,
 	}, {
-		HelpText: "Pre-join page on Jitsi meeting will be not displayed",
+		HelpText: "Pre-join page on Jitsi meeting will not be displayed",
 		Item:     valueFalse,
 	}}
 	showPrejoinPage.AddStaticListArgument("Choose whether the pre-join page should be visible on Jitsi meeting in embedded mode", true, items)
