@@ -20,6 +20,10 @@ const jitsiStartCommand = "start"
 const valueTrue = "true"
 const valueFalse = "false"
 
+const commandArgShowPrejoinPage = "show_prejoin_page"
+const commandArgEmbedded = "embedded"
+const commandArgNamingScheme = "naming_scheme"
+
 func startMeetingError(channelID string, detailedError string) (*model.CommandResponse, *model.AppError) {
 	return &model.CommandResponse{
 			ResponseType: model.COMMAND_RESPONSE_TYPE_EPHEMERAL,
@@ -61,29 +65,29 @@ func getAutocompleteData() *model.AutocompleteData {
 	see := model.NewAutocompleteData(jitsiSettingsSeeCommand, "", "See your current settings")
 	settings.AddCommand(see)
 
-	embedded := model.NewAutocompleteData("embedded", "[value]", "Choose where the Jitsi meeting should open")
+	embedded := model.NewAutocompleteData(commandArgEmbedded, "[value]", "Choose where the Jitsi meeting should open")
 	items := []model.AutocompleteListItem{{
 		HelpText: "Jitsi meeting is embedded as a floating window inside Mattermost",
-		Item:     "true",
+		Item:     valueTrue,
 	}, {
 		HelpText: "Jitsi meeting opens in a new window",
-		Item:     "false",
+		Item:     valueFalse,
 	}}
 	embedded.AddStaticListArgument("Choose where the Jitsi meeting should open", true, items)
 	settings.AddCommand(embedded)
 
-	showPrejoinPage := model.NewAutocompleteData("show_prejoin_page", "[value]", "Choose wheather the pre-join page should be visible on Jitsi meeting in embedded mode")
+	showPrejoinPage := model.NewAutocompleteData(commandArgShowPrejoinPage, "[value]", "Choose whether the pre-join page should be visible on Jitsi meeting in embedded mode")
 	items = []model.AutocompleteListItem{{
 		HelpText: "Pre-join page on Jitsi meeting will be displayed",
-		Item:     "true",
+		Item:     valueTrue,
 	}, {
-		HelpText: "Pre-join page on Jitsi meeting will be displayed",
-		Item:     "false",
+		HelpText: "Pre-join page on Jitsi meeting will be not displayed",
+		Item:     valueFalse,
 	}}
-	showPrejoinPage.AddStaticListArgument("Choose wheather the pre-join page should be visible on Jitsi meeting in embedded mode", true, items)
+	showPrejoinPage.AddStaticListArgument("Choose whether the pre-join page should be visible on Jitsi meeting in embedded mode", true, items)
 	settings.AddCommand(showPrejoinPage)
 
-	namingScheme := model.NewAutocompleteData("naming_scheme", "[value]", "Select how meeting names are generated")
+	namingScheme := model.NewAutocompleteData(commandArgNamingScheme, "[value]", "Select how meeting names are generated")
 	items = []model.AutocompleteListItem{{
 		HelpText: "Random English words in title case (e.g. PlayfulDragonsObserveCuriously)",
 		Item:     "words",
@@ -188,7 +192,7 @@ func (p *Plugin) executeHelpCommand(c *plugin.Context, args *model.CommandArgs) 
 
 ###### Jitsi Settings:
 * |/jitsi settings embedded [true/false]|: (Experimental) When true, Jitsi meeting is embedded as a floating window inside Mattermost. When false, Jitsi meeting opens in a new window.
-* |/jitsi settings show_prejoin_page [true/false]|: When false, pre-join page will not be displayed when Jitsi is embedded inside Mattermost.
+* |/jitsi settings show_prejoin_page [true/false]|: When false, pre-join page will not be displayed when Jitsi meet is embedded inside Mattermost.
 * |/jitsi settings naming_scheme [words/uuid/mattermost/ask]|: Select how meeting names are generated with one of these options:
     * |words|: Random English words in title case (e.g. PlayfulDragonsObserveCuriously)
     * |uuid|: UUID (universally unique identifier)
@@ -272,7 +276,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 	}
 
 	switch parameters[0] {
-	case "embedded":
+	case commandArgEmbedded:
 		switch parameters[1] {
 		case valueTrue:
 			userConfig.Embedded = true
@@ -287,7 +291,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 			})
 			userConfig = nil
 		}
-	case "naming_scheme":
+	case commandArgNamingScheme:
 		switch parameters[1] {
 		case jitsiNameSchemeAsk:
 			userConfig.NamingScheme = "ask"
@@ -306,7 +310,7 @@ func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandAr
 			})
 			userConfig = nil
 		}
-	case "show_prejoin_page":
+	case commandArgShowPrejoinPage:
 		switch parameters[1] {
 		case valueTrue:
 			userConfig.ShowPrejoinPage = true

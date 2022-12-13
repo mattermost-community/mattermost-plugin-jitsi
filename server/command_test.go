@@ -42,7 +42,7 @@ func TestCommandHelp(t *testing.T) {
 
 ###### Jitsi Settings:
 * |/jitsi settings embedded [true/false]|: (Experimental) When true, Jitsi meeting is embedded as a floating window inside Mattermost. When false, Jitsi meeting opens in a new window.
-* |/jitsi settings show_prejoin_page [true/false]|: When false, pre-join page will not be displayed when Jitsi is embedded inside Mattermost.
+* |/jitsi settings show_prejoin_page [true/false]|: When false, pre-join page will not be displayed when Jitsi meet is embedded inside Mattermost.
 * |/jitsi settings naming_scheme [words/uuid/mattermost/ask]|: Select how meeting names are generated with one of these options:
     * |words|: Random English words in title case (e.g. PlayfulDragonsObserveCuriously)
     * |uuid|: UUID (universally unique identifier)
