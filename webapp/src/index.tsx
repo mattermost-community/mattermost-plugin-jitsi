@@ -16,6 +16,7 @@ import reducer from './reducers';
 import {startMeeting, loadConfig} from './actions';
 import {id as pluginId} from './manifest';
 import Client from './client';
+import App from './app';
 
 class PluginClass {
     rootPortal?: RootPortal
@@ -39,6 +40,7 @@ class PluginClass {
             document.head.appendChild(script);
         }
         registry.registerReducer(reducer);
+        registry.registerRootComponent(App);
 
         const action = (channel: Channel) => {
             store.dispatch(startMeeting(channel.id));
