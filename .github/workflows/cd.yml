@@ -2,11 +2,12 @@ name: cd
 on:
   workflow_run:
     workflows: ["ci"]
+    branches-ignore: ["*"]
     types:
       - completed
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "^v.*"
 
 permissions:
   contents: read
