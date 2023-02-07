@@ -1,0 +1,16 @@
+name: ci
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "^v.*"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  plugin-ci:
+    uses: mattermost/actions-workflows/.github/workflows/plugin-ci.yml@main
+    secrets: inherit
