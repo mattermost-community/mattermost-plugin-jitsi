@@ -62,8 +62,13 @@ export default class JaaSConference extends React.PureComponent<Props, State> {
 
     componentDidMount() {
         if (!(window as any).JitsiMeetExternalAPI) {
+            // Check if the script is already loaded or not
+            if (document.getElementById(`${pluginId}_jitsi_meet_external_api_script`)) {
+                return;
+            }
             const script = document.createElement('script');
             script.type = 'text/javascript';
+            script.id = `${pluginId}_jitsi_meet_external_api_script`;
             script.onload = () => {
                 const params = new URLSearchParams(window.location.search);
                 const jwt = params.get(JWT);
