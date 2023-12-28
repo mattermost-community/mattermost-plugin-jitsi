@@ -14,7 +14,6 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/plugin"
 	"github.com/mattermost/mattermost/server/public/pluginapi"
-	// "github.com/mattermost/mattermost/server/public/pluginapi/experimental/"
 	"github.com/mattermost/mattermost/server/public/pluginapi/experimental/telemetry"
 	"github.com/mattermost/mattermost/server/public/pluginapi/i18n"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
