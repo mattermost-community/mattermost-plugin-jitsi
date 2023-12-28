@@ -18,7 +18,7 @@ import {id as pluginId} from './manifest';
 import Client from './client';
 
 class PluginClass {
-    rootPortal?: RootPortal
+    rootPortal?: RootPortal;
 
     initialize(registry: any, store: any) {
         if ((window as any).JitsiMeetExternalAPI) {

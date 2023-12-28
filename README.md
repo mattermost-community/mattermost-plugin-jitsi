@@ -69,11 +69,9 @@ You can use Docker to compile the binaries yourself. Run `./docker-make` shell s
 
 You can also use make targets like `dist` (`./docker-make dist`) from the [Makefile](./Makefile).
 
-## Developing
+## Development
 
-This plugin contains both a server and web app portion.
-
-Use `make` to check the quality of your code, as well as build distributions of the plugin that you can upload to a Mattermost server for testing.
+This plugin contains both a server and web app portion. Read our documentation about the [Developer Workflow](https://developers.mattermost.com/integrate/plugins/developer-workflow/) and [Developer Setup](https://developers.mattermost.com/integrate/plugins/developer-setup/) for more information about developing and extending plugins.
 
 ### Server
 

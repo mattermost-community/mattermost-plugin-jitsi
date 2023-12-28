@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/cristalhq/jwt/v2"
-	"github.com/mattermost/mattermost-plugin-api/i18n"
-	"github.com/mattermost/mattermost-server/v5/model"
-	"github.com/mattermost/mattermost-server/v5/plugin/plugintest"
+	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/plugin/plugintest"
+	"github.com/mattermost/mattermost/server/public/pluginapi/i18n"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -68,7 +68,7 @@ func TestStartMeeting(t *testing.T) {
 	p.b = i18nBundle
 
 	testUser := model.User{Id: "test-id", Username: "test-username", FirstName: "test-first-name", LastName: "test-last-name", Nickname: "test-nickname"}
-	testChannel := model.Channel{Id: "test-id", Type: model.CHANNEL_DIRECT, Name: "test-name", DisplayName: "test-display-name"}
+	testChannel := model.Channel{Id: "test-id", Type: model.ChannelTypeDirect, Name: "test-name", DisplayName: "test-display-name"}
 
 	t.Run("start meeting without topic or id", func(t *testing.T) {
 		apiMock.On("CreatePost", mock.MatchedBy(func(post *model.Post) bool {
@@ -108,7 +108,7 @@ func TestStartMeeting(t *testing.T) {
 
 	t.Run("start meeting with topic and id", func(t *testing.T) {
 		testUser := model.User{Id: "test-id", Username: "test-username", FirstName: "test-first-name", LastName: "test-last-name", Nickname: "test-nickname"}
-		testChannel := model.Channel{Id: "test-id", Type: model.CHANNEL_OPEN, TeamId: "test-team-id", Name: "test-name", DisplayName: "test-display-name"}
+		testChannel := model.Channel{Id: "test-id", Type: model.ChannelTypeOpen, TeamId: "test-team-id", Name: "test-name", DisplayName: "test-display-name"}
 
 		apiMock.On("CreatePost", mock.MatchedBy(func(post *model.Post) bool {
 			return strings.HasPrefix(post.Props["meeting_link"].(string), "http://test/")
