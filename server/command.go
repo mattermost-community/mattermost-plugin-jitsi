@@ -120,7 +120,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 	}
 }
 
-func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) executeStartMeetingCommand(_ *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 	input := strings.TrimSpace(strings.TrimPrefix(args.Command, "/"+jitsiCommand))
 	input = strings.TrimSpace(strings.TrimPrefix(input, jitsiStartCommand))
 
@@ -154,7 +154,7 @@ func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.Comma
 	return &model.CommandResponse{}, nil
 }
 
-func (p *Plugin) executeHelpCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) executeHelpCommand(_ *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 	l := p.b.GetUserLocalizer(args.UserId)
 	helpTitle := p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 		DefaultMessage: &i18n.Message{
@@ -206,7 +206,7 @@ func (p *Plugin) settingsError(userID string, channelID string, errorText string
 	return &model.CommandResponse{}, nil
 }
 
-func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandArgs, parameters []string) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) executeSettingsCommand(_ *plugin.Context, args *model.CommandArgs, parameters []string) (*model.CommandResponse, *model.AppError) {
 	l := p.b.GetUserLocalizer(args.UserId)
 	text := ""
 

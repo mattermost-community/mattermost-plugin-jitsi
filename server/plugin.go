@@ -155,7 +155,7 @@ func signClaims(secret string, claims *Claims) (string, error) {
 	return string(token.Raw()), nil
 }
 
-func (p *Plugin) trackMeeting(args *model.CommandArgs) {
+func (p *Plugin) trackMeeting(_ *model.CommandArgs) {
 	// disables tracking if the user is not using the default jitsi url
 	isNotDefaultJitsiURL := p.isNotDefaultJitsiURL()
 	// enables tracking based on the users configuration
@@ -208,7 +208,7 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 	return signClaims(secret, claims)
 }
 
-func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingID string, meetingTopic string, personal bool, rootID string) (string, error) {
+func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingID string, meetingTopic string, _ bool, rootID string) (string, error) {
 	l := p.b.GetServerLocalizer()
 	if meetingID == "" {
 		meetingID = encodeJitsiMeetingID(meetingTopic)
