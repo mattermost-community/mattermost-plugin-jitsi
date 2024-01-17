@@ -5,7 +5,7 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 module.exports = [
     Object.assign({}, {
         entry: [
-            './src/index.tsx',
+            './src/index.tsx'
         ],
         resolve: {
             modules: [
@@ -23,7 +23,7 @@ module.exports = [
                         loader: 'babel-loader',
                         options: {
                             cacheDirectory: true
-    
+
                             // Babel configuration is in babel.config.js because jest requires it to be there.
                         }
                     }
@@ -48,7 +48,7 @@ module.exports = [
     }),
     Object.assign({}, {
         entry: [
-            './src/jaas/index.tsx',
+            './src/jaas/index.tsx'
         ],
         resolve: {
             modules: [
@@ -71,7 +71,7 @@ module.exports = [
                         loader: 'babel-loader',
                         options: {
                             cacheDirectory: true
-    
+
                             // Babel configuration is in babel.config.js because jest requires it to be there.
                         }
                     }

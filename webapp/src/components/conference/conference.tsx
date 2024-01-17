@@ -196,8 +196,8 @@ export default class Conference extends React.PureComponent<Props, State> {
                     this.api.dispose();
                 }
             }, 200);
-        };
-    }
+        }
+    };
 
     openInNewTab = (meetingLink: string) => {
         if (isMeetingLinkServerTypeJaaS(meetingLink, this.props.useJaas)) {
@@ -205,7 +205,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         } else {
             window.open(meetingLink, '_blank');
         }
-    }
+    };
 
     minimize = () => {
         this.setState({minimized: true});

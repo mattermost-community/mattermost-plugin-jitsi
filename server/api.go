@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -207,7 +206,7 @@ func (p *Plugin) proxyExternalAPIjsJaaS(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		mlog.Error("Error reading the content", mlog.String("url", fmt.Sprintf("%s/external_api.min.js", p.getConfiguration().Get8x8vcURL())), mlog.Err(err))
 		http.Error(w, "Error reading the content", http.StatusInternalServerError)
