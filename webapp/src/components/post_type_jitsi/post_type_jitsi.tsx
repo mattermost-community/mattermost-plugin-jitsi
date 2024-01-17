@@ -72,7 +72,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
                 window.open(meetingLink, '_blank');
             }
         }
-    }
+    };
 
     renderUntilDate = (post: Post, style: any): React.ReactNode => {
         const props = post.props;
@@ -94,7 +94,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
             );
         }
         return null;
-    }
+    };
 
     render() {
         const style = getStyle(this.props.theme);

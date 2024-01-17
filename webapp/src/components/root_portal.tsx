@@ -8,12 +8,8 @@ import {Provider} from 'react-redux';
 import Conference from './conference/';
 import I18nProvider from './i18n_provider/';
 
-type Props = {
-    children: React.ReactNode,
-}
-
 export class InjectionProvider extends React.Component<any> {
-    public render(): JSX.Element {
+    public render(): React.ReactElement {
         const stores = {...this.props};
         delete stores.children;
         return React.createElement(Provider as any, stores, this.props.children);

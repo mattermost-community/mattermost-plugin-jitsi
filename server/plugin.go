@@ -16,11 +16,12 @@ import (
 	"github.com/cristalhq/jwt/v3"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"github.com/mattermost/mattermost-plugin-api/experimental/telemetry"
-	"github.com/mattermost/mattermost-plugin-api/i18n"
-	"github.com/mattermost/mattermost-server/v5/mlog"
-	"github.com/mattermost/mattermost-server/v5/model"
-	"github.com/mattermost/mattermost-server/v5/plugin"
+	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/plugin"
+	"github.com/mattermost/mattermost/server/public/pluginapi"
+	"github.com/mattermost/mattermost/server/public/pluginapi/experimental/telemetry"
+	"github.com/mattermost/mattermost/server/public/pluginapi/i18n"
+	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/pkg/errors"
 )
 
@@ -40,6 +41,8 @@ const typeGuest = "guest"
 
 type Plugin struct {
 	plugin.MattermostPlugin
+
+	client *pluginapi.Client
 
 	telemetryClient telemetry.Client
 	tracker         telemetry.Tracker
@@ -84,11 +87,12 @@ func (p *Plugin) OnActivate() error {
 		DisplayName: "Jitsi",
 		Description: "A bot account created by the jitsi plugin",
 	}
-	options := []plugin.EnsureBotOption{
-		plugin.ProfileImagePath("assets/icon.png"),
+	options := []pluginapi.EnsureBotOption{
+		pluginapi.ProfileImagePath("assets/icon.png"),
 	}
 
-	botID, ensureBotError := p.Helpers.EnsureBot(jitsiBot, options...)
+	p.client = pluginapi.NewClient(p.API, p.Driver)
+	botID, ensureBotError := p.client.Bot.EnsureBot(jitsiBot, options...)
 	if ensureBotError != nil {
 		return errors.Wrap(ensureBotError, "failed to ensure jitsi bot user")
 	}
@@ -203,7 +207,7 @@ func signClaimsJaaS(apiKeyJaaS string, privateKeyJaaS string, claimsJaaS *JaaSCl
 	return string(token.Raw()), nil
 }
 
-func (p *Plugin) trackMeeting(args *model.CommandArgs) {
+func (p *Plugin) trackMeeting(_ *model.CommandArgs) {
 	// disables tracking if the user is not using the default jitsi url
 	isNotDefaultJitsiURL := p.isNotDefaultJitsiURL()
 	// enables tracking based on the users configuration
@@ -249,7 +253,7 @@ func (p *Plugin) updateJwtUserInfo(jwtToken string, user *model.User) (string, e
 	newContext := Context{
 		User: User{
 			Avatar: fmt.Sprintf("%s/api/v4/users/%s/image?_=%d", *config.ServiceSettings.SiteURL, sanitizedUser.Id, sanitizedUser.LastPictureUpdate),
-			Name:   sanitizedUser.GetDisplayName(model.SHOW_NICKNAME_FULLNAME),
+			Name:   sanitizedUser.GetDisplayName(model.ShowNicknameFullName),
 			Email:  sanitizedUser.Email,
 			ID:     sanitizedUser.Id,
 		},
@@ -279,7 +283,7 @@ func (p *Plugin) getSignClaimsJaaS(jwtToken string, sanitizedUser *model.User) (
 	newContext := JaaSContext{
 		User: JaaSUser{
 			Avatar:    fmt.Sprintf("%s/api/v4/users/%s/image?_=%d", *config.ServiceSettings.SiteURL, sanitizedUser.Id, sanitizedUser.LastPictureUpdate),
-			Name:      sanitizedUser.GetDisplayName(model.SHOW_NICKNAME_FULLNAME),
+			Name:      sanitizedUser.GetDisplayName(model.ShowNicknameFullName),
 			Email:     sanitizedUser.Email,
 			ID:        sanitizedUser.Id,
 			Moderator: `true`,
@@ -369,6 +373,7 @@ func (p *Plugin) getJaaSSettings(jwtToken string, path string, user *model.User)
 	return &settings, nil
 }
 
+// func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingID string, meetingTopic string, rootID string) (string, error) {
 func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingID string, meetingTopic string, rootID string) (string, error) {
 	l := p.b.GetServerLocalizer()
 	if meetingID == "" {
@@ -402,14 +407,14 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 		case jitsiNameSchemeUUID:
 			meetingID = generateUUIDName()
 		case jitsiNameSchemeMattermost:
-			if channel.Type == model.CHANNEL_DIRECT || channel.Type == model.CHANNEL_GROUP {
+			if channel.Type == model.ChannelTypeDirect || channel.Type == model.ChannelTypeGroup {
 				meetingID = generatePersonalMeetingName(user.Username)
 				meetingTopic = p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 					DefaultMessage: &i18n.Message{
 						ID:    "jitsi.start_meeting.personal_meeting_topic",
 						Other: "{{.Name}}'s Personal Meeting",
 					},
-					TemplateData: map[string]string{"Name": user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME)},
+					TemplateData: map[string]string{"Name": user.GetDisplayName(model.ShowNicknameFullName)},
 				})
 				meetingPersonal = true
 			} else {
@@ -638,13 +643,13 @@ func (p *Plugin) askMeetingType(user *model.User, channel *model.Channel, rootID
 			URL: apiURL,
 			Context: map[string]interface{}{
 				"meeting_id":    generatePersonalMeetingName(user.Username),
-				"meeting_topic": fmt.Sprintf("%s's Meeting", user.GetDisplayName(model.SHOW_NICKNAME_FULLNAME)),
+				"meeting_topic": fmt.Sprintf("%s's Meeting", user.GetDisplayName(model.ShowNicknameFullName)),
 				"personal":      true,
 			},
 		},
 	})
 
-	if channel.Type == model.CHANNEL_OPEN || channel.Type == model.CHANNEL_PRIVATE {
+	if channel.Type == model.ChannelTypeOpen || channel.Type == model.ChannelTypePrivate {
 		actions = append(actions, &model.PostAction{
 			Name: p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 				DefaultMessage: &i18n.Message{

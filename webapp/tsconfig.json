@@ -11,7 +11,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "noEmit": false,
+    "noEmit": true,
     "experimentalDecorators": true,
     "jsx": "react",
     "baseUrl": "./src",

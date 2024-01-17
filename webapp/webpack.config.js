@@ -17,19 +17,28 @@ module.exports = [
         module: {
             rules: [
                 {
-                    test: /\.(ts|tsx)$/,
+                    test: /\.(js|jsx|ts|tsx)$/,
                     exclude: /node_modules/,
-                    use: 'ts-loader'
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            cacheDirectory: true
+    
+                            // Babel configuration is in babel.config.js because jest requires it to be there.
+                        }
+                    }
                 }
             ]
         },
         externals: {
             react: 'React',
             'react-dom': 'ReactDOM',
+            'react-intl': 'ReactIntl',
             redux: 'Redux',
             'react-redux': 'ReactRedux',
             'prop-types': 'PropTypes',
-            'react-bootstrap': 'ReactBootstrap'
+            'react-bootstrap': 'ReactBootstrap',
+            'react-router-dom': 'ReactRouterDom'
         },
         output: {
             path: path.join(__dirname, '/dist'),
@@ -56,9 +65,16 @@ module.exports = [
         module: {
             rules: [
                 {
-                    test: /\.(ts|tsx)$/,
+                    test: /\.(js|jsx|ts|tsx)$/,
                     exclude: /node_modules/,
-                    use: 'ts-loader'
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            cacheDirectory: true
+    
+                            // Babel configuration is in babel.config.js because jest requires it to be there.
+                        }
+                    }
                 }
             ]
         },

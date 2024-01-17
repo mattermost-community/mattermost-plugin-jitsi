@@ -23,7 +23,6 @@ linters:
   enable:
     - bodyclose
     - errcheck
-    - goconst
     - gocritic
     - gofmt
     - goimports

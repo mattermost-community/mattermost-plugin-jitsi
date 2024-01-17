@@ -19,7 +19,7 @@ import Client from './client';
 import App from './app';
 
 class PluginClass {
-    rootPortal?: RootPortal
+    rootPortal?: RootPortal;
 
     initialize(registry: any, store: any) {
         if ((window as any).JitsiMeetExternalAPI) {

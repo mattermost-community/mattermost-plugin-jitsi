@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -11,9 +12,9 @@ import (
 	"sync"
 
 	"github.com/gorilla/mux"
-	"github.com/mattermost/mattermost-server/v5/mlog"
-	"github.com/mattermost/mattermost-server/v5/model"
-	"github.com/mattermost/mattermost-server/v5/plugin"
+	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/plugin"
+	"github.com/mattermost/mattermost/server/public/shared/mlog"
 )
 
 const externalAPICacheTTL = 3600000
@@ -177,7 +178,7 @@ func (p *Plugin) handleExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error opening file", http.StatusInternalServerError)
 		return
 	}
-	code, err := ioutil.ReadAll(externalAPIFile)
+	code, err := io.ReadAll(externalAPIFile)
 	if err != nil {
 		mlog.Error("Error reading file content", mlog.String("path", externalAPIPath), mlog.Err(err))
 		http.Error(w, "Error reading file content", http.StatusInternalServerError)
@@ -221,7 +222,7 @@ func (p *Plugin) proxyExternalAPIjsJaaS(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
-func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, r *http.Request) {
+func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, _ *http.Request) {
 	externalAPICacheMutex.Lock()
 	defer externalAPICacheMutex.Unlock()
 
@@ -237,7 +238,7 @@ func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		mlog.Error("Error reading external_api.js file", mlog.String("url", p.getConfiguration().GetJitsiURL()+"/external_api.js"), mlog.Err(err))
 		http.Error(w, "Error reading external_api.js file", http.StatusInternalServerError)
@@ -271,7 +272,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 	var req StartMeetingRequest
 	var action StartMeetingFromAction
 
-	bodyData, err := ioutil.ReadAll(r.Body)
+	bodyData, err := io.ReadAll(r.Body)
 	if err != nil {
 		mlog.Debug("Unable to read request body", mlog.Err(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
