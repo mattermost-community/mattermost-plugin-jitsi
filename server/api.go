@@ -70,7 +70,7 @@ func (p *Plugin) checkAuth(handler http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Request) {
+func (p *Plugin) ServeHTTP(_ *plugin.Context, w http.ResponseWriter, r *http.Request) {
 	p.router.ServeHTTP(w, r)
 }
 
@@ -190,7 +190,7 @@ func (p *Plugin) handleExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (p *Plugin) proxyExternalAPIjsJaaS(w http.ResponseWriter, r *http.Request) {
+func (p *Plugin) proxyExternalAPIjsJaaS(w http.ResponseWriter, _ *http.Request) {
 	externalAPICacheMutex.Lock()
 	defer externalAPICacheMutex.Unlock()
 
