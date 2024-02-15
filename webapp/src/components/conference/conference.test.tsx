@@ -45,7 +45,8 @@ describe('Conference', () => {
         currentUser: {
             id: 'mockId',
             first_name: 'First',
-            last_name: 'Last'
+            last_name: 'Last',
+            username: 'firstLast'
         }
     };
 
