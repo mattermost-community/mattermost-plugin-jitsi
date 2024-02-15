@@ -1,13 +1,13 @@
 import {Client4} from 'mattermost-redux/client';
 import {ClientError} from 'mattermost-redux/client/client4';
 
-import {id} from '../manifest';
+import manifest from '../manifest';
 
 export default class Client {
     private url: string | undefined;
 
     setServerRoute(url: string) {
-        this.url = url + '/plugins/' + id;
+        this.url = url + '/plugins/' + manifest.id;
     }
 
     startMeeting = async (channelId: string, personal: boolean = false, topic: string = '', meetingId: string = '') => {
