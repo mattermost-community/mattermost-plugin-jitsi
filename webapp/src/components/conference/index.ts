@@ -2,14 +2,14 @@ import {connect} from 'react-redux';
 import {bindActionCreators, Dispatch} from 'redux';
 
 import {GenericAction} from 'mattermost-redux/types/actions';
-import {getCurrentUserId} from 'mattermost-redux/selectors/entities/common';
+import {getCurrentUser} from 'mattermost-redux/selectors/entities/common';
 import {GlobalState} from '../../types';
 import Conference from './conference';
 import {openJitsiMeeting, setUserStatus} from '../../actions';
 
 function mapStateToProps(state: GlobalState) {
     return {
-        currentUserId: getCurrentUserId(state),
+        currentUser: getCurrentUser(state),
         post: state['plugins-jitsi'].openMeeting,
         jwt: state['plugins-jitsi'].openMeetingJwt
     };

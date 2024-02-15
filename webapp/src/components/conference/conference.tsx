@@ -3,6 +3,7 @@ import * as React from 'react';
 import {FormattedMessage} from 'react-intl';
 import {Post} from 'mattermost-redux/types/posts';
 import Constants from 'mattermost-redux/constants/general';
+import {UserProfile} from 'mattermost-redux/types/users';
 
 const BORDER_SIZE = 8;
 const POSITION_TOP = 'top';
@@ -13,7 +14,7 @@ const MINIMIZED_WIDTH = 384;
 const MINIMIZED_HEIGHT = 288;
 
 type Props = {
-    currentUserId: string,
+    currentUser: UserProfile,
     post: Post | null,
     jwt: string | null,
     actions: {
@@ -101,6 +102,9 @@ export default class Conference extends React.PureComponent<Props, State> {
             onload: () => {
                 this.setState({loading: false});
                 this.resizeIframe();
+            },
+            userInfo: {
+                displayName: this.props.currentUser.username
             }
         };
         this.api = new (window as any).JitsiMeetExternalAPI(domain, options);
@@ -175,7 +179,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         this.api.executeCommand('hangup');
         setTimeout(() => {
             this.props.actions.openJitsiMeeting(null, null);
-            this.props.actions.setUserStatus(this.props.currentUserId, Constants.ONLINE);
+            this.props.actions.setUserStatus(this.props.currentUser.id, Constants.ONLINE);
             this.setState({
                 minimized: true,
                 loading: true,

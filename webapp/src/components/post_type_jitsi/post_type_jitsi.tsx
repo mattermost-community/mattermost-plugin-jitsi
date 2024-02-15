@@ -5,7 +5,6 @@ import {Theme} from 'mattermost-redux/types/preferences';
 import {ActionResult} from 'mattermost-redux/types/actions';
 import Constants from 'mattermost-redux/constants/general';
 import {UserProfile} from 'mattermost-redux/types/users';
-import {getFullName} from 'mattermost-redux/utils/user_utils';
 
 import Svgs from '../../constants/svgs';
 
@@ -103,7 +102,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
         }
 
         meetingLink += `#config.callDisplayName="${props.meeting_topic || props.default_meeting_topic}"`;
-        meetingLink += `&userInfo.displayName="${getFullName(this.props.currentUser)}"`;
+        meetingLink += `&userInfo.displayName="${this.props.currentUser.username}"`;
 
         const preText = (
             <FormattedMessage

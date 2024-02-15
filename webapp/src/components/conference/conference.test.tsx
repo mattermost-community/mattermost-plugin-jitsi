@@ -42,7 +42,11 @@ describe('Conference', () => {
         post: basePost,
         jwt: null,
         actions,
-        currentUserId: 'test'
+        currentUser: {
+            id: 'mockId',
+            first_name: 'First',
+            last_name: 'Last'
+        }
     };
 
     Conference.prototype.getViewportWidth = () => 10;
