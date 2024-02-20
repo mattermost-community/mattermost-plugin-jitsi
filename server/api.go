@@ -3,15 +3,15 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"sync"
 
-	"github.com/mattermost/mattermost-server/v5/mlog"
-	"github.com/mattermost/mattermost-server/v5/model"
-	"github.com/mattermost/mattermost-server/v5/plugin"
+	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/plugin"
+	"github.com/mattermost/mattermost/server/public/shared/mlog"
 )
 
 const externalAPICacheTTL = 3600000
@@ -37,7 +37,7 @@ type StartMeetingFromAction struct {
 	} `json:"context"`
 }
 
-func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Request) {
+func (p *Plugin) ServeHTTP(_ *plugin.Context, w http.ResponseWriter, r *http.Request) {
 	switch path := r.URL.Path; path {
 	case "/api/v1/meetings/enrich":
 		p.handleEnrichMeetingJwt(w, r)
@@ -99,7 +99,7 @@ func (p *Plugin) handleExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
-	code, err := ioutil.ReadAll(externalAPIFile)
+	code, err := io.ReadAll(externalAPIFile)
 	if err != nil {
 		mlog.Error("Error reading file content", mlog.String("path", externalAPIPath), mlog.Err(err))
 		http.Error(w, "Internal error", http.StatusInternalServerError)
@@ -112,7 +112,7 @@ func (p *Plugin) handleExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, r *http.Request) {
+func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, _ *http.Request) {
 	externalAPICacheMutex.Lock()
 	defer externalAPICacheMutex.Unlock()
 
@@ -128,7 +128,7 @@ func (p *Plugin) proxyExternalAPIjs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		mlog.Error("Error getting reading the content", mlog.String("url", p.getConfiguration().GetJitsiURL()+"/external_api.js"), mlog.Err(err))
 		http.Error(w, "Internal error", http.StatusInternalServerError)
@@ -167,7 +167,7 @@ func (p *Plugin) handleStartMeeting(w http.ResponseWriter, r *http.Request) {
 	var req StartMeetingRequest
 	var action StartMeetingFromAction
 
-	bodyData, err := ioutil.ReadAll(r.Body)
+	bodyData, err := io.ReadAll(r.Body)
 	if err != nil {
 		mlog.Debug("Unable to read request body", mlog.Err(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)

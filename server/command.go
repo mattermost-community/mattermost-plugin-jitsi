@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/mattermost/mattermost-plugin-api/experimental/command"
-	"github.com/mattermost/mattermost-server/v5/mlog"
-	"github.com/mattermost/mattermost-server/v5/model"
-	"github.com/mattermost/mattermost-server/v5/plugin"
+	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/plugin"
+	"github.com/mattermost/mattermost/server/public/pluginapi/experimental/command"
+	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"github.com/pkg/errors"
 )
@@ -26,7 +26,7 @@ const commandArgNamingScheme = "naming_scheme"
 
 func startMeetingError(channelID string, detailedError string) (*model.CommandResponse, *model.AppError) {
 	return &model.CommandResponse{
-			ResponseType: model.COMMAND_RESPONSE_TYPE_EPHEMERAL,
+			ResponseType: model.CommandResponseTypeEphemeral,
 			ChannelId:    channelID,
 			Text:         "We could not start a meeting at this time.",
 		}, &model.AppError{
@@ -138,7 +138,7 @@ func (p *Plugin) ExecuteCommand(c *plugin.Context, args *model.CommandArgs) (*mo
 	}
 }
 
-func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) executeStartMeetingCommand(_ *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 	input := strings.TrimSpace(strings.TrimPrefix(args.Command, "/"+jitsiCommand))
 	input = strings.TrimSpace(strings.TrimPrefix(input, jitsiStartCommand))
 
@@ -172,7 +172,7 @@ func (p *Plugin) executeStartMeetingCommand(c *plugin.Context, args *model.Comma
 	return &model.CommandResponse{}, nil
 }
 
-func (p *Plugin) executeHelpCommand(c *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) executeHelpCommand(_ *plugin.Context, args *model.CommandArgs) (*model.CommandResponse, *model.AppError) {
 	l := p.b.GetUserLocalizer(args.UserId)
 	helpTitle := p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 		DefaultMessage: &i18n.Message{
@@ -225,7 +225,7 @@ func (p *Plugin) settingsError(userID string, channelID string, errorText string
 	return &model.CommandResponse{}, nil
 }
 
-func (p *Plugin) executeSettingsCommand(c *plugin.Context, args *model.CommandArgs, parameters []string) (*model.CommandResponse, *model.AppError) {
+func (p *Plugin) executeSettingsCommand(_ *plugin.Context, args *model.CommandArgs, parameters []string) (*model.CommandResponse, *model.AppError) {
 	l := p.b.GetUserLocalizer(args.UserId)
 	text := ""
 

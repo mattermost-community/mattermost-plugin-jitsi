@@ -37,7 +37,7 @@ type State = {
 }
 
 export default class Conference extends React.PureComponent<Props, State> {
-    api: any
+    api: any;
 
     constructor(props: Props) {
         super(props);
@@ -65,7 +65,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         if (event.keyCode === 27) {
             this.close();
         }
-    }
+    };
 
     preventMessages = (event: MessageEvent) => {
         if (!this.props.post || !this.api) {
@@ -84,7 +84,7 @@ export default class Conference extends React.PureComponent<Props, State> {
                 event.preventDefault();
             }
         }
-    }
+    };
 
     initJitsi = (post: Post) => {
         const vw = this.getViewportWidth();
@@ -133,7 +133,7 @@ export default class Conference extends React.PureComponent<Props, State> {
             this.setState({isFilmStrip: event.visible});
         });
         this.api.executeCommand('subject', post.props.meeting_topic || post.props.default_meeting_topic);
-    }
+    };
 
     resizeIframe = () => {
         if (this.api && this.props.post) {
@@ -144,7 +144,7 @@ export default class Conference extends React.PureComponent<Props, State> {
             const minimizedHeight = this.props.showPrejoinPage ? `calc(${WINDOW_HEIGHT}vh - ${MATTERMOST_HEADER_HEIGHT}px)` : `${MINIMIZED_HEIGHT}px`;
             iframe.style.height = this.state.minimized ? minimizedHeight : `${vh}px`;
         }
-    }
+    };
 
     componentDidMount() {
         document.addEventListener('keydown', this.escFunction, false);
@@ -198,7 +198,7 @@ export default class Conference extends React.PureComponent<Props, State> {
                 this.api.dispose();
             }
         }, 200);
-    }
+    };
 
     minimize = () => {
         this.setState({minimized: true});
@@ -208,7 +208,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         if (this.state.isFilmStrip) {
             this.api.executeCommand('toggleFilmStrip');
         }
-    }
+    };
 
     maximize = () => {
         this.setState({minimized: false});
@@ -218,7 +218,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         if (this.state.isFilmStrip !== this.state.wasFilmStrip) {
             this.api.executeCommand('toggleFilmStrip');
         }
-    }
+    };
 
     togglePosition = () => {
         if (this.state.position === POSITION_TOP) {
@@ -226,7 +226,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         } else {
             this.setState({position: POSITION_TOP});
         }
-    }
+    };
 
     renderButtons = (style: { [key: string]: React.CSSProperties }): React.ReactNode => {
         const {post} = this.props;
@@ -334,7 +334,7 @@ export default class Conference extends React.PureComponent<Props, State> {
                     )}
                 </FormattedMessage>
             </div>);
-    }
+    };
 
     render() {
         if (this.props.post === null) {

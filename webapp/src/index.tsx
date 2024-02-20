@@ -8,19 +8,20 @@ import {Post} from 'mattermost-redux/types/posts';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {GlobalState} from 'mattermost-redux/types/store';
 
-import Icon from 'components/icon';
-import PostTypeJitsi from 'components/post_type_jitsi';
-import I18nProvider from 'components/i18n_provider';
-import RootPortal from 'components/root_portal';
-import reducer from 'reducers';
-import {startMeeting, loadConfig} from 'actions';
-import {id as pluginId} from 'manifest';
-import Client from 'client';
+import Icon from './components/icon';
+import PostTypeJitsi from './components/post_type_jitsi';
+import I18nProvider from './components/i18n_provider';
+import RootPortal from './components/root_portal';
+import reducer from './reducers';
+import {startMeeting, loadConfig} from './actions';
+import manifest from './manifest';
+import Client from './client';
 
 class PluginClass {
-    rootPortal?: RootPortal
+    rootPortal?: RootPortal;
 
     initialize(registry: any, store: any) {
+        const {id: pluginId} = manifest;
         if ((window as any).JitsiMeetExternalAPI) {
             this.rootPortal = new RootPortal(registry, store);
             if (this.rootPortal) {

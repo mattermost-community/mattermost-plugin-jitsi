@@ -8,8 +8,9 @@ import (
 	"net/url"
 	"reflect"
 
-	"github.com/mattermost/mattermost-plugin-api/experimental/telemetry"
-	"github.com/mattermost/mattermost-server/v5/model"
+	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/pluginapi/experimental/bot/logger"
+	"github.com/mattermost/mattermost/server/public/pluginapi/experimental/telemetry"
 	"github.com/pkg/errors"
 )
 
@@ -133,14 +134,7 @@ func (p *Plugin) OnConfigurationChange() error {
 		return errors.Wrap(err, "failed to load plugin configuration")
 	}
 
-	enableDiagnostics := false
-	if config := p.API.GetConfig(); config != nil {
-		if configValue := config.LogSettings.EnableDiagnostics; configValue != nil {
-			enableDiagnostics = *configValue
-		}
-	}
-
-	p.tracker = telemetry.NewTracker(p.telemetryClient, p.API.GetDiagnosticId(), p.API.GetServerVersion(), manifest.Id, manifest.Version, "jitsi", enableDiagnostics)
+	p.tracker = telemetry.NewTracker(p.telemetryClient, p.API.GetDiagnosticId(), p.API.GetServerVersion(), manifest.Id, manifest.Version, "jitsi", telemetry.NewTrackerConfig(p.API.GetConfig()), logger.New(p.API))
 
 	p.setConfiguration(configuration)
 
