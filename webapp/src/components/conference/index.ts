@@ -6,16 +6,16 @@ import {getCurrentUserId} from 'mattermost-redux/selectors/entities/common';
 
 import {GlobalState, plugin} from 'types';
 import {openJitsiMeeting, setUserStatus} from 'actions';
-import {id as pluginId} from 'manifest';
+import manifest from 'manifest';
 import Conference from './conference';
 
 function mapStateToProps(state: GlobalState) {
-    const config = state[`plugins-${pluginId}` as plugin].config;
+    const config = state[`plugins-${manifest.id}` as plugin].config;
 
     return {
         currentUserId: getCurrentUserId(state),
-        post: state[`plugins-${pluginId}` as plugin].openMeeting,
-        jwt: state[`plugins-${pluginId}` as plugin].openMeetingJwt,
+        post: state[`plugins-${manifest.id}` as plugin].openMeeting,
+        jwt: state[`plugins-${manifest.id}` as plugin].openMeetingJwt,
         showPrejoinPage: config.show_prejoin_page,
         meetingEmbedded: config.embedded
     };

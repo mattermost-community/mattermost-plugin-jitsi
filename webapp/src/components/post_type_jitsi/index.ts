@@ -9,7 +9,7 @@ import {Post} from 'mattermost-redux/types/posts';
 import {GlobalState, plugin} from 'types';
 import {displayUsernameForUser} from 'utils/user_utils';
 import {enrichMeetingJwt, openJitsiMeeting, setUserStatus} from 'actions';
-import {id as pluginId} from 'manifest';
+import manifest from 'manifest';
 import {PostTypeJitsi} from './post_type_jitsi';
 
 type OwnProps = {
@@ -19,7 +19,7 @@ type OwnProps = {
 function mapStateToProps(state: GlobalState, ownProps: OwnProps) {
     const post = ownProps.post;
     const creator = state.entities.users.profiles[post.user_id];
-    const config = state[`plugins-${pluginId}` as plugin].config;
+    const config = state[`plugins-${manifest.id}` as plugin].config;
 
     return {
         ...ownProps,
