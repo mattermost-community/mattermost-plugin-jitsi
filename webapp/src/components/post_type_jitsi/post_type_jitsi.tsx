@@ -60,6 +60,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
                 const props = this.props.post.props;
                 let meetingLink = props.meeting_link + '?jwt=' + (this.state.meetingJwt);
                 meetingLink += `#config.callDisplayName="${props.meeting_topic || props.default_meeting_topic}"`;
+                meetingLink = encodeURI(meetingLink);
                 window.open(meetingLink, '_blank');
             }
         }
@@ -103,6 +104,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
 
         meetingLink += `#config.callDisplayName="${props.meeting_topic || props.default_meeting_topic}"`;
         meetingLink += `&userInfo.displayName="${this.props.currentUser.username}"`;
+        meetingLink = encodeURI(meetingLink);
 
         const preText = (
             <FormattedMessage

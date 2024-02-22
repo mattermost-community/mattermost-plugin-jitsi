@@ -233,7 +233,7 @@ export default class Conference extends React.PureComponent<Props, State> {
             meetingLink += `?jwt=${this.props.jwt}`;
         }
         meetingLink += `#config.callDisplayName="${post.props.meeting_topic || post.props.default_meeting_topic}"`;
-
+        meetingLink = encodeURI(meetingLink);
         return (
             <div style={style.buttons}>
                 {this.state.minimized && this.state.position === POSITION_TOP &&
