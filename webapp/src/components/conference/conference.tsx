@@ -3,7 +3,6 @@ import * as React from 'react';
 import {FormattedMessage} from 'react-intl';
 import {Post} from 'mattermost-redux/types/posts';
 import Constants from 'mattermost-redux/constants/general';
-import {UserProfile} from 'mattermost-redux/types/users';
 
 const BORDER_SIZE = 8;
 const POSITION_TOP = 'top';
@@ -14,7 +13,10 @@ const MINIMIZED_WIDTH = 384;
 const MINIMIZED_HEIGHT = 288;
 
 type Props = {
-    currentUser: UserProfile,
+    currentUser: {
+        id: string;
+        username: string;
+    },
     post: Post | null,
     jwt: string | null,
     actions: {
