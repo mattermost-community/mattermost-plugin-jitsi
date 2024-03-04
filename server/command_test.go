@@ -42,6 +42,7 @@ func TestCommandHelp(t *testing.T) {
 
 ###### Jitsi Settings:
 * |/jitsi settings embedded [true/false]|: (Experimental) When true, Jitsi meeting is embedded as a floating window inside Mattermost. When false, Jitsi meeting opens in a new window.
+* |/jitsi settings show_prejoin_page [true/false]|: When false, pre-join page will not be displayed when Jitsi meet is embedded inside Mattermost.
 * |/jitsi settings naming_scheme [words/uuid/mattermost/ask]|: Select how meeting names are generated with one of these options:
     * |words|: Random English words in title case (e.g. PlayfulDragonsObserveCuriously)
     * |uuid|: UUID (universally unique identifier)
@@ -64,21 +65,22 @@ func TestCommandSettings(t *testing.T) {
 			JitsiURL:          "http://test",
 			JitsiEmbedded:     false,
 			JitsiNamingScheme: "mattermost",
+			JitsiPrejoinPage:  true,
 		},
 		botID: "test-bot-id",
 	}
 
 	tests := []struct {
+		newConfig *UserConfig
 		name      string
 		command   string
 		output    string
-		newConfig *UserConfig
 	}{
 		{
 			name:      "set valid setting with valid value",
 			command:   "/jitsi settings embedded true",
-			output:    "Jitsi settings updated",
-			newConfig: &UserConfig{Embedded: true, NamingScheme: "mattermost"},
+			output:    "Jitsi settings updated:\n\n* embedded: `true`",
+			newConfig: &UserConfig{Embedded: true, NamingScheme: "mattermost", ShowPrejoinPage: true},
 		},
 		{
 			name:      "set valid setting with invalid value (embedded)",
@@ -95,7 +97,7 @@ func TestCommandSettings(t *testing.T) {
 		{
 			name:      "set invalid setting",
 			command:   "/jitsi settings other true",
-			output:    "Invalid config field, use `embedded` or `naming_scheme`.",
+			output:    "Invalid config field, use `embedded`, `show_prejoin_page` or `naming_scheme`.",
 			newConfig: nil,
 		},
 		{
@@ -107,7 +109,7 @@ func TestCommandSettings(t *testing.T) {
 		{
 			name:      "get current user settings",
 			command:   "/jitsi settings see",
-			output:    "###### Jitsi Settings:\n* Embedded: `false`\n* Naming Scheme: `mattermost`",
+			output:    "###### Jitsi Settings:\n* Embedded: `false`\n* Show Pre-join Page: `true`\n* Naming Scheme: `mattermost`",
 			newConfig: nil,
 		},
 	}

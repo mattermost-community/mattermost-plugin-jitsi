@@ -17,6 +17,13 @@ const jitsiCommand = "jitsi"
 const jitsiSettingsSeeCommand = "see"
 const jitsiStartCommand = "start"
 
+const valueTrue = "true"
+const valueFalse = "false"
+
+const commandArgShowPrejoinPage = "show_prejoin_page"
+const commandArgEmbedded = "embedded"
+const commandArgNamingScheme = "naming_scheme"
+
 func startMeetingError(channelID string, detailedError string) (*model.CommandResponse, *model.AppError) {
 	return &model.CommandResponse{
 			ResponseType: model.CommandResponseTypeEphemeral,
@@ -58,18 +65,29 @@ func getAutocompleteData() *model.AutocompleteData {
 	see := model.NewAutocompleteData(jitsiSettingsSeeCommand, "", "See your current settings")
 	settings.AddCommand(see)
 
-	embedded := model.NewAutocompleteData("embedded", "[value]", "Choose where the Jitsi meeting should open")
+	embedded := model.NewAutocompleteData(commandArgEmbedded, "[value]", "Choose where the Jitsi meeting should open")
 	items := []model.AutocompleteListItem{{
 		HelpText: "Jitsi meeting is embedded as a floating window inside Mattermost",
-		Item:     "true",
+		Item:     valueTrue,
 	}, {
 		HelpText: "Jitsi meeting opens in a new window",
-		Item:     "false",
+		Item:     valueFalse,
 	}}
 	embedded.AddStaticListArgument("Choose where the Jitsi meeting should open", true, items)
 	settings.AddCommand(embedded)
 
-	namingScheme := model.NewAutocompleteData("naming_scheme", "[value]", "Select how meeting names are generated")
+	showPrejoinPage := model.NewAutocompleteData(commandArgShowPrejoinPage, "[value]", "Choose whether the pre-join page should be visible on Jitsi meeting in embedded mode")
+	items = []model.AutocompleteListItem{{
+		HelpText: "Pre-join page on Jitsi meeting will be displayed",
+		Item:     valueTrue,
+	}, {
+		HelpText: "Pre-join page on Jitsi meeting will not be displayed",
+		Item:     valueFalse,
+	}}
+	showPrejoinPage.AddStaticListArgument("Choose whether the pre-join page should be visible on Jitsi meeting in embedded mode", true, items)
+	settings.AddCommand(showPrejoinPage)
+
+	namingScheme := model.NewAutocompleteData(commandArgNamingScheme, "[value]", "Select how meeting names are generated")
 	items = []model.AutocompleteListItem{{
 		HelpText: "Random English words in title case (e.g. PlayfulDragonsObserveCuriously)",
 		Item:     "words",
@@ -174,6 +192,7 @@ func (p *Plugin) executeHelpCommand(_ *plugin.Context, args *model.CommandArgs) 
 
 ###### Jitsi Settings:
 * |/jitsi settings embedded [true/false]|: (Experimental) When true, Jitsi meeting is embedded as a floating window inside Mattermost. When false, Jitsi meeting opens in a new window.
+* |/jitsi settings show_prejoin_page [true/false]|: When false, pre-join page will not be displayed when Jitsi meet is embedded inside Mattermost.
 * |/jitsi settings naming_scheme [words/uuid/mattermost/ask]|: Select how meeting names are generated with one of these options:
     * |words|: Random English words in title case (e.g. PlayfulDragonsObserveCuriously)
     * |uuid|: UUID (universally unique identifier)
@@ -227,11 +246,13 @@ func (p *Plugin) executeSettingsCommand(_ *plugin.Context, args *model.CommandAr
 				ID: "jitsi.command.settings.current_values",
 				Other: `###### Jitsi Settings:
 * Embedded: |{{.Embedded}}|
+* Show Pre-join Page: |{{.ShowPrejoinPage}}|
 * Naming Scheme: |{{.NamingScheme}}|`,
 			},
 			TemplateData: map[string]string{
-				"Embedded":     fmt.Sprintf("%v", userConfig.Embedded),
-				"NamingScheme": userConfig.NamingScheme,
+				"Embedded":        fmt.Sprintf("%v", userConfig.Embedded),
+				"ShowPrejoinPage": fmt.Sprintf("%v", userConfig.ShowPrejoinPage),
+				"NamingScheme":    userConfig.NamingScheme,
 			},
 		})
 		post := &model.Post{
@@ -255,11 +276,11 @@ func (p *Plugin) executeSettingsCommand(_ *plugin.Context, args *model.CommandAr
 	}
 
 	switch parameters[0] {
-	case "embedded":
+	case commandArgEmbedded:
 		switch parameters[1] {
-		case "true":
+		case valueTrue:
 			userConfig.Embedded = true
-		case "false":
+		case valueFalse:
 			userConfig.Embedded = false
 		default:
 			text = p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
@@ -270,7 +291,7 @@ func (p *Plugin) executeSettingsCommand(_ *plugin.Context, args *model.CommandAr
 			})
 			userConfig = nil
 		}
-	case "naming_scheme":
+	case commandArgNamingScheme:
 		switch parameters[1] {
 		case jitsiNameSchemeAsk:
 			userConfig.NamingScheme = "ask"
@@ -289,11 +310,26 @@ func (p *Plugin) executeSettingsCommand(_ *plugin.Context, args *model.CommandAr
 			})
 			userConfig = nil
 		}
+	case commandArgShowPrejoinPage:
+		switch parameters[1] {
+		case valueTrue:
+			userConfig.ShowPrejoinPage = true
+		case valueFalse:
+			userConfig.ShowPrejoinPage = false
+		default:
+			text = p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
+				DefaultMessage: &i18n.Message{
+					ID:    "jitsi.command.settings.wrong_show_prejoin_page_value",
+					Other: "Invalid `show_prejoin_page` value, use `true` or `false`.",
+				},
+			})
+			userConfig = nil
+		}
 	default:
 		text = p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID:    "jitsi.command.settings.wrong_field",
-				Other: "Invalid config field, use `embedded` or `naming_scheme`.",
+				Other: "Invalid config field, use `embedded`, `show_prejoin_page` or `naming_scheme`.",
 			},
 		})
 		userConfig = nil
@@ -320,7 +356,7 @@ func (p *Plugin) executeSettingsCommand(_ *plugin.Context, args *model.CommandAr
 		Message: p.b.LocalizeWithConfig(l, &i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID:    "jitsi.command.settings.updated",
-				Other: "Jitsi settings updated",
+				Other: fmt.Sprintf("Jitsi settings updated:\n\n* %s: `%s`", parameters[0], parameters[1]),
 			},
 		}),
 		RootId: args.RootId,

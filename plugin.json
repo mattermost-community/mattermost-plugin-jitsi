@@ -33,6 +33,12 @@
                 "help_text": "(Experimental) When true, Jitsi video is embedded as a floating window inside Mattermost by default. Users can override this setting with '/jitsi settings'."
             },
             {
+                "key": "JitsiPrejoinPage",
+                "display_name": "Show pre-join page:",
+                "type": "bool",
+                "help_text": "When false, pre-join page will not be displayed when Jitsi is embedded inside Mattermost."
+            },
+            {
                 "key": "JitsiNamingScheme",
                 "display_name": "Jitsi Meeting Names:",
                 "type": "radio",
