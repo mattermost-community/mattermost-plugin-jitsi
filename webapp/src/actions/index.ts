@@ -1,9 +1,9 @@
 import {PostTypes} from 'mattermost-redux/action_types';
 import {DispatchFunc, GetStateFunc, ActionFunc, ActionResult} from 'mattermost-redux/types/actions';
 import {Post} from 'mattermost-redux/types/posts';
-import ActionTypes from '../action_types';
+import ActionTypes from 'action_types';
 
-import Client from '../client';
+import Client from 'client';
 
 export function startMeeting(channelId: string, personal: boolean = false, topic: string = '', meetingId: string = ''): ActionFunc {
     return async (dispatch: DispatchFunc, getState: GetStateFunc): Promise<ActionResult> => {

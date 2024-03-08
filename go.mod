@@ -1,6 +1,6 @@
 module github.com/mattermost/mattermost-plugin-jitsi
 
-go 1.19
+go 1.21
 
 require (
 	github.com/cristalhq/jwt/v3 v3.1.0

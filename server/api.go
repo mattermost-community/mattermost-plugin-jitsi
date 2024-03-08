@@ -26,6 +26,7 @@ var externalAPICacheMutex sync.Mutex
 type StartMeetingRequest struct {
 	ChannelID string `json:"channel_id"`
 	Topic     string `json:"topic"`
+	Personal  bool   `json:"personal"`
 	MeetingID int    `json:"meeting_id"`
 }
 
@@ -35,6 +36,7 @@ type StartMeetingFromAction struct {
 		MeetingID    string `json:"meeting_id"`
 		MeetingTopic string `json:"meeting_topic"`
 		RootID       string `json:"root_id"`
+		Personal     bool   `json:"personal"`
 	} `json:"context"`
 }
 

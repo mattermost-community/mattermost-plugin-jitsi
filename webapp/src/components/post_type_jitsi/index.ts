@@ -8,9 +8,10 @@ import {General as MMConstants} from 'mattermost-redux/constants';
 import {GenericAction, ActionFunc, ActionResult} from 'mattermost-redux/types/actions';
 import {Post} from 'mattermost-redux/types/posts';
 
-import {GlobalState} from '../../types';
 import {displayUsernameForUser} from '../../utils/user_utils';
 import {enrichMeetingJwt, openJitsiMeeting, setUserStatus, sendEphemeralPost} from '../../actions';
+import {GlobalState, plugin} from 'types';
+import manifest from 'manifest';
 import {PostTypeJitsi} from './post_type_jitsi';
 import {getCurrentChannelId} from 'mattermost-redux/selectors/entities/common';
 
@@ -21,8 +22,8 @@ type OwnProps = {
 function mapStateToProps(state: GlobalState, ownProps: OwnProps) {
     const post = ownProps.post;
     const creator = state.entities.users.profiles[post.user_id];
-    const config = state['plugins-jitsi'].config;
     const currentUser = getCurrentUser(state);
+    const config = state[`plugins-${manifest.id}` as plugin].config;
 
     return {
         ...ownProps,

@@ -28,18 +28,19 @@ import (
 // copy appropriate for your types.
 type configuration struct {
 	JitsiURL               string
-	JitsiJWT               bool
-	JitsiEmbedded          bool
 	JitsiAppID             string
 	JitsiAppSecret         string
-	JitsiLinkValidTime     int
 	JitsiNamingScheme      string
+	JitsiLinkValidTime     int
+	JitsiJWT               bool
+	JitsiEmbedded          bool
 	JitsiCompatibilityMode bool
 	JaaSAppID              string
 	JaaSApiKey             string
 	JaaSPrivateKey         string
 	UseJaaS                bool
 	ServerType             string
+	JitsiPrejoinPage       bool
 }
 
 const JaaSServerType = "jaas"

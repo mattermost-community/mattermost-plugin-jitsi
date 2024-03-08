@@ -14,6 +14,8 @@ const BUTTONS_PADDING_RIGHT = 2;
 const MINIMIZED_WIDTH = 384;
 const MINIMIZED_HEIGHT = 288;
 const JAAS_DOMAIN = '8x8.vc';
+const MATTERMOST_HEADER_HEIGHT = 60;
+const WINDOW_HEIGHT = 100;
 
 type Props = {
     currentUserId: string,
@@ -22,6 +24,8 @@ type Props = {
     post: Post | null,
     jwt: string | null,
     useJaas: boolean
+    showPrejoinPage: boolean,
+    meetingEmbedded?: boolean,
     actions: {
         openJitsiMeeting: (post: Post | null, jwt: string | null) => void
         setUserStatus: (userId: string, status: string) => void
@@ -105,6 +109,10 @@ export default class Conference extends React.PureComponent<Props, State> {
             onload: () => {
                 this.setState({loading: false});
                 this.resizeIframe();
+            },
+            configOverwrite: {
+                // Disable the pre-join page
+                prejoinPageEnabled: this.props.meetingEmbedded && this.props.showPrejoinPage
             }
         };
 
@@ -139,7 +147,8 @@ export default class Conference extends React.PureComponent<Props, State> {
             const vh = this.getViewportHeight();
             const iframe = this.api.getIFrame();
             iframe.style.width = this.state.minimized ? MINIMIZED_WIDTH + 'px' : vw + 'px';
-            iframe.style.height = this.state.minimized ? MINIMIZED_HEIGHT + 'px' : vh + 'px';
+            const minimizedHeight = this.props.showPrejoinPage ? `calc(${WINDOW_HEIGHT}vh - ${MATTERMOST_HEADER_HEIGHT}px)` : `${MINIMIZED_HEIGHT}px`;
+            iframe.style.height = this.state.minimized ? minimizedHeight : `${vh}px`;
         }
     };
 
@@ -247,7 +256,7 @@ export default class Conference extends React.PureComponent<Props, State> {
         meetingLink += `#config.callDisplayName="${post.props.meeting_topic || post.props.default_meeting_topic}"`;
         return (
             <div style={style.buttons}>
-                {this.state.minimized && this.state.position === POSITION_TOP &&
+                {!this.props.showPrejoinPage && this.state.minimized && this.state.position === POSITION_TOP &&
                     <FormattedMessage
                         id='jitsi.move-down'
                         defaultMessage='Move down'
@@ -262,7 +271,7 @@ export default class Conference extends React.PureComponent<Props, State> {
                             />
                         )}
                     </FormattedMessage>}
-                {this.state.minimized && this.state.position === POSITION_BOTTOM &&
+                {!this.props.showPrejoinPage && this.state.minimized && this.state.position === POSITION_BOTTOM &&
                     <FormattedMessage
                         id='jitsi.move-up'
                         defaultMessage='Move up'
@@ -347,8 +356,9 @@ export default class Conference extends React.PureComponent<Props, State> {
         const vw = this.getViewportWidth();
         const width = this.state.minimized ? MINIMIZED_WIDTH : vw;
         const vh = this.getViewportHeight();
-        const height = this.state.minimized ? MINIMIZED_HEIGHT : vh;
-        const style = getStyle(height, width, this.state.position);
+        const minimizedHeight = this.props.showPrejoinPage ? WINDOW_HEIGHT : MINIMIZED_HEIGHT;
+        const height = this.state.minimized ? minimizedHeight : vh;
+        const style = getStyle(height, width, this.state.position, this.props.showPrejoinPage, this.state.minimized);
         return (
             <React.Fragment>
                 <div
@@ -370,16 +380,17 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 }
 
-function getStyle(height: number, width: number, position: 'top' | 'bottom'): { [key: string]: React.CSSProperties } {
+function getStyle(height: number, width: number, position: 'top' | 'bottom', showPrejoinPage: boolean, isMinimized: boolean): { [key: string]: React.CSSProperties } {
     const backgroundZIndex = 1000;
     const jitsiZIndex = 1100;
     const buttonsZIndex = 1200;
     const loadingZIndex = 1200;
+    const minimizedPositionBottom = position === POSITION_BOTTOM ? `${height - BORDER_SIZE - BUTTONS_PADDING_TOP}px` : '';
 
     return {
         jitsiMeetContainer: {
             position: 'absolute',
-            height,
+            height: showPrejoinPage && isMinimized ? `calc(${height}vh - ${MATTERMOST_HEADER_HEIGHT}px)` : height,
             width,
             display: 'flex',
             alignItems: 'center',
@@ -418,8 +429,8 @@ function getStyle(height: number, width: number, position: 'top' | 'bottom'): { 
         },
         buttons: {
             position: 'absolute',
-            bottom: position === POSITION_BOTTOM ? ((height - BORDER_SIZE) - BUTTONS_PADDING_TOP) + 'px' : '',
-            top: position === POSITION_TOP ? `${BORDER_SIZE}px` : '',
+            bottom: showPrejoinPage && isMinimized ? `calc(${height}vh - ${BORDER_SIZE + BUTTONS_PADDING_TOP + MATTERMOST_HEADER_HEIGHT}px)` : minimizedPositionBottom,
+            top: position === POSITION_TOP && !showPrejoinPage ? `${BORDER_SIZE}px` : '',
             right: `${BORDER_SIZE + BUTTONS_PADDING_RIGHT}px`,
             color: 'white',
             fontSize: '18px',

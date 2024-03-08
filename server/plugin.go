@@ -725,6 +725,7 @@ func (p *Plugin) getUserConfig(userID string) (*UserConfig, error) {
 			Embedded:     p.getConfiguration().JitsiEmbedded,
 			NamingScheme: p.getConfiguration().JitsiNamingScheme,
 			UseJaas:      p.getConfiguration().UseJaaS,
+			ShowPrejoinPage: p.getConfiguration().JitsiPrejoinPage,
 		}, nil
 	}
 

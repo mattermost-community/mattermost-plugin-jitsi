@@ -16,6 +16,7 @@ export type GlobalState = ReduxGlobalState & {
             /* eslint-disable camelcase */
             naming_scheme?: 'ask' | 'words' | 'mattermost' | 'uuid',
             use_jaas?: boolean
+            show_prejoin_page: boolean
             /* eslint-enable camelcase */
         }
     }
@@ -34,3 +35,5 @@ export enum InputTypes {
     Number = 'number',
     TextArea = 'textarea',
 }
+
+export type plugin = 'plugins-jitsi'

@@ -5,9 +5,10 @@ import (
 )
 
 type UserConfig struct {
-	NamingScheme string `json:"naming_scheme"`
-	Embedded     bool   `json:"embedded"`
-	UseJaas      bool   `json:"use_jaas"`
+	NamingScheme    string `json:"naming_scheme"`
+	Embedded        bool   `json:"embedded"`
+	UseJaas         bool   `json:"use_jaas"`
+	ShowPrejoinPage bool   `json:"show_prejoin_page"`
 }
 
 type User struct {

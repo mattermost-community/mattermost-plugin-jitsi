@@ -4,9 +4,7 @@
     "description": "Jitsi audio and video conferencing plugin for Mattermost.",
     "homepage_url": "https://github.com/mattermost/mattermost-plugin-jitsi",
     "support_url": "https://github.com/mattermost/mattermost-plugin-jitsi/issues",
-    "release_notes_url": "https://github.com/mattermost/mattermost-plugin-jitsi/releases/tag/v2.0.0",
     "icon_path": "assets/icon.svg",
-    "version": "2.0.0",
     "min_server_version": "5.2.0",
     "server": {
         "executables": {
@@ -57,6 +55,12 @@
                 "help_text": "The URL for your Jitsi server, for example https://jitsi.example.com. Defaults to https://meet.jit.si, which is the public server provided by Jitsi.",
                 "placeholder": "https://meet.jit.si",
                 "default": "https://meet.jit.si"
+            },
+            {    
+                "key": "JitsiPrejoinPage",
+                "display_name": "Show pre-join page:",
+                "type": "bool",
+                "help_text": "When false, pre-join page will not be displayed when Jitsi is embedded inside Mattermost."
             },
             {
                 "key": "JitsiNamingScheme",

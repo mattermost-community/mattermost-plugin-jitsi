@@ -1,4 +1,7 @@
 dist
+bin/
+webapp/src/manifest.ts
+server/manifest.go
 
 # Mac
 .DS_Store
@@ -9,3 +12,7 @@ dist
 assets/i18n/translate.*.json
 
 public/jaas
+
+# Jetbrains
+.idea/
+
