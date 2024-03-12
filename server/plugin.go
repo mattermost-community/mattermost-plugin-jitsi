@@ -27,8 +27,9 @@ const jitsiNameSchemeMattermost = "mattermost"
 const configChangeEvent = "config_update"
 
 type UserConfig struct {
-	Embedded     bool   `json:"embedded"`
-	NamingScheme string `json:"naming_scheme"`
+	NamingScheme    string `json:"naming_scheme"`
+	Embedded        bool   `json:"embedded"`
+	ShowPrejoinPage bool   `json:"show_prejoin_page"`
 }
 
 type Plugin struct {
@@ -513,8 +514,9 @@ func (p *Plugin) getUserConfig(userID string) (*UserConfig, error) {
 
 	if data == nil {
 		return &UserConfig{
-			Embedded:     p.getConfiguration().JitsiEmbedded,
-			NamingScheme: p.getConfiguration().JitsiNamingScheme,
+			Embedded:        p.getConfiguration().JitsiEmbedded,
+			NamingScheme:    p.getConfiguration().JitsiNamingScheme,
+			ShowPrejoinPage: p.getConfiguration().JitsiPrejoinPage,
 		}, nil
 	}
 

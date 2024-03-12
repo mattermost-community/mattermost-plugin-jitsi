@@ -14,13 +14,14 @@ import I18nProvider from './components/i18n_provider';
 import RootPortal from './components/root_portal';
 import reducer from './reducers';
 import {startMeeting, loadConfig} from './actions';
-import {id as pluginId} from './manifest';
+import manifest from './manifest';
 import Client from './client';
 
 class PluginClass {
     rootPortal?: RootPortal;
 
     initialize(registry: any, store: any) {
+        const {id: pluginId} = manifest;
         if ((window as any).JitsiMeetExternalAPI) {
             this.rootPortal = new RootPortal(registry, store);
             if (this.rootPortal) {

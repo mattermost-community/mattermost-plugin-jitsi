@@ -4,9 +4,7 @@
     "description": "Jitsi audio and video conferencing plugin for Mattermost.",
     "homepage_url": "https://github.com/mattermost/mattermost-plugin-jitsi",
     "support_url": "https://github.com/mattermost/mattermost-plugin-jitsi/issues",
-    "release_notes_url": "https://github.com/mattermost/mattermost-plugin-jitsi/releases/tag/v2.0.0",
     "icon_path": "assets/icon.svg",
-    "version": "2.0.0",
     "min_server_version": "5.2.0",
     "server": {
         "executables": {
@@ -33,6 +31,12 @@
                 "display_name": "Embed Jitsi video inside Mattermost:",
                 "type": "bool",
                 "help_text": "(Experimental) When true, Jitsi video is embedded as a floating window inside Mattermost by default. Users can override this setting with '/jitsi settings'."
+            },
+            {
+                "key": "JitsiPrejoinPage",
+                "display_name": "Show pre-join page:",
+                "type": "bool",
+                "help_text": "When false, pre-join page will not be displayed when Jitsi is embedded inside Mattermost."
             },
             {
                 "key": "JitsiNamingScheme",

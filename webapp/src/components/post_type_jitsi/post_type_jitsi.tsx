@@ -6,7 +6,7 @@ import {ActionResult} from 'mattermost-redux/types/actions';
 import Constants from 'mattermost-redux/constants/general';
 import {UserProfile} from 'mattermost-redux/types/users';
 
-import Svgs from '../../constants/svgs';
+import Svgs from 'constants/svgs';
 
 import {makeStyleFromTheme} from 'mattermost-redux/utils/theme_utils';
 
