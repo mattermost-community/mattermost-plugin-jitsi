@@ -4,9 +4,11 @@ import {ClientError} from 'mattermost-redux/client/client4';
 import manifest from '../manifest';
 
 export default class Client {
+    private serverUrl: string | undefined;
     private url: string | undefined;
 
     setServerRoute(url: string) {
+        this.serverUrl = url;
         this.url = url + '/plugins/' + manifest.id;
     }
 
@@ -19,7 +21,7 @@ export default class Client {
     };
 
     setUserStatus = async (userId: string | null, status: string) => {
-        return this.doPut(`${this.url}/api/v4/users/${userId}/status`, {user_id: userId, status});
+        return this.doPut(`${this.serverUrl}/api/v4/users/${userId}/status`, {user_id: userId, status});
     };
 
     loadConfig = async () => {
