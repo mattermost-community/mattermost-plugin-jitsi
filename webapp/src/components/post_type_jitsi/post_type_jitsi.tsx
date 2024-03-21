@@ -58,8 +58,8 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
             e.preventDefault();
             if (this.props.post) {
                 const props = this.props.post.props;
-                let meetingLink = encodeURIComponent(props.meeting_link + '?jwt=' + (this.state.meetingJwt));
-                meetingLink += encodeURIComponent(`#config.callDisplayName="${props.meeting_topic || props.default_meeting_topic}"`);
+                let meetingLink = props.meeting_link + '?jwt=' + (this.state.meetingJwt);
+                meetingLink += `#config.callDisplayName=${encodeURIComponent(`"${props.meeting_topic || props.default_meeting_topic}"`)}`;
                 window.open(meetingLink, '_blank');
             }
         }
@@ -96,13 +96,13 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
 
         const props = post.props;
 
-        let meetingLink = encodeURIComponent(props.meeting_link);
+        let meetingLink = props.meeting_link;
         if (props.jwt_meeting) {
-            meetingLink += encodeURIComponent('?jwt=' + (props.meeting_jwt));
+            meetingLink += '?jwt=' + (props.meeting_jwt);
         }
 
-        meetingLink += encodeURIComponent(`#config.callDisplayName="${props.meeting_topic || props.default_meeting_topic}"`);
-        meetingLink += encodeURIComponent(`&userInfo.displayName="${this.props.currentUser.username}"`);
+        meetingLink += `#config.callDisplayName=${encodeURIComponent(`"${props.meeting_topic || props.default_meeting_topic}"`)}`;
+        meetingLink += `&userInfo.displayName=${encodeURIComponent(`"${this.props.currentUser.username}"`)}`;
 
         const preText = (
             <FormattedMessage
