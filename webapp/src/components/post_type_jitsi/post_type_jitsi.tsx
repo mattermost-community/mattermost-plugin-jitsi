@@ -98,7 +98,7 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
 
         let meetingLink = props.meeting_link;
         if (props.jwt_meeting) {
-            meetingLink += '?jwt=' + (props.meeting_jwt);
+            meetingLink += '?jwt=' + encodeURIComponent(props.meeting_jwt);
         }
 
         meetingLink += `#config.callDisplayName=${encodeURIComponent(`"${props.meeting_topic || props.default_meeting_topic}"`)}`;
