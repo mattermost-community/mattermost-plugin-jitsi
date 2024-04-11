@@ -8,5 +8,5 @@ on:
 
 jobs:
   plugin-ci:
-    uses: mattermost/actions-workflows/.github/workflows/community-plugin-ci.yml@main
+    uses: mattermost/actions-workflows/.github/workflows/community-plugin-ci.yml@139a051e8651e6246e3764fe342297b73120e590
     secrets: inherit
