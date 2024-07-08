@@ -2,7 +2,7 @@ import React from 'react';
 import {Client4} from 'mattermost-redux/client';
 
 import constants from '../../../constants';
-import manifest from 'manifest';
+import manifest from '../../../manifest';
 
 type Props = {}
 
