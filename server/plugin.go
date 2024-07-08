@@ -722,9 +722,9 @@ func (p *Plugin) getUserConfig(userID string) (*UserConfig, error) {
 
 	if data == nil {
 		return &UserConfig{
-			Embedded:     p.getConfiguration().JitsiEmbedded,
-			NamingScheme: p.getConfiguration().JitsiNamingScheme,
-			UseJaas:      p.getConfiguration().UseJaaS,
+			Embedded:        p.getConfiguration().JitsiEmbedded,
+			NamingScheme:    p.getConfiguration().JitsiNamingScheme,
+			UseJaas:         p.getConfiguration().UseJaaS,
 			ShowPrejoinPage: p.getConfiguration().JitsiPrejoinPage,
 		}, nil
 	}
