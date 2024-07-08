@@ -14,15 +14,15 @@ function mapStateToProps(state: GlobalState) {
     const config = pluginState.config;
     const currentUser = getCurrentUser(state);
     return {
-        currentUserId: currentUser.id,
         isCurrentUserSysAdmin: currentUser.roles.includes(MMConstants.SYSTEM_ADMIN_ROLE),
         currentChannelId: getCurrentChannelId(state),
         post: pluginState.openMeeting,
         jwt: pluginState.openMeetingJwt,
         useJaas: Boolean(config.use_jaas),
+        currentUser: getCurrentUser(state),
         showPrejoinPage: config.show_prejoin_page,
         meetingEmbedded: config.embedded
-    }
+    };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<GenericAction>) {

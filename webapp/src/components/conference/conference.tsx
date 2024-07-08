@@ -18,9 +18,12 @@ const MATTERMOST_HEADER_HEIGHT = 60;
 const WINDOW_HEIGHT = 100;
 
 type Props = {
-    currentUserId: string,
     isCurrentUserSysAdmin: boolean,
     currentChannelId: string
+    currentUser: {
+        id: string;
+        username: string;
+    },
     post: Post | null,
     jwt: string | null,
     useJaas: boolean
@@ -110,6 +113,9 @@ export default class Conference extends React.PureComponent<Props, State> {
                 this.setState({loading: false});
                 this.resizeIframe();
             },
+            userInfo: {
+                displayName: this.props.currentUser.username
+            },
             configOverwrite: {
                 // Disable the pre-join page
                 prejoinPageEnabled: this.props.meetingEmbedded && this.props.showPrejoinPage
@@ -187,30 +193,28 @@ export default class Conference extends React.PureComponent<Props, State> {
     }
 
     close = () => {
-        if (this.api) {
-            this.api.executeCommand('hangup');
-            setTimeout(() => {
-                this.props.actions.openJitsiMeeting(null, null);
-                this.props.actions.setUserStatus(this.props.currentUserId, Constants.ONLINE);
-                this.setState({
-                    minimized: true,
-                    loading: true,
-                    position: POSITION_BOTTOM,
-                    wasTileView: true,
-                    isTileView: true,
-                    wasFilmStrip: true,
-                    isFilmStrip: true
-                });
-                if (this.api) {
-                    this.api.dispose();
-                }
-            }, 200);
-        }
+        this.api.executeCommand('hangup');
+        setTimeout(() => {
+            this.props.actions.openJitsiMeeting(null, null);
+            this.props.actions.setUserStatus(this.props.currentUser.id, Constants.ONLINE);
+            this.setState({
+                minimized: true,
+                loading: true,
+                position: POSITION_BOTTOM,
+                wasTileView: true,
+                isTileView: true,
+                wasFilmStrip: true,
+                isFilmStrip: true
+            });
+            if (this.api) {
+                this.api.dispose();
+            }
+        }, 200);
     };
 
     openInNewTab = (meetingLink: string) => {
         if (isMeetingLinkServerTypeJaaS(meetingLink, this.props.useJaas)) {
-            this.props.actions.sendEphemeralPost(this.props.isCurrentUserSysAdmin ? constants.JAAS_ADMIN_EPHEMERAL_MESSAGE : constants.JAAS_EPHEMERAL_MESSAGE, this.props.currentChannelId, this.props.currentUserId);
+            this.props.actions.sendEphemeralPost(this.props.isCurrentUserSysAdmin ? constants.JAAS_ADMIN_EPHEMERAL_MESSAGE : constants.JAAS_EPHEMERAL_MESSAGE, this.props.currentChannelId, this.props.currentUser.id);
         } else {
             window.open(meetingLink, '_blank');
         }
@@ -254,6 +258,7 @@ export default class Conference extends React.PureComponent<Props, State> {
             meetingLink = this.props.useJaas ? meetingLink + `&jwt=${this.props.jwt}` : meetingLink + `?jwt=${this.props.jwt}`;
         }
         meetingLink += `#config.callDisplayName="${post.props.meeting_topic || post.props.default_meeting_topic}"`;
+        meetingLink = encodeURI(meetingLink);
         return (
             <div style={style.buttons}>
                 {!this.props.showPrejoinPage && this.state.minimized && this.state.position === POSITION_TOP &&

@@ -1,7 +1,8 @@
 import React from 'react';
 import {Client4} from 'mattermost-redux/client';
-import {id as pluginId} from '../../../manifest';
+
 import constants from '../../../constants';
+import manifest from 'manifest';
 
 type Props = {}
 
@@ -43,7 +44,7 @@ export default class JaaSConference extends React.PureComponent<Props, State> {
             headers: {}
         };
 
-        const baseUrl = `/plugins/${pluginId}`;
+        const baseUrl = `/plugins/${manifest.id}`;
         fetch(`${baseUrl}/api/v1/meetings/jaas/settings`, Client4.getOptions(options)).
             then((result) => {
                 if (result.ok) {
@@ -63,12 +64,12 @@ export default class JaaSConference extends React.PureComponent<Props, State> {
     componentDidMount() {
         if (!(window as any).JitsiMeetExternalAPI) {
             // Check if the script is already loaded or not
-            if (document.getElementById(`${pluginId}_jitsi_meet_external_api_script`)) {
+            if (document.getElementById(`${manifest.id}_jitsi_meet_external_api_script`)) {
                 return;
             }
             const script = document.createElement('script');
             script.type = 'text/javascript';
-            script.id = `${pluginId}_jitsi_meet_external_api_script`;
+            script.id = `${manifest.id}_jitsi_meet_external_api_script`;
             script.onload = () => {
                 const params = new URLSearchParams(window.location.search);
                 const jwt = params.get(JWT);
@@ -76,7 +77,7 @@ export default class JaaSConference extends React.PureComponent<Props, State> {
 
                 this.startJaaSMeetingWindow(jwt, meetingId);
             };
-            script.src = `${(window as any).location.origin}/plugins/${pluginId}/jitsi_meet_external_api.js`;
+            script.src = `${(window as any).location.origin}/plugins/${manifest.id}/jitsi_meet_external_api.js`;
             document.head.appendChild(script);
         }
     }

@@ -67,8 +67,8 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
                     this.props.actions.sendEphemeralPost(this.props.isCurrentUserSysAdmin ? constants.JAAS_ADMIN_EPHEMERAL_MESSAGE : constants.JAAS_EPHEMERAL_MESSAGE, this.props.currentChannelId, this.props.currentUserId);
                     return;
                 }
-                let meetingLink = props.meeting_link + (this.props.useJaas ? '&jwt=' : '?jwt=') + this.state.meetingJwt;
-                meetingLink += `#config.callDisplayName="${props.meeting_topic || props.default_meeting_topic}"`;
+                let meetingLink = props.meeting_link + '?jwt=' + (this.state.meetingJwt);
+                meetingLink += `#config.callDisplayName=${encodeURIComponent(`"${props.meeting_topic || props.default_meeting_topic}"`)}`;
                 window.open(meetingLink, '_blank');
             }
         }
@@ -107,11 +107,11 @@ export class PostTypeJitsi extends React.PureComponent<Props, State> {
         let meetingLink = props.meeting_link;
 
         if (props.jwt_meeting) {
-            meetingLink += '?jwt=' + (props.meeting_jwt);
+            meetingLink += '?jwt=' + encodeURIComponent(props.meeting_jwt);
         }
 
-        meetingLink += `#config.callDisplayName="${props.meeting_topic || props.default_meeting_topic}"`;
-        meetingLink += `&userInfo.displayName="${this.props.currentUserFullName}"`;
+        meetingLink += `#config.callDisplayName=${encodeURIComponent(`"${props.meeting_topic || props.default_meeting_topic}"`)}`;
+        meetingLink += `&userInfo.displayName=${encodeURIComponent(`"${this.props.currentUserFullName}"`)}`;
 
         const preText = (
             <FormattedMessage
