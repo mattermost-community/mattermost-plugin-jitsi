@@ -80,7 +80,7 @@ func (c *configuration) IsValid() error {
 		}
 	}
 
-	if c.JitsiJWT {
+	if c.JitsiJWT && c.ServerType != JaaSServerType {
 		if len(c.JitsiAppID) == 0 {
 			return fmt.Errorf("error no Jitsi app ID was provided to use with JWT")
 		}
