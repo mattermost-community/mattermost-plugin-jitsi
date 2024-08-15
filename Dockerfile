@@ -1,4 +1,4 @@
-FROM golang:1.19
+FROM golang:1.21
 
 RUN apt update && \
     apt -y install build-essential npm && \
