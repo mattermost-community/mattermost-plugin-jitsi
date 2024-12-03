@@ -1,21 +1,25 @@
 import {connect} from 'react-redux';
 import {bindActionCreators, Dispatch} from 'redux';
-
 import {GenericAction} from 'mattermost-redux/types/actions';
-import {getCurrentUser} from 'mattermost-redux/selectors/entities/common';
+import {General as MMConstants} from 'mattermost-redux/constants';
+import {getCurrentChannelId, getCurrentUser} from 'mattermost-redux/selectors/entities/common';
 
 import {GlobalState, plugin} from 'types';
-import {openJitsiMeeting, setUserStatus} from 'actions';
-import manifest from 'manifest';
+import {openJitsiMeeting, setUserStatus, sendEphemeralPost} from '../../actions';
 import Conference from './conference';
+import manifest from 'manifest';
 
 function mapStateToProps(state: GlobalState) {
-    const config = state[`plugins-${manifest.id}` as plugin].config;
-
+    const pluginState = state[`plugins-${manifest.id}` as plugin];
+    const config = pluginState.config;
+    const currentUser = getCurrentUser(state);
     return {
+        isCurrentUserSysAdmin: currentUser.roles.includes(MMConstants.SYSTEM_ADMIN_ROLE),
+        currentChannelId: getCurrentChannelId(state),
+        post: pluginState.openMeeting,
+        jwt: pluginState.openMeetingJwt,
+        useJaas: Boolean(config.use_jaas),
         currentUser: getCurrentUser(state),
-        post: state[`plugins-${manifest.id}` as plugin].openMeeting,
-        jwt: state[`plugins-${manifest.id}` as plugin].openMeetingJwt,
         showPrejoinPage: config.show_prejoin_page,
         meetingEmbedded: config.embedded
     };
@@ -25,7 +29,8 @@ function mapDispatchToProps(dispatch: Dispatch<GenericAction>) {
     return {
         actions: bindActionCreators({
             openJitsiMeeting,
-            setUserStatus
+            setUserStatus,
+            sendEphemeralPost
         }, dispatch)
     };
 }
