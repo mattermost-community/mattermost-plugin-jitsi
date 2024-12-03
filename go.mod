@@ -6,7 +6,7 @@ require (
 	github.com/cristalhq/jwt/v2 v2.0.0
 	github.com/google/uuid v1.6.0
 	github.com/mattermost/mattermost/server/public v0.1.6
-	github.com/nicksnyder/go-i18n/v2 v2.4.0
+	github.com/nicksnyder/go-i18n/v2 v2.4.1
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.9.0
 )
@@ -55,7 +55,7 @@ require (
 	golang.org/x/crypto v0.25.0 // indirect
 	golang.org/x/net v0.27.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
-	golang.org/x/text v0.16.0 // indirect
+	golang.org/x/text v0.19.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240722135656-d784300faade // indirect
 	google.golang.org/grpc v1.65.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
