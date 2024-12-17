@@ -1,11 +1,13 @@
 module github.com/mattermost/mattermost-plugin-jitsi
 
-go 1.21
+go 1.22
+
+toolchain go1.22.8
 
 require (
 	github.com/cristalhq/jwt/v2 v2.0.0
 	github.com/google/uuid v1.6.0
-	github.com/mattermost/mattermost/server/public v0.1.6
+	github.com/mattermost/mattermost/server/public v0.1.9
 	github.com/nicksnyder/go-i18n/v2 v2.4.1
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.10.0
