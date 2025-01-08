@@ -79,7 +79,8 @@
                 "key": "JitsiAppSecret",
                 "display_name": "App Secret for JWT Authentication:",
                 "type": "text",
-                "help_text": "(Optional) The app secret used for authentication by the Jitsi server and JWT token generator."
+                "help_text": "(Optional) The app secret used for authentication by the Jitsi server and JWT token generator.",
+                "secret": true
             },
             {
                 "key": "JitsiLinkValidTime",
