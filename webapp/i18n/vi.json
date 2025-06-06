@@ -1,0 +1,14 @@
+{
+  "jitsi.close": "Đóng",
+  "jitsi.creator-has-started-a-meeting": "{creator} đã bắt đầu một cuộc họp",
+  "jitsi.default-title": "Cuộc họp Video bằng Jitsi",
+  "jitsi.join-meeting": "THAM GIA CUỘC HỌP",
+  "jitsi.link-valid-until": "Liên kết cuộc họp có hiệu lực đến: ",
+  "jitsi.maximize": "Phóng to",
+  "jitsi.meeting-id": "ID Cuộc họp: ",
+  "jitsi.minimize": "Thu nhỏ",
+  "jitsi.move-down": "Di chuyển xuống",
+  "jitsi.move-up": "Di chuyển lên",
+  "jitsi.open-in-new-tab": "Mở trong tab mới",
+  "jitsi.personal-meeting-id": "ID cuộc họp cá nhân (PMI): "
+}

@@ -1,1 +1,14 @@
-{}
+{
+  "jitsi.close": "閉じる",
+  "jitsi.creator-has-started-a-meeting": "{creator} が会議を開始しました",
+  "jitsi.default-title": "Jitsi会議",
+  "jitsi.join-meeting": "会議に参加する",
+  "jitsi.link-valid-until": "会議リンクの有効期限：",
+  "jitsi.maximize": "最大化",
+  "jitsi.meeting-id": "会議ID：",
+  "jitsi.minimize": "最小化",
+  "jitsi.move-down": "下へ移動",
+  "jitsi.move-up": "上へ移動",
+  "jitsi.open-in-new-tab": "新しいタブで開く",
+  "jitsi.personal-meeting-id": "個人会議ID（PMI）："
+}
