@@ -1,18 +1,17 @@
 module github.com/mattermost/mattermost-plugin-jitsi
 
-go 1.23.0
+go 1.24.3
 
 require (
 	github.com/cristalhq/jwt/v2 v2.0.0
 	github.com/google/uuid v1.6.0
-	github.com/mattermost/mattermost/server/public v0.1.14
+	github.com/mattermost/mattermost/server/public v0.1.16
 	github.com/nicksnyder/go-i18n/v2 v2.6.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.10.0
 )
 
 require (
-	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/beevik/etree v1.5.1 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
@@ -20,7 +19,6 @@ require (
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/francoispqt/gojay v1.2.13 // indirect
 	github.com/go-asn1-ber/asn1-ber v1.5.7 // indirect
-	github.com/go-sql-driver/mysql v1.9.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
