@@ -274,8 +274,16 @@ func (p *Plugin) startMeeting(user *model.User, channel *model.Channel, meetingI
 	var jwtToken string
 
 	if JWTMeeting {
-		// Error check is done in configuration.IsValid()
-		jURL, _ := url.Parse(p.getConfiguration().GetJitsiURL())
+		// IsValid() runs on restart, not per-command - and `url.Parse`
+		// on a URL with leading/trailing whitespace returns (nil, err),
+		// which would then panic on jURL.Hostname() (#281). Parse the
+		// already-trimmed jitsiURL variable above and surface a
+		// user-visible configuration error instead of crashing the
+		// plugin.
+		jURL, parseErr := url.Parse(jitsiURL)
+		if parseErr != nil || jURL == nil {
+			return "", errors.New("Jitsi plugin is misconfigured: invalid Jitsi Server URL")
+		}
 
 		meetingLinkValidUntil = time.Now().Add(time.Duration(p.getConfiguration().JitsiLinkValidTime) * time.Minute)
 
